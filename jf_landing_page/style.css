@@ -1,0 +1,134 @@
+html, body {
+  background-color: white;
+  font-family: 'Futura', 'Open Sans';
+  margin: 0;
+  padding: 0;
+  text-align:center;
+}
+
+/****Anchors****/
+a {
+  -webkit-transition:color 0.25s;
+  transition:color 0.25s;
+  text-decoration:none;
+}
+
+a:hover {
+  color: #6495ED;
+  cursor: pointer;
+  -webkit-transition: color 1s;
+  transition: color 1s;
+  text-decoration: none;
+}
+
+
+.container{
+	width:940px;
+}
+
+
+.header {
+  background-color: #011035;
+  height: 10vh;
+}
+
+.header h1 {
+  color: #31363d;
+  font-size: 40px;
+  margin-top:10vh;
+  text-transform: uppercase;
+}
+
+.mini-header{
+  margin-top:4%;		
+}
+
+
+.main{
+	margin-top: 6vh;
+	margin-bottom:1vh;
+}
+
+
+.social img{
+	width:3vw;
+	margin-top: 2vh;
+	margin-bottom: 3vh;
+	margin-left:10px;
+	margin-right: 10px;	
+	display:inline;
+}
+
+
+.mini-header{
+	margin-bottom:3vh;
+}
+
+
+.footer{
+    background-color: #011035;
+    height: 75vh;
+}
+
+/******About********/
+
+.about-me-content{
+	margin-top:3vh;
+	text-align: left;
+	font-family: 'Vollkorn';
+	font-size:18px;
+}
+
+/*****Mobile Screens******/
+
+@media only screen and (max-device-width: 480px) {
+	html, body{
+		width: auto;
+	}
+
+	.container{
+		width: 100%;	
+	}
+
+	#circle_jf img{
+		width:100%;
+	}
+
+	#circle_pro img{
+		width:60%;
+	}
+
+	#circle_writings img{
+		width:60%;
+	}
+	.social img{
+		width:10%;
+	}
+	
+	.social .container{
+		margin-right:0;
+		margin-left:0;		
+		text-align:center;
+	}
+
+	.footer{
+	    background-color: #011035;
+	    height: 30vh;
+	}
+	
+	
+/*******About*********/
+	.about-me-content{
+		font-size:16px;
+	}
+	
+	#circle_picture img{
+		width:100%;
+	}
+	
+	#lil_jf img{
+		width:60%;
+		
+	}
+}
+

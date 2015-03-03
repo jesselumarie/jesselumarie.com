@@ -1,0 +1,5 @@
+{% if article.author %}
+        <li class="vcard author">
+                 by&nbsp;<a class="url fn" href="{{ SITEURL }}/{{ article.author.url }}">{{ article.author }}</a>
+        </li>
+{% endif %}

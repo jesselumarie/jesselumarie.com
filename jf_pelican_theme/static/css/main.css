@@ -466,21 +466,21 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 
 /****mobiles****/
 
-@media only screen and (max-device-width: 480px) {
+@media only screen and (max-device-width: 768px) {
 	html, body{
 		width: auto;
 	}
 	
 	#mini_circle_jf{
-		width:20%;
+		width:22vw;
 	}
 
 	#mini_about{
-		width:15%;
+		width:12vw;
 	}
 
 	#mini_writing{
-		width:15%;
+		width:12vw;
 	}
 	
 	.mobile-bottombar .social img{
@@ -496,17 +496,17 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 }
 
 /*landscape*/
-@media only screen and (max-device-width: 667px) and (orientation: landscape){
+@media only screen and (max-device-width: 1024px) and (orientation: landscape){
 	#mini_circle_jf{
-		width:20%;
+		width:22vw;
 	}
 
 	#mini_about{
-		width:15%;
+		width:12vw;
 	}
 
 	#mini_writing{
-		width:15%;
+		width:12vw;
 	}
 	
 	.mobile-bottombar .social img{

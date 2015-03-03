@@ -79,9 +79,10 @@ a:hover {
 	font-size:18px;
 }
 
-/*****Mobile Screens******/
+/***********************Mobile Screens*********************************/
 
-@media only screen and (max-device-width: 480px) {
+/**portrait**/
+@media only screen and (max-device-width: 768px) {
 	html, body{
 		width: auto;
 	}
@@ -91,18 +92,18 @@ a:hover {
 	}
 
 	#circle_jf img{
-		width:100%;
+		width:22vw;
 	}
 
 	#circle_pro img{
-		width:60%;
+		width:12vw;
 	}
 
 	#circle_writings img{
-		width:60%;
+		width:12vw;
 	}
 	.social img{
-		width:10%;
+		width:8vw;
 	}
 	
 	.social .container{
@@ -113,22 +114,76 @@ a:hover {
 
 	.footer{
 	    background-color: #011035;
-	    height: 30vh;
+	    height: 50vh;
 	}
 	
 	
-/*******About*********/
+	/*About*/
 	.about-me-content{
 		font-size:16px;
 	}
 	
 	#circle_picture img{
-		width:100%;
+		width:22vw;
 	}
 	
 	#lil_jf img{
-		width:60%;
+		width:12vw;
+		
+	}
+	
+}
+
+/***landscape****/
+@media only screen and (max-device-width: 1024px) and (orientation: landscape){
+	html, body{
+		width: auto;
+	}
+	.container{
+		width: 100%;	
+	}
+
+	#circle_jf img{
+		width:22vh;
+	}
+
+	#circle_pro img{
+		width:12vh;
+	}
+
+	#circle_writings img{
+		width:12vh;
+	}
+	.social img{
+		width:8vh;
+	}
+	
+	.social .container{
+		margin-right:0;
+		margin-left:0;		
+		text-align:center;
+	}
+
+	.footer{
+	    background-color: #011035;
+	    height: 40vw;
+	}
+	
+	
+	/*About*/
+	.about-me-content{
+		font-size:16px;
+	}
+	
+	#circle_picture img{
+		width:22vh;
+	}
+	
+	#lil_jf img{
+		width:12vh;
 		
 	}
 }
+
+/********************************Tablets************************/
 

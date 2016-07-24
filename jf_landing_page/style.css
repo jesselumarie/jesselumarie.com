@@ -4,6 +4,7 @@ html, body {
   margin: 0;
   padding: 0;
   text-align:center;
+	width:auto;
 }
 
 /****Anchors****/
@@ -23,7 +24,7 @@ a:hover {
 
 
 .container{
-	width:940px;
+	width:80%;
 }
 
 
@@ -139,8 +140,8 @@ a:hover {
 	html, body{
 		width: auto;
 	}
-	.container{
-		width: 100%;	
+	.container, .row{
+		width: auto;	
 	}
 
 	#circle_jf img{

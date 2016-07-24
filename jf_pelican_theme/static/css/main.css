@@ -8,15 +8,16 @@
 
 body {
     background-color:whitesmoke;
-    color: #011035;
+    color: #333333;
     font-size: 87.5%; /* Base font size: 14px */
     font-family: 'Futura', 'Open Sans', sans-serif;
     line-height: 1.429;
     margin: 0;
     padding: 0;
     text-align: left;
-	height:105vh;
+		height:105vh;
 }
+
 
 /******Sidebar*******/
 
@@ -33,6 +34,7 @@ body {
 	padding-left:2px;
 	padding-right:2px;	
 }
+
 
 .social .row{
 	padding:10%;
@@ -63,6 +65,11 @@ body {
 	font-size: 0.95em;
 	font-family: 'Avenir Next', sans-serif;
 	margin: 5 0 5 0;
+}
+
+.mobile-bottombar img{
+	width:8vw;
+	padding:10px;
 }
 
 
@@ -129,6 +136,14 @@ body {
 .entry-content{
 	font-family: 'Vollkorn';
 }
+.footnote{
+	font-family: 'Vollkorn';
+	font-size: .5em !important;
+}
+
+sup{
+	font-size: .7em !important;
+}
 
 /* Headings */
 /* Actual sizes are 8/5 the stated. */
@@ -162,7 +177,12 @@ a:hover {
 	
 /* Paragraphs */
 p {margin-bottom: 1.143em; color:#333 ; font-size:1.6em}
-pre {margin-bottom: 1.143em; padding: 4px; font-size:1.6em}
+pre {
+	background-color:#011035;
+	color:whitesmoke;	
+	margin-bottom: 1.143em; 
+	padding: 4px; 
+	font-size:1em}
 
 strong, b {font-weight: bold; color: #333;}
 em, i {font-style: italic;}
@@ -170,7 +190,8 @@ em, i {font-style: italic;}
 /* Lists */
 ul {
 	list-style: outside disc;
-	margin: 1em 0 1.5em 1.5em;
+	margin: .5em auto 1.5em auto; 
+	width: 80%;
 }
 
 ol {
@@ -272,8 +293,10 @@ div.note {
 }
 
 /* Tables */
-table {margin: .5em auto 1.5em auto; width: 98%;}
-	
+table {margin: .5em auto 1.5em auto; width: 80%;}
+td {font-size:1.3em;}
+th {font-size:1.3em;}
+
 	/* Thead */
 	thead th {padding: .5em .4em; text-align: left;}
 	thead td {}
@@ -483,11 +506,11 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 		width:12vw;
 	}
 	
-	.mobile-bottombar .social img{
+	.mobile-bottombar img{
 		text-align:center;
 		margin-top: 3vh;
 		padding:10px;
-		width:15vw;
+		width:12vw;
 	}
 	
 	.tag_outer_class{
@@ -509,8 +532,8 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 		width:12vw;
 	}
 	
-	.mobile-bottombar .social img{
-		width:12vw;
+	.mobile-bottombar .img{
+		width:12vh;
 		padding:10px;
 	}
 }
@@ -530,7 +553,7 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 		width:15%;
 	}
 	
-	.mobile-bottombar .social img{
+	.mobile-bottombar img{
 		width:10vw;
 		padding:10px;
 	}
@@ -550,7 +573,7 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 		width:15%;
 	}
 	
-	.mobile-bottombar .social img{
+	.mobile-bottombar img{
 		width:6vw;
 		padding:10px;
 	}

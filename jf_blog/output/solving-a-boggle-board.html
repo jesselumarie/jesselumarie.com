@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>Solving a Boggle board</title>
+        <meta charset="utf-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="http://jessefurmanek.com/blog/theme/images/jf_icon.png"/>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://jessefurmanek.com/blog/theme/css/main.css" type="text/css" />
+		
+
+        <!--[if IE]>
+                <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+        <!--[if lte IE 7]>
+                <link rel="stylesheet" type="text/css" media="all" href="http://jessefurmanek.com/blog/css/ie.css"/>
+                <script src="http://jessefurmanek.com/blog/js/IE8.js" type="text/javascript"></script><![endif]-->
+
+        <!--[if lt IE 7]>
+                <link rel="stylesheet" type="text/css" media="all" href="http://jessefurmanek.com/blog/css/ie6.css"/><![endif]-->
+			
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>			
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
+</head>
+
+<body id="index" class="home">
+	
+	<div class = "main">
+		<div class = "visible-sm-12 hidden-md hidden-lg mobile-topbar">
+			<span class = "logo">
+				<a href = "http://jessefurmanek.com/about"><img src ="http://jessefurmanek.com/blog/theme/images/about_icon.png" class="center-block" id = "mini_about"></a>	
+				<a href = "http://jessefurmanek.com"><img src ="http://jessefurmanek.com/blog/theme/images/jf_icon.png" class="center-block"id= "mini_circle_jf"></a>
+				<a href = "http://jessefurmanek.com/blog"><img src ="http://jessefurmanek.com/blog/theme/images/writing_icon.png" class="center-block" id = "mini_writing"></a>
+			</span>
+		</div>
+				
+		<div class = "col-md-3 sidebar hidden-xs hidden-sm">
+			<div class="header">
+ 				<div class = "row"></div>
+			</div>
+					
+			<div class = "logo">
+				<div class = "row">
+					<a href = "http://jessefurmanek.com/about" ><img src ="http://jessefurmanek.com/blog/theme/images/about_icon.png"></a>	
+				</div>
+				
+				<div class = "row">								
+					<a href = "http://jessefurmanek.com/"><img src ="http://jessefurmanek.com/blog/theme/images/jf_icon.png"></a>
+				</div>
+				
+				<div class = "row">		
+					<a href = "http://jessefurmanek.com/blog"><img src ="http://jessefurmanek.com/blog/theme/images/writing_icon.png"></a>
+				</div>
+			</div>
+						
+				
+			<div class ="social"> 
+  			<div class="row">
+					<div class = "soc_icons">
+  		  		 <a href = "https://twitter.com/jessefurmanek"><img src="http://jessefurmanek.com/blog/theme/images/twitter_logo_blue.png" class="center-block"></a>
+  		  		 <a href="http://instagram.com/jessefurmanek"><img src="http://jessefurmanek.com/blog/theme/images/insta_logo.png"  class="center-block" ></a>
+  		  		 <a href="https://github.com/jessefurmanek"> <img src="http://jessefurmanek.com/blog/theme/images/github_logo.png"  class="center-block"></a>
+  		  		 <a href="https://www.flickr.com/photos/49440392@N07/"><img src="http://jessefurmanek.com/blog/theme/images/flickr_logo.png"  class="center-block"></a>
+  		  		 <a href="https://www.linkedin.com/in/jessefurmanek"><img src="http://jessefurmanek.com/blog/theme/images/linkedin_logo.png"  class="center-block"></a>		
+					</div>
+				</div>
+			</div>
+			
+			<div class="footer">
+				<div class = "row"></div>
+			</div>
+			
+			
+		</div>
+		
+
+		<div class = "col-sm-12 col-md-9 col-md-push-3">
+			<div class = "row">
+<section id="content" >
+    <div class="body">
+      <article>
+
+        <header>
+          <h1 class="entry-title">
+	          <a href="http://jessefurmanek.com/blog/solving-a-boggle-board.html" rel="bookmark"
+	             title="Permalink to Solving a Boggle board">  
+			  Solving a Boggle board</a>
+		   </h1>
+        </header>
+        <div class="entry-content">
+			<div class="post-info">
+				<ul><li class="published" title="2015-07-26T00:00:00-05:00">Sun 26 July 2015</li>
+
+<!-- /.post-info -->        <li class="vcard author">
+                 by&nbsp;<a class="url fn" href="http://jessefurmanek.com/blog/author/jesse-furmanek.html">Jesse Furmanek</a>
+        </li>
+	
+<p class = "pull-right tag_outer_class"><span class= "tags_text">tags: </span><a href="http://jessefurmanek.com/blog/tag/programming.html" class = "tags">programming</a><a href="http://jessefurmanek.com/blog/tag/data-structures.html" class = "tags">data-structures</a><a href="http://jessefurmanek.com/blog/tag/algorithms.html" class = "tags">algorithms</a></p>				</ul>
+
+			</div>
+
+          <p>A few weeks ago I found myself in a bar playing Boggle with my fiancé (spoiler: she won).  As we drank and played into the night, we wondered just how many different word combinations were possible on a given Boggle board (our estimations were pretty terrible given the aforementioned drinking).  Some quick google-ing found the answer<sup id="fnref:1"><a class="footnote-ref" href="#fn:1" rel="footnote">1</a></sup>, but it got me thinking: I should totally write a program that solves a Boggle board<sup id="fnref:2"><a class="footnote-ref" href="#fn:2" rel="footnote">2</a></sup>.</p>
+<h2>My first attempt</h2>
+<p>Using Ruby, I created a board represented by a multi-dimensional array containing N x N squares.  The board object also held the running word count, the word list, and the dictionary used to validate a word.  My very basic algorithm:</p>
+<p>1) For each square on the board (starting in the top left corner), attempt to move every possible direction until you make an invalid move:
+<img src="/blog/theme/images/site_content/boggle_board_directions_clean.png" style="padding-left:30%; padding-right:30%;"></img></p>
+<p>2) Invalid moves occur when the move runs into a wall:<img src="/blog/theme/images/site_content/boggle_board_directions.png" style="padding-left:30%; padding-right:30%;"></img></p>
+<p>when the move runs into an already used square: 
+<img src="/blog/theme/images/site_content/boggle_board_repeat.png" style="padding-left:30%; padding-right:30%;"></img></p>
+<p>and when the move does not make a word or a potential word e.g "b-o-o" is a potential word, "b-s-v" is not:
+<img src="/blog/theme/images/site_content/boggle_board_not_a_word.png" style="padding-left:30%; padding-right:30%;"></img></p>
+<p>3) If a sequence of blocks greater than 3 creates a valid word, add that word to the word list:
+<img src="/blog/theme/images/site_content/boggle_board_is_a_word.png" style="padding-left:30%; padding-right:30%;"></img></p>
+<p>4) Continue until all squares and directional moves have been attempted.</p>
+<p>The board object's dictionary is stored as a hash.  To check whether a potential character sequence is a word, I iterated through each key of the dictionary hash, and checked whether the key contained the character sequence using the ruby "starts_with?" method.</p>
+<div class="highlight"><pre>def potential_word?(dictionary, current_word)
+    dictionary.keys.any? {|k| k.start_with? current_word.downcase}
+end
+</pre></div>
+
+
+<p>This worked fine when I tested the function on a 3 x 3 board.  When I tested it on a 4 x 4 board, the function took a minute to return a result.  On a 5 x 5 board, the function never returned at all<sup id="fnref:3"><a class="footnote-ref" href="#fn:3" rel="footnote">3</a></sup>.  Every time the function looked into the dictionary to see whether a character sequence was a potential word, the program searched the entire dictionary up to that word.  While this was okay for the word "apple", it was unacceptable for "zebra".  And while solving a 4x4 board in under a minute is good enough to beat the clock in a standard game of Boggle<sup id="fnref:4"><a class="footnote-ref" href="#fn:4" rel="footnote">4</a></sup>, but I was pretty sure I could do better – enter the <a href="https://www.google.com/search?q=data+structure+for+boggle">Google</a>.</p>
+<h2>Giving Boggle a Trie</h2>
+<p>I stumbled upon a few pages<sup id="fnref:5"><a class="footnote-ref" href="#fn:5" rel="footnote">5</a></sup> describing a structure called a trie (prounounced 'try' or 'tree').  A trie is a type of tree<sup id="fnref:6"><a class="footnote-ref" href="#fn:6" rel="footnote">6</a></sup> whose roots are the first character of a word, with successive letters of the word becoming the branches and leaves of the trie. I<sup id="fnref:7"><a class="footnote-ref" href="#fn:7" rel="footnote">7</a></sup> think of it as looking something this:</p>
+<p><img src="/blog/theme/images/site_content/ant_trie_final.png" style="padding-left:30%; padding-right:30%;"></img></p>
+<p>To build a trie from an array, the algorithm starts with an empty hash (h = {}), and sets the function's position at the very top of the hash.  It then looks at each character in the first word of the array – if the hash contains that letter, the position is updated to that hash value h = h[char].  If a character (char) is not currently in the hash, that character is added to the hash with an empty hash as its value e.g.</p>
+<p><code>h = { char=&gt;{} }</code>   </p>
+<p>This is definitely one of those easier shown than said data structures, so let’s look at an example.  If we had a very short dictionary of words beginning with the letter ‘A’, it could look something like this: </p>
+<p><code>[ant, and, abs]</code></p>
+<p>and our starting hash would be empty:</p>
+<p><code>h = {}</code>  </p>
+<p>To create a trie from this list, the algorithm would start with an empty hash, h = {}, and begin with the first letter of the first word in the list (‘<strong>a</strong>nt’).  Is there an ‘a’ in our hash? Nope.  So the algorithm adds the character ‘a’ to the hash with a default value of of empty hash, making our hash look something like this: </p>
+<p><code>h = { a=&gt;{} }</code>  </p>
+<p>The position of the algorithm is adjusted to h[‘a’], meaning that any new nodes added to the trie will occur on the 'a' node.  This represents the algorithm “traversing” the trie downward. When the algorithm looks at the next letter(’a<strong>n</strong>t’) in the first word, it again finds that the letter is not present in the hash of the current position, so ’n’ is added to the hash at its current position, h[‘a’], which is an empty hash {}.  The hash (h) now looks like this:</p>
+<p><code>h = { a=&gt;{ n=&gt;{} } }</code></p>
+<p>This nesting continues to the end of the first word (’an<strong>t</strong>’), creating a nested hash that look like this:</p>
+<p><code>h = {a=&gt;{n=&gt;{t=&gt;{}}}}</code></p>
+<p>Using our previous tree-esque visualization, the trie would look something like this:</p>
+<p><img src="/blog/theme/images/site_content/ant_trie_1.png" style="padding-left:35%; padding-right:35%;"></img>
+<!-- <img alt="trie_image" src="/theme/images/site_content/ant_trie.png" /> --></p>
+<p>Moving on to the second word (‘and’), we begin the same process, looking to see if the first character ‘<strong>a</strong>’ is in our hash.  This time, the answer is yes.  Therefore, instead of adding the first letter to the hash, the algorithm traverses down the trie, setting its position equal to h[‘a’], with the hash remaining unchanged.  The same thing happens when we get to the next letter, ’<strong>n</strong>’ — the position is updated to a[’n’].  </p>
+<p>On the final letter of ‘and’, a new node is created because the letter ‘<strong>d</strong>’ is not included at the hash position a[’n’].  We now have a hash that looks like this: </p>
+<p><code>h = {a=&gt;{n=&gt;{t=&gt;{}, d=&gt;{}}}}</code></p>
+<p><img src="/blog/theme/images/site_content/ant_trie_2.png" style="padding-left:35%; padding-right:35%;"></img></p>
+<p>When we add the full list, we end up with a hash that looks like this:</p>
+<p><code>h = {"a"=&gt;{"n"=&gt;{"t"=&gt;{}, "d"=&gt;{}}, "b"=&gt;{"s"=&gt;{}}}}</code></p>
+<p><img src="/blog//theme/images/site_content/ant_trie_final.png" style="padding-left:30%; padding-right:30%;"></img></p>
+<p>So why does this matter?</p>
+<p>When traversing an array or a dictionary to check whether a string of letters is part of a valid word, the algorithm would have to look at each letter of each word until it found a match (in a dictionary) or a letter that indicates you’ve passed the word  (in a sorted array).  That means in a game of Boggle, each time my original algorithm looked to see whether a potential word that begins with B is part of a valid word, it would have to look at every ‘A' entry in the dictionary.  This gets expensive<sup id="fnref:8"><a class="footnote-ref" href="#fn:8" rel="footnote">8</a></sup> when you’re looking at words that begin with X,Y, and Z. </p>
+<p>With a trie, we only look at the letters we have to.  Using a trie data structure, the maximum amount of time the algorithm takes to figure out whether a string is a potential word relates to the length of the potential word, and not the size of the dictionary. Using O-notation, the trie is said to have O(N) complexity (worst case), where N is the length of the word.  </p>
+<p>My original algorithm had a much less favorable worst-case time complexity, something along the lines of O(Σ(M)), where Σ(M) is the sum of the lengths of each word in the dictionary<sup id="fnref:9"><a class="footnote-ref" href="#fn:9" rel="footnote">9</a></sup>.  Because the sum of the lengths of all the words in the dictionary is much much longer than any one word in the dictionary, my original algorithm takes a much longer time to run vis-à-vis the trie implementation.</p>
+<p>Using this new implementation, solving Boggle boards is a breeze.  I just ran a 5x5 Boggle board and a 50x50 Boggle board, with the solutions clocking in at 2.5 and 12.0 seconds respectively.  Not too bad for a trie.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p><a href="http://www.quora.com/How-many-potential-words-exist-on-a-boggle-board">12,029,640</a>, if you're wondering. &#160;<a class="footnote-backref" href="#fnref:1" rev="footnote" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Because this is what normal people do.&#160;<a class="footnote-backref" href="#fnref:2" rev="footnote" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>I know what my friends are saying inefficient boggle_solver, but I know you'll return one day.&#160;<a class="footnote-backref" href="#fnref:3" rev="footnote" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>A standard game of Boggle uses a <a href="http://www.hasbro.com/common/instruct/boggle.pdf">three minute timer</a>, as does <a href="http://www.hasbro.com/common/instruct/bigboggle.pdf">Big Boggle.</a>&#160;<a class="footnote-backref" href="#fnref:4" rev="footnote" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>In particular this <a href="http://stackoverflow.com/questions/9042426/explanation-of-ruby-code-for-building-trie-data-structures">stack overflow page</a>.&#160;<a class="footnote-backref" href="#fnref:5" rev="footnote" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:6">
+<p>Which is just confusing.&#160;<a class="footnote-backref" href="#fnref:6" rev="footnote" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:7">
+<p>And <a href="https://en.wikipedia.org/wiki/Trie">Wikipedia.</a>&#160;<a class="footnote-backref" href="#fnref:7" rev="footnote" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+<li id="fn:8">
+<p>Meaning computationaly expensive aka very slow.&#160;<a class="footnote-backref" href="#fnref:8" rev="footnote" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+</li>
+<li id="fn:9">
+<p>I think the average complexity would be O(Σ(M)/2) –  complexity divided by two because a word is just as likely to appear at the beginning of the dictionary as it is the end.&#160;<a class="footnote-backref" href="#fnref:9" rev="footnote" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+        </div><!-- /.entry-content -->
+
+      </article>
+    </div>
+</section>
+			</div>
+		</div>
+		
+		<div class = "visible-sm-12 hidden-md hidden-lg mobile-bottombar">
+				<div class = "row">
+					<div class = "container">
+
+						<a href = "https://twitter.com/jessefurmanek"><img src="http://jessefurmanek.com/blog/theme/images/twitter_logo_blue.png" ></a>
+						<a href="http://instagram.com/jessefurmanek"><img src="http://jessefurmanek.com/blog/theme/images/insta_logo.png" ></a>
+						<a href="https://github.com/jessefurmanek"> <img src="http://jessefurmanek.com/blog/theme/images/github_logo.png" ></a>
+						<a href="https://www.flickr.com/photos/49440392@N07/"><img src="http://jessefurmanek.com/blog/theme/images/flickr_logo.png"></a>
+						<a href="https://www.linkedin.com/in/jessefurmanek"><img src="http://jessefurmanek.com/blog/theme/images/linkedin_logo.png" ></a>
+
+				</div>
+			</div>
+		</div>
+		
+</div>
+
+
+
+	
+
+<!-- <ul>
+	<li><a href="http://jessefurmanek.com/blog/category/machine-learning-programming.html">Machine Learning, Programming</a></li>
+	<li><a href="http://jessefurmanek.com/blog/category/personal.html">Personal</a></li>
+	<li><a href="http://jessefurmanek.com/blog/category/programming-data-structures-algorithms.html">Programming, Data Structures, Algorithms</a></li>
+	<li><a href="http://jessefurmanek.com/blog/category/web-development-programming.html">Web Development, Programming</a></li>
+</ul>
+ -->
+	
+        <footer id="contentinfo" >
+                <address id="about" class="vcard ">
+                Generated with <a href="http://getpelican.com/" target="_blank">Pelican</a>, which takes
+                great advantage of <a href="http://python.org" target="_blank">Python</a>.
+		
+                </address><!-- /#about -->
+		
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

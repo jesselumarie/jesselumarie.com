@@ -31,7 +31,7 @@ SOCIAL = (('You can add links in your config file', '#'),
 
 DEFAULT_PAGINATION = 5
 
-THEME = "/Users/jessefurmanek/GitHub/jf_website/jf_pelican_theme"
+THEME = "../../jf_pelican_theme"
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True

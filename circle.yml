@@ -9,8 +9,8 @@ deployment:
     branch: master
     commands:
       - cd jesselumarie.com
-      - mdkir s3_assets_to_deploy
-      - mdkir s3_assets_to_deploy/blog
+      - mkdir s3_assets_to_deploy
+      - mkdir s3_assets_to_deploy/blog
       - cd jf_blog
       - make html
       - cd ..

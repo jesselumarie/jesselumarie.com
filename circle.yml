@@ -12,6 +12,7 @@ deployment:
       - mkdir s3_assets_to_deploy
       - mkdir s3_assets_to_deploy/blog
       - cd jf_blog
+      - cd jf_blog
       - ls
       - make html
       - cd ..

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 
-AUTHOR = u'Jesse Furmanek'
-SITENAME = u'Writing | Jesse Furmanek'
-SITEURL = 'http://jessefurmanek.com/blog'
+AUTHOR = u'Jesse Lumarie'
+SITENAME = u'Writing | Jesse Lumarie'
+SITEURL = 'http://jesselumarie.com/blog'
 
 PATH = 'content'
 

@@ -12,7 +12,7 @@ deployment:
       - mkdir s3_assets_to_deploy
       - mkdir s3_assets_to_deploy/blog
       - cd jf_blog && make html
-      - cp -r jf_blog/output s3_assets_to_deploy/blog
+      - cp -r jf_blog/output/* s3_assets_to_deploy/blog
       - cp -r jf_landing_page/* s3_assets_to_deploy
       - cd s3_assets_to_deploy
       - aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete

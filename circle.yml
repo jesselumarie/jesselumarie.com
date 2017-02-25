@@ -8,8 +8,20 @@ deployment:
   aws:
     branch: master
     commands:
+      - cd jesselumarie.com
+      - mdkir s3_assets_to_deploy
+      - mdkir s3_assets_to_deploy/blog
+      - cd jf_blog
       - make html
+      - cd ..
+      - cp -r jf_blog/output s3_assets_to_deploy/blog
+      - cp -r jf_landing_page s3_assets_to_deploy
+      - cd s3_assets_to_deploy
       - make s3_upload
 test:
   override:
     - echo 'static site; no tests'
+
+
+#  Make html, move the output into /blog folder on aws
+#  Move the contents of jf_pelican_theme to the s3 bucket

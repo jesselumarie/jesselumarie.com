@@ -15,9 +15,9 @@ deployment:
       - make html
       - cd ..
       - cp -r jf_blog/output s3_assets_to_deploy/blog
-      - cp -r jf_landing_page s3_assets_to_deploy
+      - cp -r jf_landing_page/* s3_assets_to_deploy
       - cd s3_assets_to_deploy
-      - make s3_upload
+      - aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete
 test:
   override:
     - echo 'static site; no tests'

@@ -1,6 +1,6 @@
 dependencies:
   override:
-    - pip install pelican markdown s3cmd
+    - sudo pip install pelican markdown s3cmd
     - git clone https://github.com/jesselumarie/jesselumarie.com.git
     - echo -e "[default] \naccess_key = $S3CFG_ACCESS_KEY \nsecret_key = $S3CFG_SECRET_KEY \n" > /home/ubuntu/.s3cfg
 

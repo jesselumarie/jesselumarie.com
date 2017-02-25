@@ -11,11 +11,7 @@ deployment:
       - cd jesselumarie.com
       - mkdir s3_assets_to_deploy
       - mkdir s3_assets_to_deploy/blog
-      - cd jf_blog
-      - cd jf_blog
-      - ls
-      - make html
-      - cd ..
+      - cd jf_blog && make html
       - cp -r jf_blog/output s3_assets_to_deploy/blog
       - cp -r jf_landing_page/* s3_assets_to_deploy
       - cd s3_assets_to_deploy

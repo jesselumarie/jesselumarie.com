@@ -1,0 +1,3 @@
+.DS_Store
+blog/output/*
+blog/cache/ArticlesGenerator-Readers blog/cache/PagesGenerator-Readers

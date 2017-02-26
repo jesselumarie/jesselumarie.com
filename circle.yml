@@ -11,15 +11,11 @@ deployment:
       - cd jesselumarie.com
       - mkdir s3_assets_to_deploy
       - mkdir s3_assets_to_deploy/blog
-      - cd jf_blog && make html
-      - cp -r jf_blog/output/* s3_assets_to_deploy/blog
-      - cp -r jf_landing_page/* s3_assets_to_deploy
+      - cd blog && make html
+      - cp -r blog/output/* s3_assets_to_deploy/blog
+      - cp -r landing_page/* s3_assets_to_deploy
       - cd s3_assets_to_deploy
       - aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete
 test:
   override:
     - echo 'static site; no tests'
-
-
-#  Make html, move the output into /blog folder on aws
-#  Move the contents of jf_pelican_theme to the s3 bucket

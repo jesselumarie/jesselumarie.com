@@ -26,6 +26,6 @@ The code for all the sites listed in the portfolio (as well as the code for the 
 [mywebsite]: https://jesselumarie.com/
 [codecademy-portfolio]: http://codecademyportfolio.jesselumarie.com/
 [shuffle-js]: http://vestride.github.io/Shuffle/
-[github-portfolio]: https://github.com/jessefurmanek/portfolio
-[github]: https://github.com/jessefurmanek
+[github-portfolio]: https://github.com/jesselumarie/portfolio
+[github]: https://github.com/jesselumarie
 

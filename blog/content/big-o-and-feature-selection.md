@@ -97,7 +97,7 @@ While this is not ideal [^8], I ended up with some okay results[^9] and a practi
 
 
 
-[udacity-github]: https://github.com/jessefurmanek/udacity_coursework/tree/master/intro_to_machine_learning/final_project
+[udacity-github]: https://github.com/jesselumarie/udacity_coursework/tree/master/intro_to_machine_learning/final_project
 [udacity-class]: https://www.udacity.com/course/ud120
 [enron-corpus]: http://en.wikipedia.org/wiki/Enron_Corpus
 [ents]: http://www.dailymotion.com/video/xmp51o_slow-decision-making-from-the-lord-of-the-rings-the-two-towers-2002_shortfilms

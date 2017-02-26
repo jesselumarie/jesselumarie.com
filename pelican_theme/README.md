@@ -21,5 +21,5 @@ Screenshot
 Live example
 ------------
 
-Go to [my blog](jessefurmanek.com/blog) to see how this theme looks live!
+Go to [my blog](jesselumarie.com/blog) to see how this theme looks live!
 

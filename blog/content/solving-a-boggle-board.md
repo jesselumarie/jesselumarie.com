@@ -3,8 +3,8 @@ Date: 2015-07-26
 Category: Programming, Data Structures, Algorithms
 Tags: programming, data-structures, algorithms
 Slug: solving-a-boggle-board
-Authors: Jesse Furmanek
-Summary: Add [Boggle](http://jessefurmanek.com/blog/giving-boggle-a-trie.html) to the list of things my computer can do harder/better/faster/stronger than me.
+Authors: Jesse Lumarie
+Summary: Add [Boggle](http://jesselumarie.com/blog/giving-boggle-a-trie.html) to the list of things my computer can do harder/better/faster/stronger than me.
 
 
 A few weeks ago I found myself in a bar playing Boggle with my fiancé (spoiler: she won).  As we drank and played into the night, we wondered just how many different word combinations were possible on a given Boggle board (our estimations were pretty terrible given the aforementioned drinking).  Some quick google-ing found the answer[^1], but it got me thinking: I should totally write a program that solves a Boggle board[^2].

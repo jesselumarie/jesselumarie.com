@@ -3,8 +3,8 @@ Date: 2015-03-13
 Category: Machine Learning, Programming
 Tags: programming, machine-learning
 Slug: big-o-and-feature-selection
-Authors: Jesse Furmanek
-Summary: [Exponents](http://jessefurmanek.com/blog/big-o-and-feature-selection.html) are stronger than you.
+Authors: Jesse Lumarie
+Summary: [Exponents](http://jesselumarie.com/blog/big-o-and-feature-selection.html) are stronger than you.
 
 Some problems are computationally intractable-- while we know how to program a computer to solve a problem, the computer (or array of computers) would take so much time[^1] that calculating the answer wouldn't be worth it. One of these intractable problems is finding all subsets of a large group, as I recently found out when I [completed][udacity-github] the intro to machine learning course offered by [Udacity][udacity-class].  
 
@@ -12,7 +12,7 @@ For the final project, students attempted to predict whether an individual was a
 
 	financial features: ['salary', 'deferral_payments', 'total_payments', 'loan_advances','bonus', 'restricted_stock_deferred', 'deferred_income', 'total_stock_value', 'expenses', 'exercised_stock_options', 'other', 'long_term_incentive', 'restricted_stock', 'director_fees']
 
-	email features: ['to_messages', 'email_address', 'from_poi_to_this_person', 'from_messages','from_this_person_to_poi', 'poi', 'shared_receipt_with_poi'] 
+	email features: ['to_messages', 'email_address', 'from_poi_to_this_person', 'from_messages','from_this_person_to_poi', 'poi', 'shared_receipt_with_poi']
 
 These features correspond with a flag (or label) which indicates whether that employee was a person of interest (POI). During the course, we used decision tree[^2] and random forest classifying algorithms for many of our classification problems, so I decided to use these algorithms for the final project.  
 
@@ -106,4 +106,3 @@ While this is not ideal [^8], I ended up with some okay results[^9] and a practi
 [math-is-fun]: http://www.mathsisfun.com/sets/sets-introduction.html
 [sk-learn]: http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
 [sk-learn-RFE]: http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFE.html#sklearn.feature_selection.RFE
-

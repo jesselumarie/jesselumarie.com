@@ -3,8 +3,8 @@ Date: 2015-02-17
 Category: Personal
 Tags: programming,personal
 Slug: hello-world
-Authors: Jesse Furmanek
-Summary: You always remember your first [blag](http://jessefurmanek.com/blog/hello-world.html).
+Authors: Jesse Lumarie
+Summary: You always remember your first [blag](http://jesselumarie.com/blog/hello-world.html).
 
 There are millions of blogs out there, but this one is mine. And that's the point.  I sometimes think that I understand a programming topic or stasticial concept well, but when I try to explain it to another human, my words fall flat.  No longer I say!  
 

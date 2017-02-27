@@ -6,6 +6,9 @@ AUTHOR = u'Jesse Lumarie'
 SITENAME = u'Writing | Jesse Lumarie'
 SITEURL = 'http://jesselumarie.com/blog'
 
+# dev site URL
+# SITEURL = ''
+
 PATH = 'content'
 
 TIMEZONE = 'America/Chicago'
@@ -32,6 +35,5 @@ SOCIAL = (('You can add links in your config file', '#'),
 DEFAULT_PAGINATION = 5
 
 THEME = "../pelican_theme"
-
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True

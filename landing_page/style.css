@@ -4,7 +4,7 @@ html, body {
   margin: 0;
   padding: 0;
   text-align:center;
-	width:auto;
+  width:auto;
 }
 
 /****Anchors****/
@@ -22,11 +22,9 @@ a:hover {
   text-decoration: none;
 }
 
-
-.container{
-	width:80%;
+.container {
+  width:80%;
 }
-
 
 .header {
   background-color: #011035;
@@ -40,151 +38,178 @@ a:hover {
   text-transform: uppercase;
 }
 
-.mini-header{
-  margin-top:4%;		
+.mini-header {
+  margin-top:4%;
+}
+
+.main {
+  margin-top: 6vh;
+  margin-bottom:1vh;
+}
+
+.social img {
+  width:3vw;
+  margin-top: 2vh;
+  margin-bottom: 3vh;
+  margin-left:10px;
+  margin-right: 10px;
+  display:inline;
 }
 
 
-.main{
-	margin-top: 6vh;
-	margin-bottom:1vh;
+.mini-header {
+  margin-bottom:3vh;
 }
 
 
-.social img{
-	width:3vw;
-	margin-top: 2vh;
-	margin-bottom: 3vh;
-	margin-left:10px;
-	margin-right: 10px;	
-	display:inline;
+.footer {
+  background-color: #011035;
+  height: 75vh;
 }
 
-
-.mini-header{
-	margin-bottom:3vh;
+.jesseFace {
+ width: 200px;
+ border-radius: 50%;
+ border-width: thick;
+ border-style: solid;
+ border-color: black;
 }
 
-
-.footer{
-    background-color: #011035;
-    height: 75vh;
+.bigCircle {
+  width: 150px;
+  height: 150px;
+  color: black;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000931;
+  font-size: 8rem;
 }
 
+#jlAboutMe {
+  font-size: 4rem;
+}
+
+.bigCircle-inner {
+  color: white;
+  max-width: 50%;
+}
+
+.smallCircle {
+ width: 75px;
+ height: 75px;
+ color: white;
+ border-radius: 50%;
+ border-style: solid;
+ border-color: black;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ background-color: #000931;
+ font-size: 1.5rem;
+}
+
+.smallCircle-inner {
+  color: white;
+}
 /******About********/
 
-.about-me-content{
-	margin-top:3vh;
-	text-align: left;
-	font-family: 'Vollkorn';
-	font-size:18px;
+.about-me-content {
+  margin-top:3vh;
+  text-align: left;
+  font-family: 'Vollkorn';
+  font-size:18px;
 }
 
 /***********************Mobile Screens*********************************/
 
 /**portrait**/
 @media only screen and (max-device-width: 768px) {
-	html, body{
-		width: auto;
-	}
+  html, body {
+    width: auto;
+  }
 
-	.container{
-		width: 100%;	
-	}
+  .container{
+    width: 100%;
+  }
 
-	#circle_jf img{
-		width:22vw;
-	}
+  .bigCircle, .jesseFace{
+    width:16vw;
+    height:16vw;
+    font-size: 3rem;
+    border-width: medium;
+  }
 
-	#circle_pro img{
-		width:12vw;
-	}
+  .smallCircle {
+    width:  12vw;
+    height: 12vw;
+    font-size: 1rem;
+  }
 
-	#circle_writings img{
-		width:12vw;
-	}
-	.social img{
-		width:8vw;
-	}
-	
-	.social .container{
-		margin-right:0;
-		margin-left:0;		
-		text-align:center;
-	}
+  #circle_writings img{
+    width:12vw;
+  }
+  .social img{
+    width:8vw;
+  }
 
-	.footer{
-	    background-color: #011035;
-	    height: 50vh;
-	}
-	
-	
-	/*About*/
-	.about-me-content{
-		font-size:16px;
-	}
-	
-	#circle_picture img{
-		width:22vw;
-	}
-	
-	#lil_jf img{
-		width:12vw;
-		
-	}
-	
+  .social .container{
+    margin-right:0;
+    margin-left:0;
+    text-align:center;
+  }
+
+  .footer{
+    background-color: #011035;
+    height: 50vh;
+  }
+
+
+  /*About*/
+  .about-me-content{
+    font-size:16px;
+  }
+
+  #jlAboutMe {
+    font-size: 2rem;
+  }
+
 }
 
 /***landscape****/
-@media only screen and (max-device-width: 1024px) and (orientation: landscape){
-	html, body{
-		width: auto;
-	}
-	.container, .row{
-		width: auto;	
-	}
+@media only screen and (max-device-width: 1024px) and (orientation: landscape) {
+  html, body {
+    width: auto;
+  }
+  .container, .row {
+    width: auto;
+  }
 
-	#circle_jf img{
-		width:22vh;
-	}
+  .social img {
+    width:8vh;
+  }
 
-	#circle_pro img{
-		width:12vh;
-	}
+  .social .container {
+    margin-right:0;
+    margin-left:0;
+    text-align:center;
+  }
 
-	#circle_writings img{
-		width:12vh;
-	}
-	.social img{
-		width:8vh;
-	}
-	
-	.social .container{
-		margin-right:0;
-		margin-left:0;		
-		text-align:center;
-	}
+  .footer {
+    background-color: #011035;
+    height: 40vw;
+  }
 
-	.footer{
-	    background-color: #011035;
-	    height: 40vw;
-	}
-	
-	
-	/*About*/
-	.about-me-content{
-		font-size:16px;
-	}
-	
-	#circle_picture img{
-		width:22vh;
-	}
-	
-	#lil_jf img{
-		width:12vh;
-		
-	}
+
+  /*About*/
+  .about-me-content{
+    font-size:16px;
+  }
+
+  }
 }
 
 /********************************Tablets************************/
-

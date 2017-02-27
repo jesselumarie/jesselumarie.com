@@ -24,7 +24,7 @@ The code for all the sites listed in the portfolio (as well as the code for the 
 [reskill-usa]: https://www.reskillusa.com/
 [codecademy-labs]: http://classes.codecademy.com/
 [mywebsite]: https://jesselumarie.com/
-[codecademy-portfolio]: http://codecademyportfolio.jesselumarie.com/
+[codecademy-portfolio]: http://codecademyportfolio.jessefurmanek.com/
 [shuffle-js]: http://vestride.github.io/Shuffle/
 [github-portfolio]: https://github.com/jesselumarie/portfolio
 [github]: https://github.com/jesselumarie

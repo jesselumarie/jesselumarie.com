@@ -17,7 +17,7 @@ deployment:
       - cd s3_assets_to_deploy
       - aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete
       - aws configure set preview.cloudfront true
-      - aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID
+      - aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID --paths '/*'
 test:
   override:
     - echo 'static site; no tests'

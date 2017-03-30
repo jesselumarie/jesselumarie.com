@@ -4,7 +4,7 @@ Category: Web Development, Programming
 Tags: javascript, ruby on rails, web development
 Slug: codecademy_portfolio
 Authors: Jesse Lumarie
-Summary: A little [something](http://jesselumarie.com/blog/codecademy_portfolio.html) to show of my work at Codecademy Labs: Offline.
+Summary: A little [something](https://jesselumarie.com/blog/codecademy_portfolio.html) to show of my work at Codecademy Labs: Offline.
 
 For the past three months, I've been attending the Codecademy Labs: Offline course in Chicago through their partnership with Dev Bootcamp, [ReSkill USA][reskill-usa]. One of the final Ruby on Rails projects for the course involved creating a landing page that showcased our newly acquired web development skills. Having created a [landing page][mywebsite] of my own earlier in the course, I decided to flesh out the idea a little bit -- enter this little ditty:
 
@@ -22,9 +22,9 @@ The code for all the sites listed in the portfolio (as well as the code for the 
 
 
 [reskill-usa]: https://www.reskillusa.com/
-[codecademy-labs]: http://classes.codecademy.com/
+[codecademy-labs]: https://classes.codecademy.com/
 [mywebsite]: https://jesselumarie.com/
-[codecademy-portfolio]: http://codecademyportfolio.jessefurmanek.com/
-[shuffle-js]: http://vestride.github.io/Shuffle/
+[codecademy-portfolio]: https://codecademyportfolio.jessefurmanek.com/
+[shuffle-js]: https://vestride.github.io/Shuffle/
 [github-portfolio]: https://github.com/jesselumarie/portfolio
 [github]: https://github.com/jesselumarie

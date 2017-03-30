@@ -4,7 +4,7 @@ Category: Machine Learning, Programming
 Tags: programming, machine-learning
 Slug: big-o-and-feature-selection
 Authors: Jesse Lumarie
-Summary: [Exponents](http://jesselumarie.com/blog/big-o-and-feature-selection.html) are stronger than you.
+Summary: [Exponents](https://jesselumarie.com/blog/big-o-and-feature-selection.html) are stronger than you.
 
 Some problems are computationally intractable-- while we know how to program a computer to solve a problem, the computer (or array of computers) would take so much time[^1] that calculating the answer wouldn't be worth it. One of these intractable problems is finding all subsets of a large group, as I recently found out when I [completed][udacity-github] the intro to machine learning course offered by [Udacity][udacity-class].  
 
@@ -89,7 +89,7 @@ While this is not ideal [^8], I ended up with some okay results[^9] and a practi
 [^2]: Every time I think of decision trees, I think of [these][ents] guys.
 [^3]: Check out [mathisfun.com][math-is-fun] for more information about sets and subsets.
 [^4]: Called an 'empty set'.
-[^5]: [Citation needed](http://xkcd.com/285/).
+[^5]: [Citation needed](https://xkcd.com/285/).
 [^6]: [Wikipedia][wiki-time-complexity] offers a pretty great explanation of the various time complexities.
 [^7]: That escalated <del>quickly</del> exponentially.
 [^8]: Since completing the project, I learned that sklearn actually offers [tools][sk-learn-RFE] that can be used to pare down features recursively-- perhaps I'll explore those in another post.
@@ -99,10 +99,10 @@ While this is not ideal [^8], I ended up with some okay results[^9] and a practi
 
 [udacity-github]: https://github.com/jesselumarie/udacity_coursework/tree/master/intro_to_machine_learning/final_project
 [udacity-class]: https://www.udacity.com/course/ud120
-[enron-corpus]: http://en.wikipedia.org/wiki/Enron_Corpus
-[ents]: http://www.dailymotion.com/video/xmp51o_slow-decision-making-from-the-lord-of-the-rings-the-two-towers-2002_shortfilms
-[universe-age]: http://www.eetimes.com/document.asp?doc_id=1279619
-[wiki-time-complexity]: http://en.wikipedia.org/wiki/Time_complexity
-[math-is-fun]: http://www.mathsisfun.com/sets/sets-introduction.html
-[sk-learn]: http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
-[sk-learn-RFE]: http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFE.html#sklearn.feature_selection.RFE
+[enron-corpus]: https://en.wikipedia.org/wiki/Enron_Corpus
+[ents]: https://www.dailymotion.com/video/xmp51o_slow-decision-making-from-the-lord-of-the-rings-the-two-towers-2002_shortfilms
+[universe-age]: https://www.eetimes.com/document.asp?doc_id=1279619
+[wiki-time-complexity]: https://en.wikipedia.org/wiki/Time_complexity
+[math-is-fun]: https://www.mathsisfun.com/sets/sets-introduction.html
+[sk-learn]: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+[sk-learn-RFE]: https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFE.html#sklearn.feature_selection.RFE

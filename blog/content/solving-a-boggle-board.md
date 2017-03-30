@@ -4,7 +4,7 @@ Category: Programming, Data Structures, Algorithms
 Tags: programming, data-structures, algorithms
 Slug: solving-a-boggle-board
 Authors: Jesse Lumarie
-Summary: Add [Boggle](http://jesselumarie.com/blog/giving-boggle-a-trie.html) to the list of things my computer can do harder/better/faster/stronger than me.
+Summary: Add [Boggle](https://jesselumarie.com/blog/giving-boggle-a-trie.html) to the list of things my computer can do harder/better/faster/stronger than me.
 
 
 A few weeks ago I found myself in a bar playing Boggle with my fiancé (spoiler: she won).  As we drank and played into the night, we wondered just how many different word combinations were possible on a given Boggle board (our estimations were pretty terrible given the aforementioned drinking).  Some quick google-ing found the answer[^1], but it got me thinking: I should totally write a program that solves a Boggle board[^2].
@@ -19,7 +19,7 @@ Using Ruby, I created a board represented by a multi-dimensional array containin
 
 2) Invalid moves occur when the move runs into a wall:<img src="/blog/theme/images/site_content/boggle_board_directions.png" style="padding-left:30%; padding-right:30%;"></img>
 
-when the move runs into an already used square: 
+when the move runs into an already used square:
 <img src="/blog/theme/images/site_content/boggle_board_repeat.png" style="padding-left:30%; padding-right:30%;"></img>
 
 and when the move does not make a word or a potential word e.g "b-o-o" is a potential word, "b-s-v" is not:
@@ -50,7 +50,7 @@ To build a trie from an array, the algorithm starts with an empty hash (h = {}),
 
 `h = { char=>{} }`   
 
-This is definitely one of those easier shown than said data structures, so let’s look at an example.  If we had a very short dictionary of words beginning with the letter ‘A’, it could look something like this: 
+This is definitely one of those easier shown than said data structures, so let’s look at an example.  If we had a very short dictionary of words beginning with the letter ‘A’, it could look something like this:
 
 `[ant, and, abs]`
 
@@ -58,7 +58,7 @@ and our starting hash would be empty:
 
 `h = {}`  
 
-To create a trie from this list, the algorithm would start with an empty hash, h = {}, and begin with the first letter of the first word in the list (‘**a**nt’).  Is there an ‘a’ in our hash? Nope.  So the algorithm adds the character ‘a’ to the hash with a default value of of empty hash, making our hash look something like this: 
+To create a trie from this list, the algorithm would start with an empty hash, h = {}, and begin with the first letter of the first word in the list (‘**a**nt’).  Is there an ‘a’ in our hash? Nope.  So the algorithm adds the character ‘a’ to the hash with a default value of of empty hash, making our hash look something like this:
 
 `h = { a=>{} }`  
 
@@ -78,7 +78,7 @@ Using our previous tree-esque visualization, the trie would look something like 
 
 Moving on to the second word (‘and’), we begin the same process, looking to see if the first character ‘**a**’ is in our hash.  This time, the answer is yes.  Therefore, instead of adding the first letter to the hash, the algorithm traverses down the trie, setting its position equal to h[‘a’], with the hash remaining unchanged.  The same thing happens when we get to the next letter, ’**n**’ — the position is updated to a[’n’].  
 
-On the final letter of ‘and’, a new node is created because the letter ‘**d**’ is not included at the hash position a[’n’].  We now have a hash that looks like this: 
+On the final letter of ‘and’, a new node is created because the letter ‘**d**’ is not included at the hash position a[’n’].  We now have a hash that looks like this:
 
 `h = {a=>{n=>{t=>{}, d=>{}}}}`
 
@@ -92,7 +92,7 @@ When we add the full list, we end up with a hash that looks like this:
 
 So why does this matter?
 
-When traversing an array or a dictionary to check whether a string of letters is part of a valid word, the algorithm would have to look at each letter of each word until it found a match (in a dictionary) or a letter that indicates you’ve passed the word  (in a sorted array).  That means in a game of Boggle, each time my original algorithm looked to see whether a potential word that begins with B is part of a valid word, it would have to look at every ‘A' entry in the dictionary.  This gets expensive[^8] when you’re looking at words that begin with X,Y, and Z. 
+When traversing an array or a dictionary to check whether a string of letters is part of a valid word, the algorithm would have to look at each letter of each word until it found a match (in a dictionary) or a letter that indicates you’ve passed the word  (in a sorted array).  That means in a game of Boggle, each time my original algorithm looked to see whether a potential word that begins with B is part of a valid word, it would have to look at every ‘A' entry in the dictionary.  This gets expensive[^8] when you’re looking at words that begin with X,Y, and Z.
 
 With a trie, we only look at the letters we have to.  Using a trie data structure, the maximum amount of time the algorithm takes to figure out whether a string is a potential word relates to the length of the potential word, and not the size of the dictionary. Using O-notation, the trie is said to have O(N) complexity (worst case), where N is the length of the word.  
 
@@ -101,16 +101,15 @@ My original algorithm had a much less favorable worst-case time complexity, some
 Using this new implementation, solving Boggle boards is a breeze.  I just ran a 5x5 Boggle board and a 50x50 Boggle board, with the solutions clocking in at 2.5 and 12.0 seconds respectively.  Not too bad for a trie.
 
 
-[^1]: [12,029,640][quora-boggle-answer], if you're wondering. 
+[^1]: [12,029,640][quora-boggle-answer], if you're wondering.
 [^2]: Because this is what normal people do.
 [^3]: I know what my friends are saying inefficient boggle_solver, but I know you'll return one day.
-[^4]: A standard game of Boggle uses a [three minute timer](http://www.hasbro.com/common/instruct/boggle.pdf), as does [Big Boggle.](http://www.hasbro.com/common/instruct/bigboggle.pdf)
-[^5]: In particular this [stack overflow page](http://stackoverflow.com/questions/9042426/explanation-of-ruby-code-for-building-trie-data-structures).
+[^4]: A standard game of Boggle uses a [three minute timer](https://www.hasbro.com/common/instruct/boggle.pdf), as does [Big Boggle.](https://www.hasbro.com/common/instruct/bigboggle.pdf)
+[^5]: In particular this [stack overflow page](https://stackoverflow.com/questions/9042426/explanation-of-ruby-code-for-building-trie-data-structures).
 [^6]: Which is just confusing.
 [^7]: And [Wikipedia.](https://en.wikipedia.org/wiki/Trie)
 [^8]: Meaning computationaly expensive aka very slow.
 [^9]: I think the average complexity would be O(Σ(M)/2) –  complexity divided by two because a word is just as likely to appear at the beginning of the dictionary as it is the end.
 
-[quora-boggle-answer]: http://www.quora.com/How-many-potential-words-exist-on-a-boggle-board
+[quora-boggle-answer]: https://www.quora.com/How-many-potential-words-exist-on-a-boggle-board
 [google-search]: https://www.google.com/search?q=data+structure+for+boggle
-

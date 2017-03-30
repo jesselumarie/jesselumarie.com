@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'Jesse Lumarie'
 SITENAME = u'Writing | Jesse Lumarie'
-SITEURL = 'http://jesselumarie.com/blog'
+SITEURL = 'https://jesselumarie.com/blog'
 
 # dev site URL
 # SITEURL = ''
@@ -23,8 +23,8 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('Pelican', 'http://getpelican.com/'),
-         ('Python.org', 'http://python.org/'),
+LINKS = (('Pelican', 'https://getpelican.com/'),
+         ('Python.org', 'https://python.org/'),
          ('Jinja2', 'http://jinja.pocoo.org/'),
          ('You can modify those links in your config file', '#'),)
 

@@ -4,7 +4,7 @@ Category: Web Development, Programming
 Tags: javascript, ruby on rails, web development
 Slug: codecademy_portfolio
 Authors: Jesse Lumarie
-Summary: A little [something](https://jesselumarie.com/blog/solving-a-boggle-board) to show of my work at Codecademy Labs: Offline.
+Summary: A little [something](https://jesselumarie.com/blog/codecademy_portfolio.html) to show of my work at Codecademy Labs: Offline.
 
 For the past three months, I've been attending the Codecademy Labs: Offline course in Chicago through their partnership with Dev Bootcamp, [ReSkill USA][reskill-usa]. One of the final Ruby on Rails projects for the course involved creating a landing page that showcased our newly acquired web development skills. Having created a [landing page][mywebsite] of my own earlier in the course, I decided to flesh out the idea a little bit -- enter this little ditty:
 

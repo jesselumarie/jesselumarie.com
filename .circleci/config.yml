@@ -12,8 +12,6 @@ jobs:
     working_directory: ~/jesselumarie/jesselumarie.com
     parallelism: 1
     shell: /bin/bash --login
-    # CircleCI 2.0 does not support environment variables that refer to each other the same way as 1.0 did.
-    # If any of these refer to each other, rewrite them so that they don't or see https://circleci.com/docs/2.0/env-vars/#interpolating-environment-variables-to-set-other-environment-variables .
     environment:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
@@ -30,6 +28,7 @@ jobs:
     - run: sudo pip install pelican markdown s3cmd
     - run: git clone https://github.com/jesselumarie/jesselumarie.com.git
     - run: echo -e "[default] \naccess_key = $S3CFG_ACCESS_KEY \nsecret_key = $S3CFG_SECRET_KEY \n" > /home/circleci/.s3cfg
+    - run: adfasfasdf
     # Save dependency cache
     - save_cache:
         key: v1-dep-{{ .Branch }}-{{ epoch }}

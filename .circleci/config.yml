@@ -1,42 +1,32 @@
-# This configuration was automatically generated from a CircleCI 1.0 config.
-# It should include any build commands you had along with commands that CircleCI
-# inferred from your project structure. We strongly recommend you read all the
-# comments in this file to understand the structure of CircleCI 2.0, as the idiom
-# for configuration has changed substantially in 2.0 to allow arbitrary jobs rather
-# than the prescribed lifecycle of 1.0. In general, we recommend using this generated
-# configuration as a reference rather than using it in production, though in most
-# cases it should duplicate the execution of your original 1.0 config.
 version: 2
 jobs:
   deploy:
     docker:
       - image: circleci/python:3.7.4
-    working_directory: ~/jesselumarie.com
+    working_directory: ~/
     steps:
       - run:
           name: Install python packages
           command: sudo pip install pelican markdown s3cmd
       - run:
           name: Clone repo
-          command: git clone https://github.com/jesselumarie/jesselumarie.com.git; cd jesselumarie.com;
+          command: git clone https://github.com/jesselumarie/jesselumarie.com.git
       - run:
           name: Write access keys
           command: echo -e "[default] \naccess_key = $S3CFG_ACCESS_KEY \nsecret_key = $S3CFG_SECRET_KEY \n" > /home/circleci/.s3cfg
       - run:
           name: Create directory
-          command: mkdir -p s3_assets_to_deploy/blog
+          command: mkdir -p jesselumarie.com/s3_assets_to_deploy/blog
       - run:
           name: Make blog html
-          command: cd blog && make html
+          command: cd jesselumarie.com/blog && make html
       - run:
           name: Copy files
-          command: cp -r blog/output/* s3_assets_to_deploy/blog; cp -r landing_page/* s3_assets_to_deploy
+          command: cd jesselumarie.com; cp -r blog/output/* s3_assets_to_deploy/blog; cp -r landing_page/* s3_assets_to_deploy
       - run:
-          name: Go to deploy directory
-          command: cd s3_assets_to_deploy
-      - run:
-          name: Sync with S3
-          command: aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete
+          name: Go to deploy directory and sync
+          command: cd jesselumarie/s3_assets_to_deploy; aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete
+;
       - run:
           name: Invalidate cache
           command: aws configure set preview.cloudfront true; aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID --paths '/*';

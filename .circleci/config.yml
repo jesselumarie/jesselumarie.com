@@ -8,48 +8,20 @@
 # cases it should duplicate the execution of your original 1.0 config.
 version: 2
 jobs:
-  build:
-    working_directory: ~/jesselumarie/jesselumarie.com
-    parallelism: 1
-    shell: /bin/bash --login
-    environment:
-      CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
-      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
-    docker:
-    - image: circleci/python:3.7.4
-    steps:
-    - checkout
-    - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
-    - restore_cache:
-        keys:
-        - v1-dep-{{ .Branch }}-
-        - v1-dep-master-
-        - v1-dep-
-    - run: sudo pip install pelican markdown s3cmd
-    - run: git clone https://github.com/jesselumarie/jesselumarie.com.git
-    - run: echo -e "[default] \naccess_key = $S3CFG_ACCESS_KEY \nsecret_key = $S3CFG_SECRET_KEY \n" > /home/circleci/.s3cfg
-    - run: adfasfasdf
-    # Save dependency cache
-    - save_cache:
-        key: v1-dep-{{ .Branch }}-{{ epoch }}
-        paths:
-        # This is a broad list of cache paths to include many possible development environments
-        # You can probably delete some of these entries
-        - ~/virtualenvs
-        - ~/.bundle
-        - ~/.cache/bower
-    - run: echo 'static site; no tests'
-    - store_test_results:
-        path: /tmp/circleci-test-results
-    - store_artifacts:
-        path: /tmp/circleci-artifacts
-    - store_artifacts:
-        path: /tmp/circleci-test-results
   deploy:
     docker:
       - image: circleci/python:3.7.4
     working_directory: ~/jesselumarie.com
     steps:
+      - run:
+          name: Install python packages
+          command: sudo pip install pelican markdown s3cmd
+      - run:
+          name: Clone repo
+          command: git clone https://github.com/jesselumarie/jesselumarie.com.git
+      - run:
+          name: Write access keys
+          command: echo -e "[default] \naccess_key = $S3CFG_ACCESS_KEY \nsecret_key = $S3CFG_SECRET_KEY \n" > /home/circleci/.s3cfg
       - run:
           name: Create directory
           command: mkdir -p s3_assets_to_deploy/blog

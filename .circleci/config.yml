@@ -51,7 +51,7 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run: sudo pip install pelican markdown s3cmd
     - run: git clone https://github.com/jesselumarie/jesselumarie.com.git
-    - run: echo -e "[default] \naccess_key = $S3CFG_ACCESS_KEY \nsecret_key = $S3CFG_SECRET_KEY \n" > /home/ubuntu/.s3cfg
+    - run: echo -e "[default] \naccess_key = $S3CFG_ACCESS_KEY \nsecret_key = $S3CFG_SECRET_KEY \n" > /home/circleci/.s3cfg
     # Save dependency cache
     - save_cache:
         key: v1-dep-{{ .Branch }}-{{ epoch }}

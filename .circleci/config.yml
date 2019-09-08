@@ -8,7 +8,7 @@ jobs:
     steps:
       - run:
           name: Install python packages
-          command: sudo pip install pelican markdown s3cmd
+          command: sudo pip install pelican markdown s3cmd awscli
       - run:
           name: Clone repo
           command: git clone https://github.com/jesselumarie/jesselumarie.com.git

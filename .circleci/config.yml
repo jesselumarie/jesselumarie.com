@@ -26,7 +26,7 @@ jobs:
           command: cd jesselumarie.com; cp -r blog/output/* s3_assets_to_deploy/blog; cp -r landing_page/* s3_assets_to_deploy
       - run:
           name: Go to deploy directory and sync
-          command: cd jesselumarie.com/s3_assets_to_deploy; aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete;
+          command: cd jesselumarie.com; aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete;
       - run:
           name: Invalidate cache
           command: aws configure set preview.cloudfront true; aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID --paths '/*';

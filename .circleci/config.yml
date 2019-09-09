@@ -1,0 +1,41 @@
+# jesselumarie.com Circle CI
+version: 2
+jobs:
+  deploy:
+    docker:
+      - image: circleci/python:3.7.4
+    working_directory: ~/
+    steps:
+      - run:
+          name: Install python packages
+          command: sudo pip install pelican markdown s3cmd awscli
+      - run:
+          name: Clone repo
+          command: git clone https://github.com/jesselumarie/jesselumarie.com.git
+      - run:
+          name: Write access keys
+          command: echo -e "[default] \naccess_key = $S3CFG_ACCESS_KEY \nsecret_key = $S3CFG_SECRET_KEY \n" > /home/circleci/.s3cfg
+      - run:
+          name: Create directory
+          command: mkdir -p jesselumarie.com/s3_assets_to_deploy/blog
+      - run:
+          name: Make blog html
+          command: cd jesselumarie.com/blog && make html
+      - run:
+          name: Copy files
+          command: cd jesselumarie.com; cp -r blog/output/* s3_assets_to_deploy/blog; cp -r landing_page/* s3_assets_to_deploy
+      - run:
+          name: Go to deploy directory and sync
+          command: cd jesselumarie.com; aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete;
+      - run:
+          name: Invalidate cache
+          command: aws configure set preview.cloudfront true; aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID --paths '/*';
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only: master

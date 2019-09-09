@@ -38,4 +38,4 @@ workflows:
       - deploy:
           filters:
             branches:
-              only: circleci-20-test
+              only: master

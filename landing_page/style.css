@@ -93,10 +93,36 @@ a:hover {
   font-size: 4rem;
 }
 
-.bigCircle-inner {
+.bigCircle{
+  color: white;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  position: relative;
+  text-align: center;
+}
+
+.bigCircle:hover {
+  transform: rotateY(180deg);
+}
+
+
+.bigCircle-front, .bigCircle-back {
   color: white;
   max-width: 50%;
+  -webkit-perspective: 0;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translate3d(0,0,0);
+  visibility:visible;
+  backface-visibility: hidden;
+  position: absolute;
+
 }
+
+.bigCircle-back {
+  font-size: 5rem;
+  transform: rotateY(180deg);
+}
+
 
 .smallCircle {
  width: 75px;
@@ -114,6 +140,26 @@ a:hover {
 
 .smallCircle-inner {
   color: white;
+}
+
+/* from https://jarv.is/notes/css-waving-hand-emoji/ */
+span.wave {
+  animation-name: wave-animation;
+  animation-duration: 2.5s;
+  animation-iteration-count: infinite;
+  transform-origin: 70% 70%;
+  display: inline-block;
+  animation-delay: -2s;
+}
+
+@keyframes wave-animation {
+    0% { transform: rotate(  0.0deg) }
+   10% { transform: rotate(-10.0deg) }
+   20% { transform: rotate( 12.0deg) }
+   30% { transform: rotate(-10.0deg) }
+   40% { transform: rotate(  9.0deg) }
+   50% { transform: rotate(  0.0deg) }
+  100% { transform: rotate(  0.0deg) }
 }
 /******About********/
 

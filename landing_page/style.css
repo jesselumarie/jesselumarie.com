@@ -95,16 +95,15 @@ a:hover {
 
 .bigCircle{
   color: white;
-  transition: transform 0.8s;
+  transition: transform 0.5s;
   transform-style: preserve-3d;
   position: relative;
   text-align: center;
 }
 
-.bigCircle:hover {
+.bigCircle:hover, .bigCircle:active{
   transform: rotateY(180deg);
 }
-
 
 .bigCircle-front, .bigCircle-back {
   color: white;
@@ -149,7 +148,6 @@ span.wave {
   animation-iteration-count: infinite;
   transform-origin: 70% 70%;
   display: inline-block;
-  animation-delay: -2s;
 }
 
 @keyframes wave-animation {

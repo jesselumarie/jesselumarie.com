@@ -187,6 +187,35 @@ span.wave {
     border-width: medium;
   }
 
+  .bigCircle{
+    color: white;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+    position: relative;
+    text-align: center;
+  }
+
+  .bigCircle:hover, .bigCircle:active{
+    transform: rotateY(180deg);
+  }
+
+  .bigCircle-front, .bigCircle-back {
+    color: white;
+    max-width: 50%;
+    -webkit-perspective: 0;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translate3d(0,0,0);
+    visibility:visible;
+    backface-visibility: hidden;
+    position: absolute;
+
+  }
+
+  .bigCircle-back {
+    font-size: 2rem;
+    transform: rotateY(180deg);
+  }
+
   .smallCircle {
     width:  12vw;
     height: 12vw;

@@ -4,10 +4,30 @@
 @import url("pygment.css");
 @import url("typogrify.css");
 
+:root {
+  --background-color: white;
+  --main-color: #011035;
+  --circle-color: #011035;
+  --circle-outline: black;
+  --text-color: black;
+}
+
+/***Dark mode***/
+@media (prefers-color-scheme:dark) {
+  :root {
+      --background-color: rgb(17, 17, 17);
+      --main-color: rgb(50, 50, 50, 1);
+      --circle-color: var(--background-color);
+      --circle-outline: rgb(170, 170, 170);
+      --text-color: rgb(170, 170, 170);
+  }
+}
+
 /***** Global *****/
 
 body {
     background-color:whitesmoke;
+    background-color: var(--background-color);
     color: #333333;
     font-size: 87.5%; /* Base font size: 14px */
     font-family: 'Futura', 'Open Sans', sans-serif;
@@ -23,6 +43,7 @@ body {
 
 .header {
   background-color: #011035;
+  background-color: var(--main-color);
   height: 10vh;
   text-align: center;
   margin-bottom:15%;
@@ -41,6 +62,7 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #000931;
+  background-color: var(--main-color);
   font-size: 6rem;
 }
 
@@ -62,8 +84,8 @@ body {
   border-color: black;
   display: flex;
   align-items: center;
-  justify-content: center;
   background-color: #000931;
+  background-color: var(--main-color);
   font-size: 1.2rem;
 }
 
@@ -120,6 +142,7 @@ body {
     width: 20%;
   height:800px;
   color:#011035;
+  color: var(--main-color);
   background-color:white;
   padding:0 0 0 0 ;
 }
@@ -144,6 +167,7 @@ body {
 
 .footer{
     background-color: #011035;
+    background-color: var(--background-color);
     height: 50vh;
     text-align: center;
 }
@@ -152,7 +176,8 @@ body {
 /* Article Header */
 
 .tags {
-  background-color:#011035;
+  background-color: #011035;
+  background-color: var(--background-color);
   color:whitesmoke;
   border-radius:10px;
   padding:5px 10px 5px 10px;
@@ -220,7 +245,8 @@ a:hover {
 /* Paragraphs */
 p {margin-bottom: 1.143em; color:#333 ; font-size:1.6em}
 pre {
-  background-color:#011035;
+  background-color: #011035;
+  background-color: var(--background-color);
   color:whitesmoke;
   margin-bottom: 1.143em;
   padding: 4px;

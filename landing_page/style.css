@@ -15,7 +15,7 @@
   :root {
       --background-color: rgb(17, 17, 17);
       --main-color: rgb(50, 50, 50, 1);
-      --circle-color: var(--background-color);
+      --circle-color: var(--main-color);
       --circle-outline: rgb(170, 170, 170);
       --text-color: rgb(170, 170, 170);
       --github-logo: url("github_logo_dark.png");

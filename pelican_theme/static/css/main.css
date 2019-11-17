@@ -141,12 +141,13 @@ body {
 
 
 .sidebar {
-    position: fixed;
-    width: 20%;
+  position: fixed;
+  width: 20%;
   height:800px;
   color:#011035;
   color: var(--main-color);
-  background-color:white;
+  background-color:whitesmoke;
+  background-color: var(--background-color);
   padding:0 0 0 0 ;
 }
 
@@ -199,6 +200,7 @@ body {
 
 .summary{
   font-family: 'Vollkorn', Times;
+  color: var(--text-color);
 }
 
 /*Article*/
@@ -406,6 +408,7 @@ article img{
     /*float:right;*/
     border: 1px solid #ccc;
     box-shadow: 0px 3px 8px 0px #ccc;
+    color: var(--text-color);
 }
 img.right, figure.right {float: right; margin: 0 0 2em 2em;}
 img.left, figure.left {float: left; margin: 0 2em 2em 0;}

@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jesse Lumarie — Main Menu</title>
+  <meta name="description" content="The website of Jesse Lumarie. New game / Continue.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --win-top: #1c24b8;
+      --win-bottom: #04063a;
+      --border-light: #e9e9e9;
+      --border-mid: #8f8f8f;
+      --border-dark: #3c3c3c;
+      --hp: linear-gradient(to bottom, #7dff9a, #19c94f);
+      --mp: linear-gradient(to bottom, #8ee9ff, #1e9fd4);
+      --limit: linear-gradient(to right, #ffd76e, #ff9a3d);
+      --gold: #ffe08a;
+      --cyan: #9ff2ef;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: 'DotGothic16', 'Courier New', monospace;
+      -webkit-font-smoothing: none;
+    }
+
+    body {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      background:
+        radial-gradient(ellipse at 50% -20%, rgba(38, 48, 160, .35), transparent 60%),
+        #000;
+    }
+
+    /* CRT scanlines */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, .03) 0px,
+        rgba(255, 255, 255, .03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      z-index: 10;
+    }
+
+    .screen {
+      width: 100%;
+      max-width: 880px;
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      grid-template-areas:
+        "party menu"
+        "status menu"
+        "time menu"
+        "loc gil";
+      gap: 10px;
+    }
+
+    .window {
+      background: linear-gradient(170deg, var(--win-top) 0%, var(--win-bottom) 90%);
+      border: 3px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow:
+        inset 0 0 0 2px var(--border-mid),
+        inset 0 0 0 4px var(--border-dark),
+        0 6px 18px rgba(0, 0, 0, .7);
+      padding: 16px 18px;
+      text-shadow: 2px 2px 0 rgba(0, 0, 0, .85);
+    }
+
+    /* ---- Character card ---- */
+    .party { grid-area: party; display: flex; gap: 16px; align-items: center; }
+
+    .portrait {
+      width: 92px;
+      height: 92px;
+      flex: none;
+      border: 2px solid var(--border-mid);
+      border-radius: 4px;
+      image-rendering: pixelated;
+      filter: contrast(1.08) saturate(1.15);
+      box-shadow: 3px 3px 0 rgba(0,0,0,.6);
+    }
+
+    .char-info { flex: 1; min-width: 0; }
+
+    .char-name {
+      font-size: 22px;
+      margin: 0 0 2px;
+      letter-spacing: 1px;
+    }
+
+    .char-class {
+      color: var(--cyan);
+      font-size: 13px;
+      margin: 0 0 8px;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .stat-label { color: var(--gold); width: 2.4em; flex: none; }
+    .stat-nums { flex: none; font-size: 14px; }
+
+    .bar {
+      position: relative;
+      flex: 1;
+      height: 8px;
+      background: #10123f;
+      border: 1px solid #000;
+      box-shadow: 0 1px 0 rgba(255,255,255,.25);
+      overflow: hidden;
+    }
+
+    .bar > span { position: absolute; inset: 0; display: block; }
+    .bar.hp > span { background: var(--hp); width: 100%; }
+    .bar.mp > span { background: var(--mp); width: 92%; }
+
+    .lv { color: #fff; font-size: 14px; margin-bottom: 2px; }
+    .lv b { color: var(--gold); font-weight: normal; }
+
+    /* ---- Status window ---- */
+    .status { grid-area: status; font-size: 14px; line-height: 1.9; }
+    .status .label { color: var(--gold); }
+    .status .row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+    .limit-wrap { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+    .limit-bar {
+      flex: 1; height: 10px; background: #10123f;
+      border: 1px solid #000; overflow: hidden;
+    }
+    .limit-bar > span {
+      display: block; height: 100%; width: 0%;
+      background: var(--limit);
+      animation: charge 6s ease-in-out infinite;
+    }
+    @keyframes charge {
+      0% { width: 0; } 80% { width: 100%; } 100% { width: 100%; }
+    }
+
+    /* ---- Menu ---- */
+    .menu { grid-area: menu; padding: 14px 10px; }
+    .menu ul { list-style: none; margin: 0; padding: 0; }
+    .menu li { position: relative; }
+
+    .menu a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      font-size: 17px;
+      padding: 9px 8px 9px 34px;
+      letter-spacing: 1px;
+      outline: none;
+    }
+
+    .menu a .hand {
+      position: absolute;
+      left: 4px;
+      top: 50%;
+      translate: 0 -50%;
+      opacity: 0;
+      font-size: 18px;
+      filter: drop-shadow(2px 2px 0 rgba(0,0,0,.8)) grayscale(1) brightness(1.6);
+    }
+
+    .menu a:hover .hand,
+    .menu a:focus-visible .hand,
+    .menu li.selected a .hand {
+      opacity: 1;
+      animation: bob .5s steps(2) infinite;
+    }
+
+    .menu a:hover, .menu a:focus-visible, .menu li.selected a { color: var(--gold); }
+
+    @keyframes bob { 50% { translate: 3px -50%; } }
+
+    .menu .divider {
+      border-top: 2px solid rgba(255,255,255,.25);
+      margin: 8px 6px;
+    }
+
+    /* ---- Time / Gil / Location ---- */
+    .time { grid-area: time; font-size: 14px; }
+    .loc { grid-area: loc; font-size: 15px; }
+    .gil { grid-area: gil; font-size: 14px; }
+
+    .kv { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+    .kv .label { color: var(--gold); }
+    .kv + .kv { margin-top: 8px; }
+    .num { font-variant-numeric: tabular-nums; }
+
+    .hint {
+      position: fixed;
+      bottom: 8px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,.45);
+      text-shadow: 1px 1px 0 #000;
+      pointer-events: none;
+    }
+
+    /* ---- Mobile ---- */
+    @media (max-width: 640px) {
+      body { padding: 10px; align-items: flex-start; }
+      .screen {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "party party"
+          "menu menu"
+          "status status"
+          "time time"
+          "loc gil";
+      }
+      .window { padding: 13px 14px; }
+      .menu { padding: 8px 6px; }
+      .menu a { font-size: 16px; padding: 11px 8px 11px 34px; }
+      .portrait { width: 74px; height: 74px; }
+      .char-name { font-size: 19px; }
+      .hint { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .limit-bar > span { animation: none; width: 74%; }
+      .menu a .hand { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="screen">
+
+    <section class="window party" aria-label="Character">
+      <img class="portrait" src="../assets/jesse.jpg" alt="Pixel-ish portrait of Jesse">
+      <div class="char-info">
+        <h1 class="char-name">Jesse Lumarie</h1>
+        <p class="char-class">Software Developer · Former Lawyer</p>
+        <div class="lv">LV <b>38</b> &nbsp; EXP to next level: <span class="num">365</span></div>
+        <div class="stat-row">
+          <span class="stat-label">HP</span>
+          <div class="bar hp" role="presentation"><span></span></div>
+          <span class="stat-nums num">9999/9999</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">MP</span>
+          <div class="bar mp" role="presentation"><span></span></div>
+          <span class="stat-nums num">&nbsp;527/&nbsp;572</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="window menu" aria-label="Main menu">
+      <ul id="menu">
+        <li><a href="https://jesselumarie.com/about"><span class="hand">☞</span>About</a></li>
+        <li><a href="https://jesselumarie.com/blog"><span class="hand">☞</span>Writing</a></li>
+        <li class="divider" role="presentation"></li>
+        <li><a href="https://github.com/jesselumarie"><span class="hand">☞</span>GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/jesselumarie"><span class="hand">☞</span>LinkedIn</a></li>
+        <li><a href="https://twitter.com/jesselumarie"><span class="hand">☞</span>Twitter</a></li>
+        <li><a href="https://instagram.com/jesselumarie"><span class="hand">☞</span>Instagram</a></li>
+        <li class="divider" role="presentation"></li>
+        <li><a href="mailto:jesse.lumarie@gmail.com"><span class="hand">☞</span>Send Message</a></li>
+      </ul>
+    </nav>
+
+    <section class="window status" aria-label="Status">
+      <div class="row">
+        <span><span class="label">Status:</span> Caffeinated</span>
+        <span><span class="label">Party:</span> 4 members</span>
+      </div>
+      <div class="limit-wrap">
+        <span class="label" style="color: var(--gold)">Limit</span>
+        <div class="limit-bar"><span></span></div>
+      </div>
+    </section>
+
+    <section class="window time" aria-label="Play time">
+      <div class="kv"><span class="label">Time on site</span> <span class="num" id="playtime">0:00:00</span></div>
+      <div class="kv"><span class="label">Local time</span> <span class="num" id="clock">--:--</span></div>
+    </section>
+
+    <section class="window loc" aria-label="Location">
+      Boulder,&nbsp;CO
+    </section>
+
+    <section class="window gil" aria-label="Gil">
+      <div class="kv"><span class="label">Gil</span> <span class="num" id="gil">248,371</span></div>
+    </section>
+
+  </main>
+
+  <p class="hint">↑ / ↓ to move · Enter to select</p>
+
+  <script>
+    // Play-time counter (session), local clock, and a slowly growing gil count.
+    (function () {
+      var start = Date.now();
+      var playtime = document.getElementById('playtime');
+      var clock = document.getElementById('clock');
+      var gilEl = document.getElementById('gil');
+      var gil = 248371;
+
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+      function tick() {
+        var s = Math.floor((Date.now() - start) / 1000);
+        playtime.textContent = Math.floor(s / 3600) + ':' + pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60);
+        var d = new Date();
+        clock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes());
+        if (s > 0 && s % 7 === 0) {
+          gil += 13;
+          gilEl.textContent = gil.toLocaleString();
+        }
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+
+    // Keyboard menu navigation with a cursor blip.
+    (function () {
+      var items = Array.prototype.slice.call(document.querySelectorAll('#menu li:not(.divider)'));
+      var idx = -1;
+      var audioCtx = null;
+
+      function blip() {
+        try {
+          audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+          var o = audioCtx.createOscillator();
+          var g = audioCtx.createGain();
+          o.type = 'square';
+          o.frequency.value = 1320;
+          g.gain.setValueAtTime(0.03, audioCtx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.07);
+          o.connect(g).connect(audioCtx.destination);
+          o.start();
+          o.stop(audioCtx.currentTime + 0.08);
+        } catch (e) { /* no audio, no problem */ }
+      }
+
+      function select(i) {
+        items.forEach(function (li) { li.classList.remove('selected'); });
+        idx = (i + items.length) % items.length;
+        items[idx].classList.add('selected');
+        items[idx].querySelector('a').focus({ preventScroll: false });
+        blip();
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown') { e.preventDefault(); select(idx + 1); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); select(idx - 1); }
+      });
+
+      items.forEach(function (li) {
+        li.addEventListener('mouseenter', function () {
+          items.forEach(function (x) { x.classList.remove('selected'); });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

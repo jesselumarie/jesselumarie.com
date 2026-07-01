@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design Prototypes — jesselumarie.com</title>
+  <meta name="description" content="Redesign prototypes for jesselumarie.com. Tap one to try it.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #101014;
+      --card: #1a1a21;
+      --text: #f0f0f4;
+      --muted: #9b9ba8;
+      --line: #2a2a33;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root { --bg: #f5f4f1; --card: #ffffff; --text: #16161a; --muted: #6d6d78; --line: #e4e2dc; }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap { max-width: 680px; margin: 0 auto; padding: clamp(28px, 6vw, 64px) 20px 64px; }
+
+    h1 { font-size: clamp(26px, 6vw, 36px); letter-spacing: -.02em; margin: 0 0 8px; }
+    .sub { color: var(--muted); margin: 0 0 36px; font-size: 16px; }
+
+    .list { display: grid; gap: 14px; }
+
+    a.proto {
+      display: block;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px 22px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform .15s ease, border-color .15s ease;
+    }
+
+    a.proto:hover { transform: translateY(-2px); border-color: var(--muted); }
+
+    .name {
+      font-weight: 700;
+      font-size: 19px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .name::after { content: "→"; color: var(--muted); font-weight: 400; }
+
+    .desc { color: var(--muted); font-size: 14.5px; margin-top: 4px; }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    /* per-card flavor swatches */
+    .ff7 .tag { color: #ffe08a; border-color: #3a3f9e; background: linear-gradient(170deg, #1c24b8, #04063a); }
+    .modern .tag { color: #c2502c; }
+    .terminal .tag { color: #4ade80; background: #0b0f0d; border-color: #24352a; }
+    .editorial .tag { color: #e03e1a; }
+    .bento .tag { color: #c4b5fd; }
+
+    footer { margin-top: 44px; color: var(--muted); font-size: 13px; }
+    footer a { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Design prototypes</h1>
+    <p class="sub">Five takes on a new jesselumarie.com. All of them work on a phone — tap one to try it.</p>
+
+    <div class="list">
+      <a class="proto ff7" href="ff7/">
+        <span class="tag">Retro RPG</span>
+        <div class="name">Final Fantasy VII Menu</div>
+        <div class="desc">The site as a save-file menu: gradient blue windows, HP/MP bars, a limit gauge that charges, gil that accrues while you idle, and arrow-key navigation with the classic cursor blip.</div>
+      </a>
+
+      <a class="proto modern" href="modern/">
+        <span class="tag">Warm Minimal</span>
+        <div class="name">Modern &amp; Simple</div>
+        <div class="desc">A quiet, editorial-serif personal site. Warm paper tones, big Fraunces headline, link cards, a selected-writing list, and automatic dark mode.</div>
+      </a>
+
+      <a class="proto terminal" href="terminal/">
+        <span class="tag">CLI</span>
+        <div class="name">Terminal</div>
+        <div class="desc">jesse@boulder:~$ — a working shell. It boots by typing "whoami" and "ls", and you can run commands like help, history, open writing, and sudo (don't).</div>
+      </a>
+
+      <a class="proto editorial" href="editorial/">
+        <span class="tag">Brutalist</span>
+        <div class="name">Editorial Poster</div>
+        <div class="desc">Big type, thick black rules, a scrolling ticker, and a numbered index that inverts on hover. Feels like a broadsheet front page.</div>
+      </a>
+
+      <a class="proto bento" href="bento/">
+        <span class="tag">Bento Grid</span>
+        <div class="name">Bento</div>
+        <div class="desc">A playful grid of tiles — intro card with your photo, live local time, recent writing, and a gradient "say hello" button. Reflows to two columns on phones.</div>
+      </a>
+    </div>
+
+    <footer>
+      Current site for comparison: <a href="https://jesselumarie.com">jesselumarie.com</a>
+    </footer>
+  </div>
+</body>
+</html>

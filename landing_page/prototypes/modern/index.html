@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jesse Lumarie</title>
+  <meta name="description" content="Jesse Lumarie — software developer and former lawyer in Boulder, Colorado.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf6f0;
+      --ink: #1d1c1a;
+      --muted: #6f6a62;
+      --accent: #c2502c;
+      --rule: #e4ddd2;
+      --card: #ffffff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #171512;
+        --ink: #ece7de;
+        --muted: #a39c90;
+        --accent: #e8734c;
+        --rule: #2e2a24;
+        --card: #201d19;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: clamp(24px, 6vw, 64px) 24px 80px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: clamp(48px, 12vw, 96px);
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .monogram {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      letter-spacing: .02em;
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: clamp(40px, 9vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0 0 24px;
+    }
+
+    h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+
+    .lede {
+      font-size: clamp(18px, 4.4vw, 21px);
+      color: var(--muted);
+      max-width: 34em;
+      margin: 0 0 8px;
+    }
+
+    .lede a { color: var(--ink); }
+
+    a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      transition: color .15s ease;
+    }
+
+    a:hover { color: var(--ink); }
+
+    section { margin-top: clamp(48px, 10vw, 72px); }
+
+    h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+      margin: 0 0 20px;
+    }
+
+    .cards { display: grid; gap: 12px; }
+
+    .card {
+      display: block;
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      padding: 20px 22px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: transform .15s ease, border-color .15s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      color: var(--ink);
+    }
+
+    .card .title {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card .title::after {
+      content: "→";
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      color: var(--accent);
+      transition: translate .15s ease;
+    }
+
+    .card:hover .title::after { translate: 4px 0; }
+
+    .card .desc {
+      color: var(--muted);
+      font-size: 15px;
+      margin-top: 4px;
+    }
+
+    ul.posts {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    ul.posts li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding: 14px 2px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    ul.posts a { color: var(--ink); text-decoration: none; }
+    ul.posts a:hover { color: var(--accent); }
+    ul.posts time { color: var(--muted); font-size: 14px; flex: none; font-variant-numeric: tabular-nums; }
+
+    .social {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .social a {
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 15px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color .15s ease, background .15s ease;
+    }
+
+    .social a:hover { border-color: var(--accent); color: var(--accent); }
+
+    footer {
+      margin-top: clamp(56px, 12vw, 96px);
+      padding-top: 24px;
+      border-top: 1px solid var(--rule);
+      color: var(--muted);
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* gentle entrance */
+    @media (prefers-reduced-motion: no-preference) {
+      .fade { animation: rise .6s ease both; }
+      .fade:nth-child(2) { animation-delay: .08s; }
+      .fade:nth-child(3) { animation-delay: .16s; }
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: none; }
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="fade">
+      <img class="avatar" src="../assets/jesse.jpg" alt="Photo of Jesse Lumarie">
+      <span class="monogram">Jesse Lumarie</span>
+    </header>
+
+    <main>
+      <div class="fade">
+        <h1>Software developer.<br><em>Former lawyer.</em></h1>
+        <p class="lede">
+          I live in Boulder, Colorado, where I build software, write occasionally,
+          and take the long way on trails. The fastest way to reach me is
+          <a href="mailto:jesse.lumarie@gmail.com">email</a>.
+        </p>
+      </div>
+
+      <section class="fade">
+        <h2>Around here</h2>
+        <div class="cards">
+          <a class="card" href="https://jesselumarie.com/about">
+            <span class="title">About</span>
+            <span class="desc">Who I am, what I'm up to, and how to get in touch.</span>
+          </a>
+          <a class="card" href="https://jesselumarie.com/blog">
+            <span class="title">Writing</span>
+            <span class="desc">Notes on programming, machine learning, and whatever else.</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="fade">
+        <h2>Selected writing</h2>
+        <ul class="posts">
+          <li><a href="https://jesselumarie.com/blog/introducing_autocap.html">Introducing Autocap!</a> <time>2017</time></li>
+          <li><a href="https://jesselumarie.com/blog/on_writing_and_robots.html">On Writing and Robots</a> <time>2016</time></li>
+          <li><a href="https://jesselumarie.com/blog/solving-a-boggle-board.html">Solving a Boggle Board</a> <time>2015</time></li>
+          <li><a href="https://jesselumarie.com/blog/big-o-and-feature-selection.html">Big-O Notation and Feature Selection</a> <time>2015</time></li>
+        </ul>
+      </section>
+
+      <section class="fade">
+        <h2>Elsewhere</h2>
+        <div class="social">
+          <a href="https://github.com/jesselumarie">GitHub</a>
+          <a href="https://www.linkedin.com/in/jesselumarie">LinkedIn</a>
+          <a href="https://twitter.com/jesselumarie">Twitter</a>
+          <a href="https://instagram.com/jesselumarie">Instagram</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>© <span id="y">2026</span> Jesse Lumarie</span>
+      <span>Boulder, CO</span>
+    </footer>
+  </div>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>

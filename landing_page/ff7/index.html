@@ -771,6 +771,102 @@
       function confirmBeep() { tone(880, 0.09, 0.035); }
       function buzzer() { tone(160, 0.18, 0.05); }
 
+      function getCtx() {
+        if (!settings.sound) return null;
+        try {
+          audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+          return audioCtx;
+        } catch (e) { return null; }
+      }
+
+      function noiseBurst(ctx, at, dur, vol, filterFreq) {
+        var len = Math.max(1, Math.floor(ctx.sampleRate * dur));
+        var buf = ctx.createBuffer(1, len, ctx.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        var f = ctx.createBiquadFilter();
+        f.type = 'highpass';
+        f.frequency.value = filterFreq || 2000;
+        var g = ctx.createGain();
+        g.gain.setValueAtTime(vol, at);
+        src.connect(f).connect(g).connect(ctx.destination);
+        src.start(at);
+      }
+
+      // CRT power-on: relay click, low degauss bloom, rising sweep, flyback whine
+      function powerOnSound() {
+        var ctx = getCtx();
+        if (!ctx) return;
+        var t = ctx.currentTime;
+
+        noiseBurst(ctx, t, 0.025, 0.09, 2500);
+
+        var bloom = ctx.createOscillator();
+        var bg = ctx.createGain();
+        bloom.type = 'sine';
+        bloom.frequency.setValueAtTime(42, t);
+        bloom.frequency.exponentialRampToValueAtTime(58, t + 0.35);
+        bg.gain.setValueAtTime(0.0001, t);
+        bg.gain.exponentialRampToValueAtTime(0.07, t + 0.08);
+        bg.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+        bloom.connect(bg).connect(ctx.destination);
+        bloom.start(t); bloom.stop(t + 0.6);
+
+        var sweep = ctx.createOscillator();
+        var sg = ctx.createGain();
+        sweep.type = 'triangle';
+        sweep.frequency.setValueAtTime(220, t + 0.04);
+        sweep.frequency.exponentialRampToValueAtTime(1600, t + 0.22);
+        sg.gain.setValueAtTime(0.0001, t + 0.04);
+        sg.gain.exponentialRampToValueAtTime(0.035, t + 0.1);
+        sg.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+        sweep.connect(sg).connect(ctx.destination);
+        sweep.start(t + 0.04); sweep.stop(t + 0.32);
+
+        var whine = ctx.createOscillator();
+        var wg = ctx.createGain();
+        whine.type = 'sine';
+        whine.frequency.value = 15625;
+        wg.gain.setValueAtTime(0.0001, t + 0.1);
+        wg.gain.exponentialRampToValueAtTime(0.012, t + 0.4);
+        wg.gain.setValueAtTime(0.012, t + 1.0);
+        wg.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+        whine.connect(wg).connect(ctx.destination);
+        whine.start(t + 0.1); whine.stop(t + 1.85);
+      }
+
+      // CRT power-off: falling sweep, deep thump, static discharge tick
+      function powerOffSound() {
+        var ctx = getCtx();
+        if (!ctx) return;
+        var t = ctx.currentTime;
+
+        var sweep = ctx.createOscillator();
+        var sg = ctx.createGain();
+        sweep.type = 'sine';
+        sweep.frequency.setValueAtTime(1800, t);
+        sweep.frequency.exponentialRampToValueAtTime(55, t + 0.28);
+        sg.gain.setValueAtTime(0.06, t);
+        sg.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+        sweep.connect(sg).connect(ctx.destination);
+        sweep.start(t); sweep.stop(t + 0.32);
+
+        var thump = ctx.createOscillator();
+        var tg = ctx.createGain();
+        thump.type = 'sine';
+        thump.frequency.setValueAtTime(70, t + 0.02);
+        thump.frequency.exponentialRampToValueAtTime(32, t + 0.35);
+        tg.gain.setValueAtTime(0.0001, t + 0.02);
+        tg.gain.exponentialRampToValueAtTime(0.11, t + 0.06);
+        tg.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+        thump.connect(tg).connect(ctx.destination);
+        thump.start(t + 0.02); thump.stop(t + 0.55);
+
+        noiseBurst(ctx, t + 0.16, 0.04, 0.05, 4000);
+      }
+
       /* ---------- cursor-driven lists ---------- */
       function makeCursorList(items, onActivate) {
         var idx = 0;
@@ -928,7 +1024,7 @@
             frameEl.classList.add('tv-on-anim');
             setTimeout(function () { frameEl.classList.remove('tv-on-anim'); }, 300);
           }
-          tone(off ? 220 : 660, 0.08, 0.03);
+          if (off) { powerOffSound(); } else { powerOnSound(); }
         });
       }
 

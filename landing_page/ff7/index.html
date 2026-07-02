@@ -102,65 +102,48 @@
     .layout {
       display: grid;
       grid-template-columns: 1fr 235px;
+      grid-template-rows: auto 1fr auto;
       grid-template-areas:
-        "party menu"
-        "loc   timegil";
+        "party  menu"
+        "filler menu"
+        "loc    timegil";
       gap: 10px;
-      align-items: stretch;
     }
 
     /* ---- Party window ---- */
     .party {
       grid-area: party;
-      padding: 14px 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 4px;
+      padding: 20px 24px;
+      align-self: start;
     }
 
     .member {
       display: flex;
-      gap: 16px;
+      gap: 22px;
       align-items: center;
-      padding: 7px 0;
-    }
-
-    .portrait, .portrait-empty {
-      width: 84px;
-      height: 84px;
-      flex: none;
-      border: 1px solid #000;
-      box-shadow: 3px 3px 0 rgba(0,0,0,.6);
     }
 
     .portrait {
+      width: 122px;
+      height: 122px;
+      flex: none;
+      border: 1px solid #000;
+      box-shadow: 3px 3px 0 rgba(0,0,0,.6);
       object-fit: cover;
       image-rendering: pixelated;
       filter: contrast(1.08) saturate(1.12);
     }
 
-    .portrait-empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      color: rgba(255,255,255,.28);
-      background: linear-gradient(170deg, #10123a, #05061c);
-      border: 1px solid #2a2c55;
-    }
+    .stats { flex: 1 1 200px; min-width: 0; }
 
-    .stats { flex: 1 1 190px; min-width: 0; }
-
-    .mname { font-size: 19px; letter-spacing: 1px; margin: 0 0 3px; }
-    .member.empty .mname { color: rgba(255,255,255,.35); }
+    .mname { font-size: 24px; letter-spacing: 1px; margin: 0 0 6px; }
 
     .srow {
       display: grid;
       grid-template-columns: 2.6em 1fr;
       align-items: baseline;
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 16px;
+      line-height: 1.55;
     }
 
     .srow .lab { color: var(--label); }
@@ -174,7 +157,7 @@
     .thinbar {
       grid-column: 2;
       max-width: 11em;
-      height: 3px;
+      height: 4px;
       margin-top: 1px;
       background: var(--bar-track);
       border-top: 1px solid rgba(0,0,0,.8);
@@ -189,15 +172,14 @@
 
     /* right block: next level / limit */
     .growth {
-      flex: 1 1 170px;
-      min-width: 150px;
-      font-size: 14px;
+      flex: 1 1 190px;
+      min-width: 160px;
+      font-size: 15px;
       align-self: center;
     }
 
     .growth .glabel { display: flex; justify-content: space-between; gap: 8px; }
-    .growth .gsub { color: var(--gold); font-size: 12px; }
-    .member.empty .growth { color: rgba(255,255,255,.35); }
+    .growth .gsub { color: var(--gold); font-size: 13px; }
 
     .fatbar {
       height: 9px;
@@ -348,14 +330,13 @@
           "loc   timegil";
       }
 
-      .party { padding: 10px 12px; }
-      .member { gap: 12px; flex-wrap: wrap; padding: 9px 0; }
-      .portrait, .portrait-empty { width: 62px; height: 62px; }
-      .portrait-empty { font-size: 28px; }
-      .mname { font-size: 17px; }
-      .stats { flex: 1 1 150px; }
-      .growth { flex: 1 1 100%; min-width: 0; padding-left: 74px; }
-      .member.empty .growth { display: none; }
+      .party { padding: 16px; }
+      .member { gap: 14px; flex-wrap: wrap; }
+      .portrait { width: 92px; height: 92px; }
+      .mname { font-size: 20px; }
+      .srow { font-size: 15px; }
+      .stats { flex: 1 1 160px; }
+      .growth { flex: 1 1 100%; min-width: 0; font-size: 14px; }
 
       .menu ul {
         display: grid;
@@ -462,15 +443,11 @@
 
       var party = [
         {
-          name: 'Jesse', img: '../co_jesse.jpg',
+          name: 'Jesse', img: 'jesse_ff7.png',
           lv: lv, hp: [9999, 9999], mp: [999, 999],
           limitLevel: Math.floor(lv / 10),
           hint: 'Jesse — software developer, former lawyer, LV ' + lv + '.'
-        },
-        { name: '????', empty: true },
-        { name: '????', empty: true },
-        { name: '????', empty: true },
-        { name: '????', empty: true }
+        }
       ];
 
       function fmtPair(pair, width) {
@@ -481,22 +458,7 @@
       function renderParty() {
         var html = '';
         party.forEach(function (m) {
-          if (m.empty) {
-            html +=
-              '<div class="member empty" data-hint="This party member has not joined yet.">' +
-                '<div class="portrait-empty">?</div>' +
-                '<div class="stats">' +
-                  '<p class="mname">' + m.name + '</p>' +
-                  '<div class="srow"><span class="lab">LV</span><span class="val">??</span></div>' +
-                  '<div class="srow"><span class="lab">HP</span><span class="val">???/ ???</span><span class="thinbar"><span style="width:0%"></span></span></div>' +
-                  '<div class="srow"><span class="lab">MP</span><span class="val">??/  ??</span><span class="thinbar"><span style="width:0%"></span></span></div>' +
-                '</div>' +
-                '<div class="growth">' +
-                  '<div class="glabel"><span>next level</span></div>' +
-                  '<div class="fatbar"><span style="width:0%"></span></div>' +
-                '</div>' +
-              '</div>';
-          } else {
+          {
             var birthday = isBirthday();
             html +=
               '<div class="member" data-hint="' + m.hint + '">' +

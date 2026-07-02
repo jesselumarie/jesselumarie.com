@@ -10,6 +10,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    /* Reactor7 by Caveras (caveras.net) — FFVII PSX menu font recreation, free for personal use */
+    @font-face {
+      font-family: 'Reactor7';
+      src: url('Reactor7.woff2') format('woff2'), url('Reactor7.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
     :root {
       --win-top: #2028b0;
       --win-bottom: #050840;
@@ -33,9 +41,9 @@
       padding: 0;
       background: #000;
       color: #fff;
-      font-family: 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;
-      font-weight: 500;
-      letter-spacing: .02em;
+      font-family: 'Reactor7', 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;
+      font-weight: normal;
+      letter-spacing: 0;
     }
 
     body {
@@ -139,7 +147,7 @@
 
     .stats { flex: 1 1 200px; min-width: 0; }
 
-    .mname { font-size: 26px; font-weight: 500; letter-spacing: .03em; margin: 0 0 8px; }
+    .mname { font-size: 26px; letter-spacing: .02em; margin: 0 0 8px; }
 
     .srow {
       display: grid;
@@ -297,8 +305,7 @@
       margin: 0 0 10px;
       font-size: 19px;
       color: var(--gold);
-      font-weight: 500;
-      letter-spacing: .03em;
+      letter-spacing: .02em;
     }
 
     .config ul { list-style: none; margin: 0; padding: 0; }

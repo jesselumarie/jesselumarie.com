@@ -8,7 +8,7 @@
   <link rel="shortcut icon" href="../jl_icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --win-top: #2028b0;
@@ -33,8 +33,9 @@
       padding: 0;
       background: #000;
       color: #fff;
-      font-family: 'DotGothic16', 'Courier New', monospace;
-      -webkit-font-smoothing: none;
+      font-family: 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;
+      font-weight: 500;
+      letter-spacing: .02em;
     }
 
     body {
@@ -90,10 +91,10 @@
     .hintbar {
       align-self: flex-start;
       background: linear-gradient(180deg, var(--hint-top), var(--hint-bottom));
-      padding: 8px 18px;
-      font-size: 15px;
+      padding: 9px 20px;
+      font-size: 18px;
       max-width: 100%;
-      min-height: 40px;
+      min-height: 44px;
       display: flex;
       align-items: center;
     }
@@ -101,25 +102,27 @@
     /* ---- Main layout: party left, menu column right ---- */
     .layout {
       display: grid;
-      grid-template-columns: 1fr 235px;
-      grid-template-rows: auto 1fr auto;
+      grid-template-columns: 1fr 245px;
       grid-template-areas:
-        "party  menu"
-        "filler menu"
-        "loc    timegil";
+        "party menu"
+        "loc   timegil";
       gap: 10px;
+      align-items: stretch;
     }
 
-    /* ---- Party window ---- */
+    /* ---- Party window (full height even with a solo party, like the game) ---- */
     .party {
       grid-area: party;
-      padding: 20px 24px;
-      align-self: start;
+      min-height: 480px;
+      padding: 24px 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
 
     .member {
       display: flex;
-      gap: 22px;
+      gap: 24px;
       align-items: center;
     }
 
@@ -136,27 +139,29 @@
 
     .stats { flex: 1 1 200px; min-width: 0; }
 
-    .mname { font-size: 24px; letter-spacing: 1px; margin: 0 0 6px; }
+    .mname { font-size: 26px; font-weight: 500; letter-spacing: .03em; margin: 0 0 8px; }
 
     .srow {
       display: grid;
-      grid-template-columns: 2.6em 1fr;
+      grid-template-columns: 2.4em 1fr;
       align-items: baseline;
-      font-size: 16px;
-      line-height: 1.55;
+      font-size: 18px;
+      line-height: 1.5;
     }
 
     .srow .lab { color: var(--label); }
     .srow .val {
       text-align: right;
-      max-width: 11em;
+      max-width: 10em;
       font-variant-numeric: tabular-nums;
-      white-space: pre;
     }
+
+    /* fixed-width number cells so the slashes line up like the game */
+    .pnum { display: inline-block; min-width: 4.1ch; text-align: right; }
 
     .thinbar {
       grid-column: 2;
-      max-width: 11em;
+      max-width: 10em;
       height: 4px;
       margin-top: 1px;
       background: var(--bar-track);
@@ -174,16 +179,16 @@
     .growth {
       flex: 1 1 190px;
       min-width: 160px;
-      font-size: 15px;
+      font-size: 17px;
       align-self: center;
     }
 
     .growth .glabel { display: flex; justify-content: space-between; gap: 8px; }
-    .growth .gsub { color: var(--gold); font-size: 13px; }
+    .growth .gsub { color: var(--gold); font-size: 14px; }
 
     .fatbar {
-      height: 9px;
-      margin: 3px 0 8px;
+      height: 10px;
+      margin: 4px 0 12px;
       background: var(--bar-track);
       border: 1px solid #000;
       box-shadow: 0 1px 0 rgba(255,255,255,.25);
@@ -211,7 +216,7 @@
     /* ---- Menu window ---- */
     .menu {
       grid-area: menu;
-      padding: 14px 8px 14px 12px;
+      padding: 20px 10px 20px 14px;
     }
 
     .menu ul { list-style: none; margin: 0; padding: 0; }
@@ -221,9 +226,9 @@
       display: block;
       color: #fff;
       text-decoration: none;
-      font-size: 17px;
-      letter-spacing: 1px;
-      padding: 6px 6px 6px 38px;
+      font-size: 21px;
+      letter-spacing: .03em;
+      padding: 9px 6px 9px 44px;
       outline: none;
       cursor: pointer;
     }
@@ -232,11 +237,11 @@
 
     .hand {
       position: absolute;
-      left: 2px;
+      left: 4px;
       top: 50%;
       translate: 0 -50%;
       opacity: 0;
-      font-size: 19px;
+      font-size: 22px;
       pointer-events: none;
       filter: grayscale(1) brightness(1.65) drop-shadow(2px 2px 0 rgba(0,0,0,.8));
     }
@@ -244,26 +249,26 @@
     li.selected > a > .hand,
     li.selected > .citem > .hand { opacity: 1; }
 
-    .menu .spacer { height: 14px; }
+    .menu .spacer { height: 20px; }
 
     /* ---- Time / Gil ---- */
     .timegil {
       grid-area: timegil;
-      padding: 12px 16px;
-      font-size: 15px;
+      padding: 14px 18px;
+      font-size: 19px;
       align-self: end;
     }
 
     .kv { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-    .kv + .kv { margin-top: 6px; }
+    .kv + .kv { margin-top: 8px; }
     .kv .v { font-variant-numeric: tabular-nums; }
     .kv .time-v { color: var(--time-val); }
 
     /* ---- Location ---- */
     .loc {
       grid-area: loc;
-      padding: 10px 18px;
-      font-size: 16px;
+      padding: 12px 22px;
+      font-size: 20px;
       align-self: end;
       justify-self: start;
       min-width: 45%;
@@ -290,10 +295,10 @@
 
     .config h2 {
       margin: 0 0 10px;
-      font-size: 16px;
+      font-size: 19px;
       color: var(--gold);
-      font-weight: normal;
-      letter-spacing: 1px;
+      font-weight: 500;
+      letter-spacing: .03em;
     }
 
     .config ul { list-style: none; margin: 0; padding: 0; }
@@ -308,10 +313,10 @@
       border: none;
       color: #fff;
       font: inherit;
-      font-size: 15px;
-      letter-spacing: 1px;
+      font-size: 18px;
+      letter-spacing: .03em;
       text-shadow: inherit;
-      padding: 8px 6px 8px 34px;
+      padding: 9px 6px 9px 40px;
       cursor: pointer;
       outline: none;
       text-align: left;
@@ -330,13 +335,13 @@
           "loc   timegil";
       }
 
-      .party { padding: 16px; }
+      .party { padding: 18px 16px; min-height: 0; }
       .member { gap: 14px; flex-wrap: wrap; }
-      .portrait { width: 92px; height: 92px; }
-      .mname { font-size: 20px; }
-      .srow { font-size: 15px; }
+      .portrait { width: 96px; height: 96px; }
+      .mname { font-size: 22px; }
+      .srow { font-size: 16px; }
       .stats { flex: 1 1 160px; }
-      .growth { flex: 1 1 100%; min-width: 0; font-size: 14px; }
+      .growth { flex: 1 1 100%; min-width: 0; font-size: 16px; }
 
       .menu ul {
         display: grid;
@@ -344,7 +349,7 @@
         column-gap: 4px;
       }
       .menu .spacer { display: none; }
-      .menu a { padding: 10px 4px 10px 32px; font-size: 16px; }
+      .menu a { padding: 11px 4px 11px 36px; font-size: 18px; }
 
       .loc { min-width: 0; justify-self: stretch; }
     }
@@ -450,9 +455,8 @@
         }
       ];
 
-      function fmtPair(pair, width) {
-        function padNum(n) { var s = '' + n; while (s.length < width) s = ' ' + s; return s; }
-        return padNum(pair[0]) + '/' + padNum(pair[1]);
+      function fmtPair(pair) {
+        return '<span class="pnum">' + pair[0] + '</span>/<span class="pnum">' + pair[1] + '</span>';
       }
 
       function renderParty() {
@@ -466,8 +470,8 @@
                 '<div class="stats">' +
                   '<p class="mname">' + m.name + '</p>' +
                   '<div class="srow"><span class="lab">LV</span><span class="val">' + m.lv + '</span></div>' +
-                  '<div class="srow"><span class="lab">HP</span><span class="val">' + fmtPair(m.hp, 4) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
-                  '<div class="srow"><span class="lab">MP</span><span class="val">' + fmtPair(m.mp, 4) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
+                  '<div class="srow"><span class="lab">HP</span><span class="val">' + fmtPair(m.hp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
+                  '<div class="srow"><span class="lab">MP</span><span class="val">' + fmtPair(m.mp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
                 '</div>' +
                 '<div class="growth">' +
                   '<div class="glabel"><span>next level</span><span class="gsub">' +

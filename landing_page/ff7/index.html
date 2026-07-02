@@ -59,22 +59,74 @@
         #000;
     }
 
-    body::after {
-      content: "";
+    /* ---- CRT shader stack: scanlines + phosphor triads + roll + vignette ---- */
+    #crt {
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, .03) 0px,
-        rgba(255, 255, 255, .03) 1px,
-        transparent 1px,
-        transparent 3px
-      );
-      z-index: 40;
+      z-index: 60;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, .22) 0px,
+          rgba(0, 0, 0, .22) 1px,
+          transparent 1px,
+          transparent 3px
+        ),
+        repeating-linear-gradient(
+          to right,
+          rgba(255, 0, 80, .055) 0px, rgba(255, 0, 80, .055) 1px,
+          rgba(0, 255, 120, .045) 1px, rgba(0, 255, 120, .045) 2px,
+          rgba(40, 90, 255, .055) 2px, rgba(40, 90, 255, .055) 3px
+        );
+      animation: crt-flicker .14s steps(2) infinite;
     }
 
-    body.no-scanlines::after { display: none; }
+    /* slow rolling retrace band */
+    #crt::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 22%;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(255, 255, 255, .035) 45%,
+        rgba(255, 255, 255, .05) 50%,
+        rgba(255, 255, 255, .035) 55%,
+        transparent
+      );
+      animation: crt-roll 9s linear infinite;
+    }
+
+    /* curved-glass vignette and glare */
+    #crt::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(120% 65% at 30% -5%, rgba(255, 255, 255, .045), transparent 60%),
+        radial-gradient(115% 108% at 50% 50%, transparent 58%, rgba(0, 0, 0, .22) 82%, rgba(0, 0, 0, .62) 100%);
+    }
+
+    @keyframes crt-flicker { 50% { opacity: .92; } }
+    @keyframes crt-roll {
+      from { transform: translateY(-110%); }
+      to { transform: translateY(560%); }
+    }
+
+    /* phosphor bleed on the picture itself */
+    .frame { filter: blur(.3px) saturate(1.07) contrast(1.03); }
+
+    body.no-scanlines #crt { display: none; }
+    body.no-scanlines .frame { filter: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      #crt { animation: none; }
+      #crt::before { display: none; }
+    }
 
     .window {
       background: linear-gradient(170deg, var(--win-top) 0%, var(--win-bottom) 90%);
@@ -403,6 +455,8 @@
     </div>
   </div>
 
+  <div id="crt" aria-hidden="true"></div>
+
   <script>
     (function () {
       'use strict';
@@ -602,8 +656,8 @@
           act: function () { settings.sound = !settings.sound; }
         },
         {
-          label: 'Scanlines',
-          hint: 'Toggle the CRT scanline overlay.',
+          label: 'CRT filter',
+          hint: 'Toggle the 1997 CRT picture tube.',
           value: function () { return settings.scanlines ? 'On' : 'Off'; },
           act: function () { settings.scanlines = !settings.scanlines; }
         },

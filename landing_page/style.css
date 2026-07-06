@@ -8,6 +8,8 @@
   --insta-logo: url("insta_logo.png");
   --linkedin-logo: url("linkedin_logo.png");
   --twitter-logo: url("twitter_logo_blue.png");
+  --chalk-color: #6495ED;
+  --circle-shadow: rgba(1, 16, 53, 0.25);
 }
 
 /***Dark mode***/
@@ -19,6 +21,8 @@
       --circle-outline: rgb(170, 170, 170);
       --text-color: rgb(170, 170, 170);
       --github-logo: url("github_logo_dark.png");
+      --chalk-color: rgb(235, 235, 235);
+      --circle-shadow: rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -76,6 +80,42 @@ a:hover {
   margin-bottom:1vh;
 }
 
+.main .col-xs-4 {
+  perspective: 800px;
+}
+
+/****Page-load entrance****/
+/* backwards (not both) fill, so finished animations don't keep
+   overriding the hover transforms on the elements inside */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mini-header h2,
+.main .col-xs-4,
+.places-text h3,
+.about-me-content,
+.social a {
+  animation: rise-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.mini-header h2 { animation-delay: 0.05s; }
+.main .col-xs-4:nth-child(1) { animation-delay: 0.15s; }
+.main .col-xs-4:nth-child(2) { animation-delay: 0.22s; }
+.main .col-xs-4:nth-child(3) { animation-delay: 0.29s; }
+.places-text h3, .about-me-content { animation-delay: 0.4s; }
+.social a:nth-child(1) { animation-delay: 0.5s; }
+.social a:nth-child(2) { animation-delay: 0.56s; }
+.social a:nth-child(3) { animation-delay: 0.62s; }
+.social a:nth-child(4) { animation-delay: 0.68s; }
+
 .social img {
   width:3vw;
   margin-top: 2vh;
@@ -129,8 +169,9 @@ a:hover {
   position: relative;
   text-align: center;
   transform-style: preserve-3d;
-  transition: transform 0.5s;
+  transition: transform 0.65s cubic-bezier(0.34, 1.25, 0.64, 1);
   width: 150px;
+  will-change: transform;
 }
 
 #jlAboutMe {
@@ -138,7 +179,7 @@ a:hover {
 }
 
 .bigCircle:hover, .bigCircle:active{
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) scale(1.04);
 }
 
 .bigCircle-front, .bigCircle-back {
@@ -150,7 +191,7 @@ a:hover {
   visibility:visible;
   backface-visibility: hidden;
   position: absolute;
-
+  will-change: transform;
 }
 
 .bigCircle-back {
@@ -173,29 +214,94 @@ a:hover {
  height: 75px;
  justify-content: center;
  width: 75px;
+ transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.smallCircle:hover,
+.smallCircle:focus-visible {
+  box-shadow: 0 8px 18px var(--circle-shadow);
+  transform: translateY(-3px) scale(1.05);
+}
+
+.smallCircle:active {
+  transform: translateY(-1px) scale(1.01);
+  transition-duration: 0.1s;
 }
 
 .smallCircle-inner {
   color: white;
 }
 
-/* from https://jarv.is/notes/css-waving-hand-emoji/ */
+/* adapted from https://jarv.is/notes/css-waving-hand-emoji/ */
 span.wave {
-  animation-name: wave-animation;
-  animation-duration: 2.5s;
-  animation-iteration-count: infinite;
-  transform-origin: 70% 70%;
   display: inline-block;
+  transform-origin: 70% 70%;
+  will-change: transform;
+}
+
+/* the hand only waves while the circle is flipped, so every flip
+   catches the start of a wave instead of the middle of one */
+.bigCircle:hover .wave,
+.bigCircle:active .wave {
+  animation: wave-animation 1.8s ease-in-out 0.3s infinite;
 }
 
 @keyframes wave-animation {
-    0% { transform: rotate(  0.0deg) }
-   10% { transform: rotate(-10.0deg) }
-   20% { transform: rotate( 12.0deg) }
-   30% { transform: rotate(-10.0deg) }
-   40% { transform: rotate(  9.0deg) }
-   50% { transform: rotate(  0.0deg) }
-  100% { transform: rotate(  0.0deg) }
+    0% { transform: rotate(  0deg) }
+   15% { transform: rotate( 16deg) }
+   30% { transform: rotate( -9deg) }
+   45% { transform: rotate( 14deg) }
+   60% { transform: rotate( -5deg) }
+   72% { transform: rotate(  8deg) }
+  100% { transform: rotate(  0deg) }
+}
+
+/****Chalk underline****/
+.chalk-underline {
+  position: relative;
+  white-space: nowrap;
+}
+
+.chalk-line {
+  position: absolute;
+  left: -0.06em;
+  bottom: -0.18em;
+  width: calc(100% + 0.12em);
+  height: 0.4em;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.chalk-line path {
+  fill: none;
+  stroke: #6495ED;
+  stroke: var(--chalk-color);
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  opacity: 0;
+  /* fade out first, then reset the dash so the line doesn't
+     visibly retract when the pointer leaves */
+  transition: opacity 0.35s ease, stroke-dashoffset 0s 0.35s;
+}
+
+.chalk-line .chalk-stroke {
+  stroke-width: 3.5;
+}
+
+.chalk-line .chalk-dust {
+  stroke-width: 1.5;
+}
+
+.chalk-underline:hover .chalk-line path {
+  opacity: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.1s ease;
+}
+
+.chalk-underline:hover .chalk-line .chalk-dust {
+  opacity: 0.4;
+  transition-delay: 0.12s;
 }
 /******About********/
 
@@ -221,6 +327,17 @@ span.wave {
   display:inline-block;
   background-position: center center;
   background-repeat: no-repeat;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.social-image:hover,
+.social-image:focus-visible {
+  transform: translateY(-4px) scale(1.1);
+}
+
+.social-image:active {
+  transform: translateY(-1px);
+  transition-duration: 0.1s;
 }
 
 .github-logo{
@@ -239,7 +356,7 @@ span.wave {
 }
 
 .twitter-logo{
-  background-image: url("twitter_logo.png");
+  background-image: url("twitter_logo_blue.png");
   background-image: var(--twitter-logo);
 }
 
@@ -264,14 +381,14 @@ span.wave {
 
   .bigCircle{
     color: white;
-    transition: transform 0.5s;
+    transition: transform 0.65s cubic-bezier(0.34, 1.25, 0.64, 1);
     transform-style: preserve-3d;
     position: relative;
     text-align: center;
   }
 
   .bigCircle:hover, .bigCircle:active{
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) scale(1.04);
   }
 
   .bigCircle-front, .bigCircle-back {
@@ -364,6 +481,16 @@ span.wave {
     font-size:16px;
   }
 
+}
+
+/****Reduced motion****/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

@@ -40,10 +40,10 @@
   <div class="page-body">
   <div class="bg-scene" aria-hidden="true">
     <div class="bg-ruled"></div>
-    <svg class="bg-flatirons" viewBox="0 0 520 190" preserveAspectRatio="xMidYMax meet">
+    <svg class="bg-flatirons" viewBox="0 0 900 240" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
       <defs>
-        <!-- two-stage pencil texture: low-frequency hand wobble, then
-             high-frequency graphite tooth -->
+        <!-- two-stage pencil texture for the Writing-scene marks:
+             low-frequency hand wobble, then high-frequency graphite tooth -->
         <filter id="pencilGrain" x="-5%" y="-5%" width="110%" height="110%">
           <feTurbulence type="fractalNoise" baseFrequency="0.035 0.006" numOctaves="1" seed="7" result="wobble"/>
           <feDisplacementMap in="SourceGraphic" in2="wobble" scale="4" xChannelSelector="R" yChannelSelector="G" result="warped"/>
@@ -51,20 +51,9 @@
           <feDisplacementMap in="warped" in2="tooth" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
         </filter>
       </defs>
-      <g filter="url(#pencilGrain)">
-        <path class="sk" style="--d:0s" pathLength="100" d="M10 178 C 150 173, 350 182, 510 177"/>
-        <path class="sk faint" style="--d:.07s" pathLength="100" d="M20 176 C 90 130, 150 96, 230 82 C 320 66, 400 110, 470 152 C 495 166, 505 172, 512 176"/>
-        <path class="sk" style="--d:.18s" pathLength="100" d="M170 178 L285 40 L318 178"/>
-        <path class="sk" style="--d:.3s" pathLength="100" d="M85 178 L185 78 L215 178"/>
-        <path class="sk" style="--d:.4s" pathLength="100" d="M300 178 L395 84 L420 178"/>
-        <path class="sk" style="--d:.5s" pathLength="100" d="M400 178 L465 122 L485 178"/>
-        <path class="sk" style="--d:.58s" pathLength="100" d="M465 178 L505 146 L518 176"/>
-        <path class="sk" style="--d:.66s" pathLength="100" d="M30 178 L75 150 L92 178"/>
-        <path class="sk strata" style="--d:.5s" pathLength="100" d="M200 178 L269 95 M232 178 L283 116"/>
-        <path class="sk strata" style="--d:.62s" pathLength="100" d="M112 178 L172 118 M138 178 L183 133"/>
-        <path class="sk strata" style="--d:.72s" pathLength="100" d="M325 178 L377 126 M350 178 L388 140 M420 178 L452 150 M480 178 L500 163 M52 178 L72 160"/>
-        <path class="sk birds" style="--d:.85s" pathLength="100" d="M60 40 q 7 -6 14 0 M84 28 q 7 -6 14 0"/>
-      </g>
+      <path class="mtn mtn-back" style="--d:0s" d="M0 152 C 70 118, 150 90, 240 84 C 330 79, 400 98, 480 126 C 580 158, 720 184, 900 198 L900 240 L0 240 Z"/>
+      <path class="mtn mtn-mid" style="--d:.12s" d="M240 240 C 380 194, 500 172, 630 174 C 740 176, 830 196, 900 210 L900 240 Z"/>
+      <path class="mtn mtn-front" style="--d:.24s" d="M30 240 L58 230 L165 110 L200 156 L285 62 L330 132 L395 88 L440 164 L505 128 L540 196 L590 164 L622 218 L660 240 Z"/>
     </svg>
   </div>
 

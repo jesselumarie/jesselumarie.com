@@ -13,6 +13,9 @@
   --rule-line: rgba(100, 149, 237, 0.28);
   --rule-margin: rgba(224, 108, 108, 0.45);
   --rule-hole: rgba(1, 16, 53, 0.15);
+  --mtn-back: rgba(1, 16, 53, 0.09);
+  --mtn-mid: rgba(1, 16, 53, 0.14);
+  --mtn-front: rgba(1, 16, 53, 0.24);
 }
 
 /***Dark mode***/
@@ -29,6 +32,9 @@
       --rule-line: rgba(235, 235, 235, 0.10);
       --rule-margin: rgba(255, 150, 150, 0.22);
       --rule-hole: rgba(235, 235, 235, 0.18);
+      --mtn-back: rgba(235, 235, 235, 0.07);
+      --mtn-mid: rgba(235, 235, 235, 0.11);
+      --mtn-front: rgba(235, 235, 235, 0.17);
   }
 }
 
@@ -323,15 +329,17 @@ span.wave {
   stroke-width: 2.25;
 }
 
-body:has(a[href$="/blog"]:hover) .pencil-line path,
-body:has(a[href$="/blog"]:focus-visible) .pencil-line path,
-body:has(a[href$="/blog"]:hover) .pencil-arrow path,
-body:has(a[href$="/blog"]:focus-visible) .pencil-arrow path {
-  opacity: var(--o, 0.85);
-  stroke-dashoffset: 0;
-  transition:
-    stroke-dashoffset 0.5s cubic-bezier(0.65, 0, 0.35, 1) var(--d, 0.25s),
-    opacity 0.01s linear var(--d, 0.25s);
+@media (hover: hover) and (pointer: fine) {
+  body:has(a[href$="/blog"]:hover) .pencil-line path,
+  body:has(a[href$="/blog"]:focus-visible) .pencil-line path,
+  body:has(a[href$="/blog"]:hover) .pencil-arrow path,
+  body:has(a[href$="/blog"]:focus-visible) .pencil-arrow path {
+    opacity: var(--o, 0.85);
+    stroke-dashoffset: 0;
+    transition:
+      stroke-dashoffset 0.5s cubic-bezier(0.65, 0, 0.35, 1) var(--d, 0.25s),
+      opacity 0.01s linear var(--d, 0.25s);
+  }
 }
 
 .pencil-line .pencil-dust {
@@ -380,56 +388,41 @@ body:has(a[href$="/blog"]:focus-visible) .pencil-arrow path {
   background-position: 0 0, 0 0, 0 0, 0 0, 0 var(--rule-offset, 0px);
 }
 
-body:has(a[href$="/blog"]:hover) .bg-ruled,
-body:has(a[href$="/blog"]:focus-visible) .bg-ruled {
-  opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+  body:has(a[href$="/blog"]:hover) .bg-ruled,
+  body:has(a[href$="/blog"]:focus-visible) .bg-ruled {
+    opacity: 1;
+  }
 }
 
 .bg-flatirons {
   bottom: 0;
   height: auto;
-  left: 50%;
+  left: 0;
   position: absolute;
-  transform: translateX(-50%);
-  width: 66vw;
-  max-width: 820px;
+  width: 100%;
 }
 
-.bg-flatirons .sk {
-  fill: none;
+.bg-flatirons .mtn {
   opacity: 0;
-  stroke: #494c52;
-  stroke: var(--sketch-color);
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2.5;
-  transition: opacity 0.3s ease, stroke-dashoffset 0s 0.3s;
-}
-
-.bg-flatirons .faint {
-  --o: 0.55;
-  stroke-width: 2;
-}
-
-.bg-flatirons .strata {
-  --o: 0.5;
-  stroke-width: 1.5;
-}
-
-.bg-flatirons .birds {
-  --o: 0.55;
-  stroke-width: 1.75;
-}
-
-body:has(a[href$="/about"]:hover) .bg-flatirons .sk,
-body:has(a[href$="/about"]:focus-visible) .bg-flatirons .sk {
-  opacity: var(--o, 0.85);
-  stroke-dashoffset: 0;
+  transform: translateY(14px);
   transition:
-    stroke-dashoffset 0.6s cubic-bezier(0.5, 0, 0.3, 1) var(--d, 0s),
-    opacity 0.01s linear var(--d, 0s);
+    opacity 0.5s ease var(--d, 0s),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+}
+
+.bg-flatirons .mtn-back { fill: var(--mtn-back); }
+.bg-flatirons .mtn-mid { fill: var(--mtn-mid); }
+.bg-flatirons .mtn-front { fill: var(--mtn-front); }
+
+/* hover scenes are pointer-driven; on touch devices they would only
+   ever half-trigger from tap states, so gate them to mouse input */
+@media (hover: hover) and (pointer: fine) {
+  body:has(a[href$="/about"]:hover) .bg-flatirons .mtn,
+  body:has(a[href$="/about"]:focus-visible) .bg-flatirons .mtn {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 /******About********/
 

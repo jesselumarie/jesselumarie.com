@@ -8,7 +8,7 @@
   --insta-logo: url("insta_logo.png");
   --linkedin-logo: url("linkedin_logo.png");
   --twitter-logo: url("twitter_logo_blue.png");
-  --chalk-color: #6495ED;
+  --sketch-color: #494c52;
   --circle-shadow: rgba(1, 16, 53, 0.25);
   --rule-line: rgba(100, 149, 237, 0.28);
   --rule-margin: rgba(224, 108, 108, 0.45);
@@ -24,7 +24,7 @@
       --circle-outline: rgb(170, 170, 170);
       --text-color: rgb(170, 170, 170);
       --github-logo: url("github_logo_dark.png");
-      --chalk-color: rgb(235, 235, 235);
+      --sketch-color: rgb(232, 232, 232);
       --circle-shadow: rgba(0, 0, 0, 0.6);
       --rule-line: rgba(235, 235, 235, 0.10);
       --rule-margin: rgba(255, 150, 150, 0.22);
@@ -269,13 +269,14 @@ span.wave {
   100% { transform: rotate(  0deg) }
 }
 
-/****Chalk underline****/
-.chalk-underline {
+/****Pencil marks (drawn while Writing is hovered)****/
+.pencil-underline,
+.here-anchor {
   position: relative;
   white-space: nowrap;
 }
 
-.chalk-line {
+.pencil-line {
   position: absolute;
   left: -0.06em;
   bottom: -0.18em;
@@ -285,11 +286,23 @@ span.wave {
   pointer-events: none;
 }
 
-.chalk-line path {
+.pencil-arrow {
+  position: absolute;
+  left: -0.2em;
+  top: 100%;
+  width: 150px;
+  height: 56px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pencil-line path,
+.pencil-arrow path {
   fill: none;
-  stroke: #6495ED;
-  stroke: var(--chalk-color);
+  stroke: #494c52;
+  stroke: var(--sketch-color);
   stroke-linecap: round;
+  stroke-linejoin: round;
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
   opacity: 0;
@@ -298,23 +311,32 @@ span.wave {
   transition: opacity 0.35s ease, stroke-dashoffset 0s 0.35s;
 }
 
-.chalk-line .chalk-stroke {
-  stroke-width: 3.5;
+.pencil-line .pencil-stroke {
+  stroke-width: 3;
 }
 
-.chalk-line .chalk-dust {
-  stroke-width: 1.5;
+.pencil-line .pencil-dust {
+  stroke-width: 1.25;
 }
 
-.chalk-underline:hover .chalk-line path {
-  opacity: 1;
+.pencil-arrow .pa {
+  stroke-width: 2.25;
+}
+
+body:has(a[href$="/blog"]:hover) .pencil-line path,
+body:has(a[href$="/blog"]:focus-visible) .pencil-line path,
+body:has(a[href$="/blog"]:hover) .pencil-arrow path,
+body:has(a[href$="/blog"]:focus-visible) .pencil-arrow path {
+  opacity: var(--o, 0.85);
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.1s ease;
+  transition:
+    stroke-dashoffset 0.5s cubic-bezier(0.65, 0, 0.35, 1) var(--d, 0.25s),
+    opacity 0.01s linear var(--d, 0.25s);
 }
 
-.chalk-underline:hover .chalk-line .chalk-dust {
-  opacity: 0.4;
-  transition-delay: 0.12s;
+.pencil-line .pencil-dust {
+  --o: 0.4;
+  --d: 0.4s;
 }
 
 /****Background scenes****/
@@ -366,17 +388,18 @@ body:has(a[href$="/blog"]:focus-visible) .bg-ruled {
 .bg-flatirons {
   bottom: 0;
   height: auto;
-  left: 0;
+  left: 50%;
   position: absolute;
-  width: 42vw;
-  max-width: 500px;
+  transform: translateX(-50%);
+  width: 66vw;
+  max-width: 820px;
 }
 
 .bg-flatirons .sk {
   fill: none;
   opacity: 0;
-  stroke: #6495ED;
-  stroke: var(--chalk-color);
+  stroke: #494c52;
+  stroke: var(--sketch-color);
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
   stroke-linecap: round;

@@ -345,12 +345,17 @@ span.wave {
   right: 0;
   top: 0;
   transition: opacity 0.45s ease 0.05s;
+  /* --rule-gap and --rule-offset are set from a script that measures the
+     headline baselines, so the text sits on the lines like handwriting;
+     without it the ruling falls back to a fixed 32px grid */
   background-image:
     radial-gradient(circle at 46px 24%, transparent 0, transparent 5px, var(--rule-hole) 5px, var(--rule-hole) 7px, transparent 7.5px),
     radial-gradient(circle at 46px 50%, transparent 0, transparent 5px, var(--rule-hole) 5px, var(--rule-hole) 7px, transparent 7.5px),
     radial-gradient(circle at 46px 76%, transparent 0, transparent 5px, var(--rule-hole) 5px, var(--rule-hole) 7px, transparent 7.5px),
     linear-gradient(to right, transparent 0, transparent 92px, var(--rule-margin) 92px, var(--rule-margin) 94px, transparent 94px),
-    repeating-linear-gradient(to bottom, transparent 0, transparent 30px, var(--rule-line) 30px, var(--rule-line) 32px);
+    linear-gradient(to bottom, var(--rule-line) 0, var(--rule-line) 2px, transparent 2px);
+  background-size: auto, auto, auto, auto, 100% var(--rule-gap, 32px);
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 var(--rule-offset, 0px);
 }
 
 body:has(a[href$="/blog"]:hover) .bg-ruled,

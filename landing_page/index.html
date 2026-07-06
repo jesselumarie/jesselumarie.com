@@ -111,5 +111,43 @@
   <div class="footer">
   </div>
 
+  <script>
+    // pin the ruled-paper lines to the two headline baselines: the line
+    // spacing divides the distance between them evenly, so both sit on a
+    // line at any window size
+    (function () {
+      function alignRules() {
+        var paper = document.querySelector('.bg-ruled');
+        var h2 = document.querySelector('.mini-header h2');
+        var h3 = document.querySelector('.places-text h3');
+        if (!paper || !h2 || !h3) return;
+        function baseline(el) {
+          // a zero-size inline-block's top sits exactly on the text
+          // baseline. Measure it relative to the heading via rects (immune
+          // to the entrance translate, which shifts both rects equally),
+          // then add the heading's layout offset within .page-body — the
+          // ruling's coordinate space. offsetTop can't be read from the
+          // probe directly: mid-animation the transformed heading becomes
+          // the probe's offsetParent and the number means something else.
+          var probe = document.createElement('span');
+          probe.style.cssText = 'display:inline-block;width:0;height:0;overflow:hidden;';
+          el.appendChild(probe);
+          var y = el.offsetTop + probe.getBoundingClientRect().top - el.getBoundingClientRect().top;
+          el.removeChild(probe);
+          return y;
+        }
+        var first = baseline(h2);
+        var span = baseline(h3) - first;
+        var gap = span / Math.max(1, Math.round(span / 32));
+        paper.style.setProperty('--rule-gap', gap + 'px');
+        paper.style.setProperty('--rule-offset', (first % gap) + 'px');
+      }
+      alignRules();
+      window.addEventListener('load', alignRules);
+      window.addEventListener('resize', alignRules);
+      if (document.fonts) document.fonts.ready.then(alignRules);
+    })();
+  </script>
+
   </body>
 </html>

@@ -10,6 +10,9 @@
   --twitter-logo: url("twitter_logo_blue.png");
   --chalk-color: #6495ED;
   --circle-shadow: rgba(1, 16, 53, 0.25);
+  --rule-line: rgba(100, 149, 237, 0.28);
+  --rule-margin: rgba(224, 108, 108, 0.45);
+  --rule-hole: rgba(1, 16, 53, 0.15);
 }
 
 /***Dark mode***/
@@ -23,6 +26,9 @@
       --github-logo: url("github_logo_dark.png");
       --chalk-color: rgb(235, 235, 235);
       --circle-shadow: rgba(0, 0, 0, 0.6);
+      --rule-line: rgba(235, 235, 235, 0.10);
+      --rule-margin: rgba(255, 150, 150, 0.22);
+      --rule-hole: rgba(235, 235, 235, 0.18);
   }
 }
 
@@ -309,6 +315,93 @@ span.wave {
 .chalk-underline:hover .chalk-line .chalk-dust {
   opacity: 0.4;
   transition-delay: 0.12s;
+}
+
+/****Background scenes****/
+/* hovering About sketches the Flatirons into the whitespace;
+   hovering Writing turns it into ruled loose-leaf paper */
+
+.page-body {
+  position: relative;
+  z-index: 0;
+}
+
+.bg-scene {
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.bg-ruled {
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity 0.45s ease 0.05s;
+  background-image:
+    radial-gradient(circle at 46px 24%, transparent 0, transparent 5px, var(--rule-hole) 5px, var(--rule-hole) 7px, transparent 7.5px),
+    radial-gradient(circle at 46px 50%, transparent 0, transparent 5px, var(--rule-hole) 5px, var(--rule-hole) 7px, transparent 7.5px),
+    radial-gradient(circle at 46px 76%, transparent 0, transparent 5px, var(--rule-hole) 5px, var(--rule-hole) 7px, transparent 7.5px),
+    linear-gradient(to right, transparent 0, transparent 92px, var(--rule-margin) 92px, var(--rule-margin) 94px, transparent 94px),
+    repeating-linear-gradient(to bottom, transparent 0, transparent 30px, var(--rule-line) 30px, var(--rule-line) 32px);
+}
+
+body:has(a[href$="/blog"]:hover) .bg-ruled,
+body:has(a[href$="/blog"]:focus-visible) .bg-ruled {
+  opacity: 1;
+}
+
+.bg-flatirons {
+  bottom: 0;
+  height: auto;
+  left: 0;
+  position: absolute;
+  width: 42vw;
+  max-width: 500px;
+}
+
+.bg-flatirons .sk {
+  fill: none;
+  opacity: 0;
+  stroke: #6495ED;
+  stroke: var(--chalk-color);
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+  transition: opacity 0.3s ease, stroke-dashoffset 0s 0.3s;
+}
+
+.bg-flatirons .faint {
+  --o: 0.55;
+  stroke-width: 2;
+}
+
+.bg-flatirons .strata {
+  --o: 0.5;
+  stroke-width: 1.5;
+}
+
+.bg-flatirons .birds {
+  --o: 0.55;
+  stroke-width: 1.75;
+}
+
+body:has(a[href$="/about"]:hover) .bg-flatirons .sk,
+body:has(a[href$="/about"]:focus-visible) .bg-flatirons .sk {
+  opacity: var(--o, 0.85);
+  stroke-dashoffset: 0;
+  transition:
+    stroke-dashoffset 0.6s cubic-bezier(0.5, 0, 0.3, 1) var(--d, 0s),
+    opacity 0.01s linear var(--d, 0s);
 }
 /******About********/
 

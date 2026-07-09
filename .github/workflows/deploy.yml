@@ -35,8 +35,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # cp (not sync) so every object gets cache headers, even unchanged ones
-      - name: Upload to S3 with cache headers
+      - name: Sync to S3
+        run: aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete
+
+      # cp (not sync) re-uploads every object so all of them carry cache
+      # headers; runs after the sync so nothing can overwrite the metadata
+      - name: Set cache headers
         run: |
           # images & fonts: browsers/edge keep for a week
           aws s3 cp s3_assets_to_deploy/ s3://jesselumarie.com --recursive \
@@ -56,8 +60,19 @@ jobs:
             --exclude "*.woff" --exclude "*.woff2" --exclude "*.ttf" \
             --exclude "*.css" --exclude "*.js" \
             --cache-control "no-cache, s-maxage=86400"
-          # uploads are done above; sync only removes files deleted from the repo
-          aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete
+
+      - name: Verify cache headers
+        run: |
+          check() {
+            got=$(aws s3api head-object --bucket jesselumarie.com --key "$1" \
+              --query CacheControl --output text)
+            echo "$1 -> $got"
+            test "$got" = "$2"
+          }
+          check jesse_icon.png "public, max-age=604800"
+          check ffvii/Reactor7.woff2 "public, max-age=604800"
+          check style.css "public, max-age=3600"
+          check index.html "no-cache, s-maxage=86400"
 
       - name: Invalidate CloudFront
         run: aws cloudfront create-invalidation --distribution-id "${{ secrets.AWS_CLOUDFRONT_ID }}" --paths '/*'

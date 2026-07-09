@@ -124,10 +124,15 @@
       'animation:moogle-cross 30s linear infinite alternate;' +
       'animation-delay:7s;}' +
       '.moogle-walk:hover,.moogle-walk:focus-visible{animation-play-state:paused;}' +
+      '.moogle-walk:hover .moogle-flip,.moogle-walk:focus-visible .moogle-flip,' +
       '.moogle-walk:hover .moogle-sprite,.moogle-walk:focus-visible .moogle-sprite{animation-play-state:paused;}' +
       '.moogle-walk:focus-visible{outline:2px solid ' + PALETTE.P + ';outline-offset:2px;}' +
-      '.moogle-flip{width:100%;height:100%;}' +
-      '.moogle-walk.moogle-going-left .moogle-flip{transform:scaleX(-1);}' +
+      /* faces right on the outbound leg, left on the return; period is exactly
+         twice the crossing so the two animations stay phase-locked forever */
+      '.moogle-flip{width:100%;height:100%;' +
+      'animation:moogle-face 60s linear infinite;animation-delay:7s;}' +
+      '@keyframes moogle-face{0%,49.999%{transform:scaleX(1);}' +
+      '50%,100%{transform:scaleX(-1);}}' +
       '.moogle-sprite{width:100%;height:100%;' +
       'background-image:url(' + drawSheet() + ');' +
       'background-size:' + (W * FRAMES.length) + 'px ' + H + 'px;' +
@@ -138,22 +143,17 @@
       '@keyframes moogle-step{from{background-position-x:0;}' +
       'to{background-position-x:-' + (W * FRAMES.length) + 'px;}}' +
       '@media (prefers-reduced-motion: reduce){' +
-      '.moogle-walk{animation:none;left:auto;right:12px;}' +
-      '.moogle-sprite{animation:none;}}';
+      '.moogle-walk,.moogle-flip,.moogle-sprite{animation:none;}' +
+      '.moogle-walk{left:auto;right:12px;}}';
 
     function setDuration() {
       var distance = window.innerWidth + W + 10;
-      link.style.animationDuration = (distance / SPEED).toFixed(1) + 's';
+      var crossing = distance / SPEED;
+      link.style.animationDuration = crossing.toFixed(2) + 's';
+      flip.style.animationDuration = (crossing * 2).toFixed(2) + 's';
     }
     setDuration();
     window.addEventListener('resize', setDuration);
-
-    /* animation-direction alternate walks it back; flip the sprite to match */
-    link.addEventListener('animationiteration', function (e) {
-      if (e.animationName === 'moogle-cross') {
-        link.classList.toggle('moogle-going-left');
-      }
-    });
 
     document.head.appendChild(style);
     document.body.appendChild(link);

@@ -524,6 +524,100 @@ li.selected > .citem > .hand { opacity: 1; }
   cursor: pointer;
 }
 
+/* ---- Writing submenu ---- */
+.submenu { padding: 18px 14px; }
+
+.postlist { list-style: none; margin: 0; padding: 0; }
+.postlist li { position: relative; }
+.postlist a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 19px;
+  letter-spacing: .03em;
+  padding: 9px 6px 9px 44px;
+  outline: none;
+  cursor: pointer;
+}
+.postlist .ptitle { min-width: 0; }
+.postlist .pdate { color: var(--label); font-size: 15px; flex: none; }
+
+.loading { color: var(--label); margin: 6px; }
+
+/* ---- Article window ---- */
+/* Reactor7 is illegible at paragraph length; body text drops to
+   Roboto Condensed. The window scrolls internally, never the page. */
+.article {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100svh - 160px);
+}
+
+@media (min-width: 900px) {
+  /* leave room for the TV bezel, chin, hint bar, and body padding so
+     the page itself never scrolls */
+  .article { max-height: calc(100svh - 310px); }
+}
+
+.ahead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.atitle { margin: 0; font-size: 22px; color: var(--gold); letter-spacing: .02em; }
+.adate { color: var(--label); font-size: 15px; flex: none; }
+
+.article-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  font-family: 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .85);
+}
+
+.article-body > :first-child { margin-top: 0; }
+.article-body h2, .article-body h3 { color: var(--gold); margin: 1.2em 0 .4em; }
+.article-body h2 { font-size: 20px; }
+.article-body h3 { font-size: 18px; }
+.article-body a { color: var(--gold); text-decoration: underline; }
+.article-body img {
+  max-width: 100%;
+  height: auto;
+  /* the blog's diagrams are transparent PNGs with dark strokes;
+     back them with white so they stay legible on the dark window */
+  background: #fff;
+  padding: 4px;
+}
+.article-body pre {
+  overflow-x: auto;
+  background: rgba(0, 0, 0, .45);
+  border: 1px solid var(--border-dark);
+  padding: 10px 12px;
+  font-size: 14px;
+  text-shadow: none;
+}
+.article-body code {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: .92em;
+}
+.article-body blockquote {
+  margin: 1em 0;
+  padding: 4px 14px;
+  border-left: 3px solid var(--label);
+  color: #dfe6ff;
+}
+
+.afoot { margin-top: 12px; flex: none; }
+
 /* ---- Config (debug) modal ---- */
 .overlay {
   position: fixed;
@@ -601,4 +695,8 @@ li.selected > .citem > .hand { opacity: 1; }
   .menu a { padding: 11px 4px 11px 36px; font-size: 18px; }
 
   .loc { min-width: 0; justify-self: stretch; }
+
+  .postlist a { font-size: 17px; padding: 10px 4px 10px 38px; gap: 10px; }
+  .postlist .pdate { font-size: 13px; }
+  .article { max-height: calc(100svh - 130px); }
 }

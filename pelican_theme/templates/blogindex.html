@@ -1,0 +1,15 @@
+{#- JSON article index consumed by the FF7-mode Writing screen.
+    The whole output must be valid JSON: every field goes through |tojson. -#}
+{%- set comma = joiner(",") -%}
+{"articles": [
+{%- for article in articles %}{{ comma() }}
+  {
+    "slug": {{ article.slug|tojson }},
+    "title": {{ article.title|striptags|tojson }},
+    "date": {{ article.date.isoformat()|tojson }},
+    "summary": {{ article.summary|striptags|tojson }},
+    "url": {{ (SITEURL ~ "/" ~ article.url)|tojson }},
+    "content": {{ article.content|tojson }}
+  }
+{%- endfor %}
+]}

@@ -202,6 +202,149 @@
     }
   };
 
+  /* ---------- writing screens (#/writing, #/writing/<slug>) ---------- */
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function fmtDate(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+    if (!m) return '';
+    return MONTHS[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
+  }
+
+  var blogIndex = null;
+  function fetchBlogIndex() {
+    if (blogIndex) return Promise.resolve(blogIndex);
+    return fetch(FF7_MANIFEST.blogIndexUrl).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function (data) {
+      blogIndex = data;
+      return data;
+    });
+  }
+
+  function onScreen(name) {
+    var cur = FF7.router.current();
+    return cur && cur.def.name === name;
+  }
+
+  function fallbackDialog(title, message, href, label) {
+    return '<h2>' + title + '</h2>' +
+      '<p>' + message + '</p>' +
+      '<ul class="dialog-actions">' +
+        '<li><a href="' + href + '" data-hint="Leave the menu and open the page directly."><span class="hand">👉</span>' + label + '</a></li>' +
+        '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span>Back</a></li>' +
+      '</ul>';
+  }
+
+  function wireDialogActions(mount, cursorSetter) {
+    var items = Array.prototype.slice.call(mount.querySelectorAll('.dialog-actions li'));
+    cursorSetter(FF7.cursorList(items, function (li) { li.querySelector('a').click(); }));
+    var back = mount.querySelector('[data-back]');
+    if (back) back.addEventListener('click', function (e) { e.preventDefault(); FF7.router.back(); });
+  }
+
+  var writingCursor = null;
+  var writingScreen = {
+    name: 'writing',
+    path: 'writing',
+    parent: 'main',
+    hint: 'Select an entry.',
+    cursor: function () { return writingCursor; },
+    render: function (mount) {
+      writingCursor = null;
+      mount.innerHTML =
+        '<div class="dialog window submenu" role="dialog" aria-label="Writing" tabindex="-1">' +
+          '<h2>Writing</h2>' +
+          '<p class="loading">Loading&hellip;</p>' +
+        '</div>';
+      var dialog = mount.querySelector('.dialog');
+      dialog.focus({ preventScroll: true });
+      fetchBlogIndex().then(function (data) {
+        if (!onScreen('writing')) return;
+        dialog.innerHTML =
+          '<h2>Writing</h2>' +
+          '<ul class="postlist">' +
+            data.articles.map(function (a) {
+              return '<li><a href="#/writing/' + encodeURIComponent(a.slug) + '" data-hint="' + esc(a.summary) + '">' +
+                '<span class="hand">👉</span>' +
+                '<span class="ptitle">' + esc(a.title) + '</span>' +
+                '<span class="pdate">' + fmtDate(a.date) + '</span></a></li>';
+            }).join('') +
+            '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span><span class="ptitle">Back</span></a></li>' +
+          '</ul>';
+        var items = Array.prototype.slice.call(dialog.querySelectorAll('.postlist li'));
+        writingCursor = FF7.cursorList(items, function (li) { li.querySelector('a').click(); });
+        dialog.querySelectorAll('.postlist a:not([data-back])').forEach(function (a) {
+          a.addEventListener('click', function () { FF7.sounds.confirm(); });
+        });
+        dialog.querySelector('[data-back]').addEventListener('click', function (e) {
+          e.preventDefault();
+          FF7.router.back();
+        });
+      }).catch(function () {
+        if (!onScreen('writing')) return;
+        dialog.innerHTML = fallbackDialog('Writing',
+          'The archive could not be loaded.',
+          FF7_MANIFEST.blogFallbackUrl, 'Read the blog');
+        wireDialogActions(dialog, function (c) { writingCursor = c; });
+      });
+    }
+  };
+
+  var articleCursor = null;
+  var articleScreen = {
+    name: 'article',
+    path: 'writing/:slug',
+    parent: 'writing',
+    hint: 'Loading…',
+    cursor: function () { return articleCursor; },
+    render: function (mount, params) {
+      articleCursor = null;
+      mount.innerHTML =
+        '<div class="dialog window article" role="dialog" aria-label="Article" tabindex="-1">' +
+          '<p class="loading">Loading&hellip;</p>' +
+        '</div>';
+      var dialog = mount.querySelector('.dialog');
+      dialog.focus({ preventScroll: true });
+      fetchBlogIndex().then(function (data) {
+        if (!onScreen('article')) return;
+        var art = null;
+        data.articles.forEach(function (a) { if (a.slug === params.slug) art = a; });
+        if (!art) {
+          dialog.innerHTML = fallbackDialog('Writing',
+            'That entry does not exist.',
+            FF7_MANIFEST.blogFallbackUrl, 'Read the blog');
+          wireDialogActions(dialog, function (c) { articleCursor = c; });
+          return;
+        }
+        dialog.setAttribute('aria-label', art.title);
+        FF7.setDefaultHint(art.title);
+        dialog.innerHTML =
+          '<header class="ahead">' +
+            '<h2 class="atitle">' + esc(art.title) + '</h2>' +
+            '<span class="adate">' + fmtDate(art.date) + '</span>' +
+          '</header>' +
+          '<div class="article-body">' + art.content + '</div>' +
+          '<ul class="dialog-actions afoot">' +
+            '<li><a href="#/writing" data-back data-hint="Return to the list of entries."><span class="hand">👉</span>Back</a></li>' +
+            '<li><a href="' + esc(art.url) + '" data-hint="Open this entry on the regular blog."><span class="hand">👉</span>Open in blog</a></li>' +
+          '</ul>';
+        wireDialogActions(dialog, function (c) { articleCursor = c; });
+      }).catch(function () {
+        if (!onScreen('article')) return;
+        dialog.innerHTML = fallbackDialog('Writing',
+          'The archive could not be loaded.',
+          FF7_MANIFEST.blogFallbackUrl, 'Read the blog');
+        wireDialogActions(dialog, function (c) { articleCursor = c; });
+      });
+    }
+  };
+
   /* ---------- stub screens (replaced in later phases) ---------- */
   function stubScreen(opts) {
     var stubCursor = null;
@@ -234,14 +377,8 @@
   }
 
   FF7.router.register(mainScreen);
-  FF7.router.register(stubScreen({
-    name: 'writing',
-    path: 'writing',
-    title: 'Writing',
-    fallbackHref: '/blog',
-    fallbackLabel: 'Read the blog',
-    fallbackHint: 'Leave the menu and read the blog directly.'
-  }));
+  FF7.router.register(writingScreen);
+  FF7.router.register(articleScreen);
   FF7.router.register(stubScreen({
     name: 'about',
     path: 'about',

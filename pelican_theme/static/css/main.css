@@ -6,6 +6,8 @@
 
 :root {
   --background-color: whitesmoke;
+  --page-background: #3c3c3e;
+  --card-shadow: rgba(0, 0, 0, 0.45);
   --main-color: #011035;
   --circle-color: #011035;
   --circle-outline: black;
@@ -16,6 +18,8 @@
 @media (prefers-color-scheme:dark) {
   :root {
       --background-color: rgb(17, 17, 17);
+      --page-background: #29292b;
+      --card-shadow: rgba(0, 0, 0, 0.6);
       --main-color: rgb(50, 50, 50, 1);
       --circle-color: var(--main-color);
       --circle-outline: rgb(170, 170, 170);
@@ -26,8 +30,10 @@
 /***** Global *****/
 
 body {
-    background-color:whitesmoke;
-    background-color: var(--background-color);
+    background-color: #3c3c3e;
+    background-color: var(--page-background);
+    /* subtle matte grain: inline SVG noise, desaturated, very low opacity */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
     color: #333333;
     font-size: 87.5%; /* Base font size: 14px */
     font-family: 'Futura', 'Open Sans', sans-serif;
@@ -111,6 +117,9 @@ body {
 
 .mobile-topbar{
   text-align: center;
+  background-color: whitesmoke;
+  background-color: var(--background-color);
+  padding: 10px 0;
 }
 
 .mobile-topbar img{
@@ -125,6 +134,9 @@ body {
   text-align:center;
   font-size: 0.95em;
   font-family: 'Avenir Next', sans-serif;
+  background-color: whitesmoke;
+  background-color: var(--background-color);
+  padding: 10px 0;
 }
 
 .mobile-bottombar p{
@@ -143,7 +155,7 @@ body {
 .sidebar {
   position: fixed;
   width: 20%;
-  height:800px;
+  height:100vh;
   color:#011035;
   color: var(--main-color);
   background-color:whitesmoke;
@@ -248,7 +260,7 @@ a:hover {
 
 
 /* Paragraphs */
-p {margin-bottom: 1.143em; color:#333 ; font-size:1.6em}
+p {margin-bottom: 1.143em; color:#333; color: var(--text-color); font-size:1.6em}
 pre {
   background-color: #011035;
   background-color: var(--main-color);
@@ -407,7 +419,7 @@ article img{
     padding: 20px;
     /*float:right;*/
     border: 1px solid #ccc;
-    box-shadow: 0px 3px 8px 0px #ccc;
+    box-shadow: 0px 3px 8px 0px var(--card-shadow);
     color: var(--text-color);
 }
 img.right, figure.right {float: right; margin: 0 0 2em 2em;}
@@ -469,7 +481,7 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
 #about {
   font-size: .8em;
   font-style: normal;
-  color: #666;
+  color: #b0b0b0;
   overflow: hidden;
   padding: 15px;
   border-radius: 10px;
@@ -509,8 +521,7 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
 #content > .hentry {padding: 1em 0;}
 .hentry img{display : none ;}
 .entry-title {font-size: 3.5em; margin-bottom: 0px; margin-top: 0; }
-.entry-title a:link, .entry-title a:visited {text-decoration: none; color: #333;}
-.entry-title a:visited {background-color: #fff;}
+.entry-title a:link, .entry-title a:visited {text-decoration: none; color: #333; color: var(--text-color);}
 .entry-content blockquote {font-size: 1.5em; margin: 10px 20px; }
 .entry-content li {font-size: 1.6em;}
 #featured .body li {font-size: 1.6em;}

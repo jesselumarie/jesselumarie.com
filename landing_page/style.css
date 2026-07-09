@@ -112,6 +112,15 @@ a:hover {
  border-color: var(--circle-outline);
 }
 
+/* stationary hover target: the holder never transforms, so the hit area
+   stays put and hovering near the edge can't un-hover mid-flip and jitter */
+.bigCircle-holder {
+  border-radius: 50%;
+  height: 150px;
+  perspective: 600px;
+  width: 150px;
+}
+
 .bigCircle {
   align-items: center;
   background-color: #011035;
@@ -129,6 +138,7 @@ a:hover {
   position: relative;
   text-align: center;
   transform-style: preserve-3d;
+  transition: transform 0.5s;
   width: 150px;
 }
 
@@ -136,14 +146,8 @@ a:hover {
   font-size: 4rem;
 }
 
-/* flip the faces, not the hover target: keeps the hit area stable so
-   hovering near the edge can't un-hover mid-flip and jitter */
-.bigCircle:hover .bigCircle-front, .bigCircle:active .bigCircle-front {
+.bigCircle-holder:hover .bigCircle, .bigCircle-holder:active .bigCircle {
   transform: rotateY(180deg);
-}
-
-.bigCircle:hover .bigCircle-back, .bigCircle:active .bigCircle-back {
-  transform: rotateY(360deg);
 }
 
 .bigCircle-front, .bigCircle-back {
@@ -151,10 +155,10 @@ a:hover {
   max-width: 50%;
   -webkit-perspective: 0;
   -webkit-backface-visibility: hidden;
+  -webkit-transform: translate3d(0,0,0);
   visibility:visible;
   backface-visibility: hidden;
   position: absolute;
-  transition: transform 0.5s;
 }
 
 .bigCircle-back {

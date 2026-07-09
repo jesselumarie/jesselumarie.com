@@ -620,6 +620,79 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .afoot { margin-top: 12px; flex: none; }
 
+/* ---- About / Equip screen ---- */
+.equip { padding: 20px 22px; }
+
+.equip-top {
+  display: grid;
+  grid-template-columns: 1fr 250px;
+  gap: 18px;
+  align-items: center;
+}
+
+.equip-slots { list-style: none; margin: 0; padding: 0; }
+.equip-slots li { position: relative; }
+.equip-slots a {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  letter-spacing: .03em;
+  padding: 8px 6px 8px 40px;
+  outline: none;
+  cursor: pointer;
+}
+.eslot { color: var(--label); flex: none; min-width: 3.2em; }
+
+.equip-bio {
+  margin-top: 14px;
+  font-family: 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .85);
+}
+.equip-bio p { margin: 0 0 6px; }
+
+.msec { margin: 16px 0 4px; font-size: 18px; color: var(--gold); letter-spacing: .02em; }
+
+.materia {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  column-gap: 10px;
+}
+.materia li { position: relative; }
+.materia a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 17px;
+  letter-spacing: .03em;
+  padding: 7px 6px 7px 38px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* linked materia orbs: shiny sphere per school */
+.orb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: none;
+  box-shadow: inset -2px -2px 3px rgba(0, 0, 0, .55), 1px 1px 0 rgba(0, 0, 0, .6);
+}
+.orb-green  { background: radial-gradient(circle at 35% 30%, #c8ffc8, #17a017 70%); }
+.orb-yellow { background: radial-gradient(circle at 35% 30%, #fff6c0, #d9a800 70%); }
+.orb-purple { background: radial-gradient(circle at 35% 30%, #e9d0ff, #7a30c0 70%); }
+.orb-red    { background: radial-gradient(circle at 35% 30%, #ffc4c4, #c02020 70%); }
+.orb-blue   { background: radial-gradient(circle at 35% 30%, #c4e2ff, #2050c0 70%); }
+
 /* ---- Config (debug) modal ---- */
 .overlay {
   position: fixed;
@@ -701,4 +774,10 @@ li.selected > .citem > .hand { opacity: 1; }
   .postlist a { font-size: 17px; padding: 10px 4px 10px 38px; gap: 10px; }
   .postlist .pdate { font-size: 13px; }
   .article { max-height: calc(100svh - 130px); }
+
+  .equip { padding: 16px 14px; }
+  .equip-top { grid-template-columns: 1fr; gap: 6px; }
+  .equip-slots a { font-size: 17px; padding: 8px 4px 8px 36px; }
+  .materia { grid-template-columns: 1fr 1fr; column-gap: 4px; }
+  .materia a { font-size: 16px; padding: 8px 4px 8px 34px; }
 }

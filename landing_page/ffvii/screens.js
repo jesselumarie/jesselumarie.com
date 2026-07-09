@@ -46,6 +46,16 @@
     return '<span class="pnum">' + pair[0] + '</span>/<span class="pnum">' + pair[1] + '</span>';
   }
 
+  function memberStatsHTML(m) {
+    return '<img class="portrait" src="' + m.img + '" alt="Portrait of ' + m.name + '">' +
+      '<div class="stats">' +
+        '<p class="mname">' + m.name + '</p>' +
+        '<div class="srow"><span class="lab">LV</span><span class="val">' + m.lv + '</span></div>' +
+        '<div class="srow"><span class="lab">HP</span><span class="val">' + fmtPair(m.hp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
+        '<div class="srow"><span class="lab">MP</span><span class="val">' + fmtPair(m.mp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
+      '</div>';
+  }
+
   function renderParty() {
     var el = document.getElementById('party');
     if (!el) return;
@@ -55,13 +65,7 @@
         var birthday = isBirthday();
         html +=
           '<div class="member" data-hint="' + m.hint + '">' +
-            '<img class="portrait" src="' + m.img + '" alt="Portrait of ' + m.name + '">' +
-            '<div class="stats">' +
-              '<p class="mname">' + m.name + '</p>' +
-              '<div class="srow"><span class="lab">LV</span><span class="val">' + m.lv + '</span></div>' +
-              '<div class="srow"><span class="lab">HP</span><span class="val">' + fmtPair(m.hp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
-              '<div class="srow"><span class="lab">MP</span><span class="val">' + fmtPair(m.mp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
-            '</div>' +
+            memberStatsHTML(m) +
             '<div class="growth">' +
               '<div class="glabel"><span>next level</span><span class="gsub">' +
                 (birthday ? 'LEVEL UP!' : days + (days === 1 ? ' day' : ' days')) +
@@ -345,48 +349,69 @@
     }
   };
 
-  /* ---------- stub screens (replaced in later phases) ---------- */
-  function stubScreen(opts) {
-    var stubCursor = null;
-    return {
-      name: opts.name,
-      path: opts.path,
-      parent: 'main',
-      hint: 'Under construction, kupo.',
-      cursor: function () { return stubCursor; },
-      render: function (mount) {
-        mount.innerHTML =
-          '<div class="dialog window" role="dialog" aria-label="' + opts.title + '" tabindex="-1">' +
-            '<h2>' + opts.title + '</h2>' +
-            '<p>Under construction, kupo.</p>' +
-            '<ul class="dialog-actions">' +
-              '<li><a href="' + opts.fallbackHref + '" data-hint="' + opts.fallbackHint + '"><span class="hand">👉</span>' + opts.fallbackLabel + '</a></li>' +
-              '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span>Back</a></li>' +
+  /* ---------- about screen (#/about) — the game's Equip layout ---------- */
+  var aboutCursor = null;
+  var aboutScreen = {
+    name: 'about',
+    path: 'about',
+    parent: 'main',
+    hint: 'Jesse — software developer, former lawyer.',
+    cursor: function () { return aboutCursor; },
+    render: function (mount) {
+      var about = FF7_MANIFEST.about;
+      var m = party[0];
+      mount.innerHTML =
+        '<div class="dialog window equip" role="dialog" aria-label="About" tabindex="-1">' +
+          '<div class="equip-top">' +
+            '<div class="member" data-hint="' + esc(m.hint) + '">' + memberStatsHTML(m) + '</div>' +
+            '<ul class="equip-slots">' +
+              about.equipment.map(function (eq) {
+                return '<li><a href="#" data-noop data-hint="' + esc(eq.desc) + '">' +
+                  '<span class="hand">👉</span>' +
+                  '<span class="eslot">' + esc(eq.slot) + '</span>' +
+                  '<span class="ename">' + esc(eq.name) + '</span></a></li>';
+              }).join('') +
             '</ul>' +
-          '</div>';
-        var dialog = mount.querySelector('.dialog');
-        dialog.focus({ preventScroll: true });
-        var items = Array.prototype.slice.call(mount.querySelectorAll('.dialog-actions li'));
-        stubCursor = FF7.cursorList(items, function (li) { li.querySelector('a').click(); });
-        mount.querySelector('[data-back]').addEventListener('click', function (e) {
-          e.preventDefault();
-          FF7.router.back();
-        });
-      }
-    };
-  }
+          '</div>' +
+          '<div class="equip-bio">' +
+            about.bio.map(function (line) { return '<p>' + esc(line) + '</p>'; }).join('') +
+          '</div>' +
+          '<h3 class="msec">Materia</h3>' +
+          '<ul class="materia">' +
+            about.materia.map(function (mat) {
+              return '<li><a href="' + esc(mat.href) + '" data-hint="' + esc(mat.hint) + '">' +
+                '<span class="hand">👉</span>' +
+                '<span class="orb orb-' + esc(mat.color) + '"></span>' + esc(mat.name) + '</a></li>';
+            }).join('') +
+          '</ul>' +
+          '<ul class="dialog-actions">' +
+            '<li><a href="' + esc(about.fallbackUrl) + '" data-hint="Leave the menu and read the about page directly."><span class="hand">👉</span>About Jesse (plain version)</a></li>' +
+            '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span>Back</a></li>' +
+          '</ul>' +
+        '</div>';
+
+      var dialog = mount.querySelector('.dialog');
+      dialog.focus({ preventScroll: true });
+      var items = Array.prototype.slice.call(
+        dialog.querySelectorAll('.equip-slots li, .materia li, .dialog-actions li'));
+      aboutCursor = FF7.cursorList(items, function (li) { li.querySelector('a').click(); });
+      dialog.querySelectorAll('[data-noop]').forEach(function (a) {
+        a.addEventListener('click', function (e) { e.preventDefault(); FF7.sounds.blip(); });
+      });
+      dialog.querySelectorAll('.materia a[href^="#/"]').forEach(function (a) {
+        a.addEventListener('click', function () { FF7.sounds.confirm(); });
+      });
+      dialog.querySelector('[data-back]').addEventListener('click', function (e) {
+        e.preventDefault();
+        FF7.router.back();
+      });
+    }
+  };
 
   FF7.router.register(mainScreen);
   FF7.router.register(writingScreen);
   FF7.router.register(articleScreen);
-  FF7.router.register(stubScreen({
-    name: 'about',
-    path: 'about',
-    title: 'About',
-    fallbackHref: '/about',
-    fallbackLabel: 'About Jesse',
-    fallbackHint: 'Leave the menu and read the about page directly.'
-  }));
+  FF7.router.register(aboutScreen);
 
   /* ---------- boot ---------- */
   FF7.power.initButton();

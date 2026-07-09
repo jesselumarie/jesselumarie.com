@@ -20,7 +20,7 @@ behind CloudFront.
 ├── pelican_theme/   # Custom Pelican theme (derived from the SoMA theme)
 │   ├── templates/   # Jinja2 templates
 │   └── static/      # Theme CSS/assets
-└── circle.yml       # CircleCI (1.0-style) build + deploy config
+└── .github/workflows/deploy.yml   # GitHub Actions build + deploy config
 ```
 
 There is no build step for `landing_page/` — its files are deployed as-is.
@@ -72,13 +72,14 @@ The post will be published at `https://jesselumarie.com/blog/<slug>.html`.
 
 ## Deployment
 
-Deployment is fully automated via CircleCI (`circle.yml`) and runs **only on
-pushes to `master`** — merging a PR to `master` deploys the site. There is no
-manual deploy step and no tests (`test` is a no-op echo).
+Deployment is fully automated via GitHub Actions
+(`.github/workflows/deploy.yml`) and runs on **pushes to `master`** (plus
+manual runs via `workflow_dispatch`) — merging a PR to `master` deploys the
+site. There are no tests.
 
 What CI does:
 
-1. Installs `pelican`, `markdown`, and `s3cmd`.
+1. Installs `pelican` and `markdown`.
 2. Builds the blog with `make html` (from `blog/`).
 3. Assembles a deploy directory: `landing_page/*` at the root and
    `blog/output/*` under `blog/`.
@@ -86,11 +87,12 @@ What CI does:
    (**`--delete` removes anything in the bucket not present in the build**).
 5. Invalidates the entire CloudFront distribution (`/*`).
 
-Required CI environment variables (set in the CircleCI project, not in the repo):
+Required repository secrets (GitHub → Settings → Secrets and variables →
+Actions):
 
-| Variable | Purpose |
+| Secret | Purpose |
 |---|---|
-| `S3CFG_ACCESS_KEY` / `S3CFG_SECRET_KEY` | AWS credentials for the S3 sync |
+| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | AWS credentials for the S3 sync and CloudFront invalidation |
 | `AWS_CLOUDFRONT_ID` | CloudFront distribution ID for cache invalidation |
 
 ## Gotchas for agents
@@ -104,5 +106,3 @@ Required CI environment variables (set in the CircleCI project, not in the repo)
   must run from inside `blog/`.
 - Because the S3 sync uses `--delete`, anything served on the live site must
   exist in this repo (under `landing_page/` or generated into `blog/output/`).
-- `circle.yml` uses the legacy CircleCI 1.0 format, not the modern
-  `.circleci/config.yml` layout.

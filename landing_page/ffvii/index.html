@@ -319,6 +319,9 @@
     }
 
     /* ---- Hint bar (top-left, purple like the in-game tutorial window) ---- */
+    /* Reactor7's period fills a whole PSX character cell; pull the next
+       glyph back so "jesselumarie.com" doesn't read as "jesselumarie. com" */
+    .hintbar .dot { margin-right: -.3em; }
     .hintbar {
       align-self: flex-start;
       background: linear-gradient(180deg, var(--hint-top), var(--hint-bottom));
@@ -590,7 +593,7 @@
     <div class="screen">
       <div class="frame">
 
-    <div class="hintbar window" role="status"><span id="hint">Welcome to jesselumarie.com.</span></div>
+    <div class="hintbar window" role="status"><span id="hint">Welcome to jesselumarie<span class="dot">.</span>com</span></div>
 
     <div class="layout">
 
@@ -608,7 +611,7 @@
           <li><a href="#" data-action="config" data-hint="Adjust windows, sound, and debug options."><span class="hand">👉</span>Config</a></li>
           <li class="spacer" role="presentation"></li>
           <li><a href="#" class="disabled" data-action="save" data-hint="You cannot save here."><span class="hand">👉</span>Save</a></li>
-          <li><a href="/" data-action="exit" data-hint="Power off and return to jesselumarie.com."><span class="hand">👉</span>Exit</a></li>
+          <li><a href="/" data-action="exit" data-hint="Power off and return to jesselumarie.com"><span class="hand">👉</span>Exit</a></li>
         </ul>
       </nav>
 
@@ -738,13 +741,18 @@
 
       /* ---------- hint bar ---------- */
       var hintEl = document.getElementById('hint');
-      var defaultHint = 'Welcome to jesselumarie.com.';
+      var defaultHint = 'Welcome to jesselumarie.com';
+      function renderHint(t) {
+        hintEl.innerHTML = String(t)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+          .replace(/\./g, '<span class="dot">.</span>');
+      }
       function refreshDefaultHint() {
         if (isBirthday()) defaultHint = 'Happy birthday, Jesse! Limit break ready.';
-        else defaultHint = 'Welcome to jesselumarie.com.';
-        hintEl.textContent = defaultHint;
+        else defaultHint = 'Welcome to jesselumarie.com';
+        renderHint(defaultHint);
       }
-      function setHint(t) { hintEl.textContent = t || defaultHint; }
+      function setHint(t) { renderHint(t || defaultHint); }
 
       document.addEventListener('mouseover', function (e) {
         var t = e.target.closest('[data-hint]');

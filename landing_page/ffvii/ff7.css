@@ -496,6 +496,34 @@ li.selected > .citem > .hand { opacity: 1; }
   min-width: 45%;
 }
 
+/* ---- Dialog screens (stubs, articles) ---- */
+.dialog {
+  padding: 20px 24px;
+  font-size: 19px;
+  outline: none;
+}
+
+.dialog h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+  color: var(--gold);
+  letter-spacing: .02em;
+}
+
+.dialog a { color: var(--gold); text-decoration: none; }
+
+.dialog-actions { list-style: none; margin: 16px 0 0; padding: 0; }
+.dialog-actions li { position: relative; }
+.dialog-actions a {
+  display: block;
+  color: #fff;
+  font-size: 19px;
+  letter-spacing: .03em;
+  padding: 8px 6px 8px 42px;
+  outline: none;
+  cursor: pointer;
+}
+
 /* ---- Config (debug) modal ---- */
 .overlay {
   position: fixed;

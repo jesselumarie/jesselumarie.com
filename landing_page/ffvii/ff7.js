@@ -63,6 +63,8 @@ var FF7 = (function () {
   function blip() { tone(1320, 0.07, 0.03); }
   function confirmBeep() { tone(880, 0.09, 0.035); }
   function buzzer() { tone(160, 0.18, 0.05); }
+  // cancel: softer, lower cousin of the cursor blip (backing out of a menu)
+  function cancelBeep() { tone(990, 0.07, 0.025); }
 
   function getCtx() {
     if (!settings.sound) return null;
@@ -258,12 +260,14 @@ var FF7 = (function () {
     setTimeout(function () { window.location.href = href; }, 650);
   }
 
-  /* ---------- time (persistent across visits) & gil ---------- */
+  /* ---------- time (persistent across visits) & gil ----------
+     The #time/#gil elements live inside the current screen's render
+     output, so tick() re-queries them and tolerates their absence. */
+  var clockTick = null;
   function initClock() {
-    var timeEl = document.getElementById('time');
-    var gilEl = document.getElementById('gil');
     var sessionStart = Date.now();
     var baseSeconds = save.seconds;
+    var lastAccrual = 0;
 
     function totalSeconds() {
       return baseSeconds + Math.floor((Date.now() - sessionStart) / 1000);
@@ -272,12 +276,15 @@ var FF7 = (function () {
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
     function tick() {
+      var timeEl = document.getElementById('time');
+      var gilEl = document.getElementById('gil');
       var s = totalSeconds();
-      timeEl.textContent = Math.floor(s / 3600) + ':' + pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60);
-      if (s > 0 && s % 10 === 0) {
+      if (timeEl) timeEl.textContent = Math.floor(s / 3600) + ':' + pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60);
+      if (s > 0 && s % 10 === 0 && s !== lastAccrual) {
+        lastAccrual = s;
         save.gil += 7;
-        gilEl.textContent = save.gil.toLocaleString();
       }
+      if (gilEl) gilEl.textContent = save.gil.toLocaleString();
       if (s % 5 === 0) persist();
     }
 
@@ -291,10 +298,104 @@ var FF7 = (function () {
       if (document.visibilityState === 'hidden') persist();
     });
 
-    gilEl.textContent = save.gil.toLocaleString();
+    clockTick = tick;
     tick();
     setInterval(tick, 1000);
   }
+  function syncClock() { if (clockTick) clockTick(); }
+
+  /* ---------- router (hash-based) ----------
+     Screens register with a path pattern ('', 'writing', 'writing/:slug').
+     hashchange drives rendering, so browser Back works and deep links
+     resolve on load. Escape pops one level to the registered parent. */
+  var routes = [];
+  var currentRoute = null; // { def, params }
+  var routerMount = null;
+
+  function findRoute(name) {
+    for (var i = 0; i < routes.length; i++) if (routes[i].name === name) return routes[i];
+    return null;
+  }
+
+  function matchHash() {
+    var h = location.hash.replace(/^#\/?/, '');
+    var segs = h === '' ? [] : h.split('/').map(decodeURIComponent);
+    for (var i = 0; i < routes.length; i++) {
+      var pat = routes[i].path === '' ? [] : routes[i].path.split('/');
+      if (pat.length !== segs.length) continue;
+      var params = {};
+      var ok = true;
+      for (var j = 0; j < pat.length; j++) {
+        if (pat[j].charAt(0) === ':') params[pat[j].slice(1)] = segs[j];
+        else if (pat[j] !== segs[j]) { ok = false; break; }
+      }
+      if (ok) return { def: routes[i], params: params };
+    }
+    return null;
+  }
+
+  function hashFor(name, params) {
+    var def = findRoute(name);
+    if (!def) return '#/';
+    var path = def.path === '' ? '' : def.path.split('/').map(function (seg) {
+      return seg.charAt(0) === ':' ? encodeURIComponent((params || {})[seg.slice(1)]) : seg;
+    }).join('/');
+    return '#/' + path;
+  }
+
+  function goRoute(name, params) {
+    var target = hashFor(name, params);
+    if (location.hash === target) renderRoute();
+    else location.hash = target;
+  }
+
+  function renderRoute() {
+    var match = matchHash();
+    if (!match) {
+      // unknown or empty hash: fall back to the root screen
+      for (var i = 0; i < routes.length; i++) {
+        if (routes[i].path === '') { match = { def: routes[i], params: {} }; break; }
+      }
+      if (!match) return;
+    }
+    if (currentRoute && currentRoute.def.destroy) currentRoute.def.destroy();
+    currentRoute = match;
+    routerMount.innerHTML = '';
+    var hint = typeof match.def.hint === 'function' ? match.def.hint(match.params) : match.def.hint;
+    if (hint != null) setDefaultHint(hint);
+    match.def.render(routerMount, match.params);
+  }
+
+  function routerBack() {
+    if (currentRoute && currentRoute.def.parent) {
+      cancelBeep();
+      goRoute(currentRoute.def.parent);
+      return true;
+    }
+    return false;
+  }
+
+  function startRouter(mountEl) {
+    routerMount = mountEl;
+    window.addEventListener('hashchange', renderRoute);
+    renderRoute();
+  }
+
+  /* ---------- keyboard ---------- */
+  document.addEventListener('keydown', function (e) {
+    var open = overlay.classList.contains('open');
+    if (e.key === 'Escape') {
+      if (open) { closeConfig(); return; }
+      routerBack();
+      return;
+    }
+    var cursor = open ? configCursor
+      : (currentRoute && currentRoute.def.cursor ? currentRoute.def.cursor() : null);
+    if (!cursor) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); cursor.move(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); cursor.move(-1); }
+    else if (e.key === 'Enter') { e.preventDefault(); cursor.activate(); }
+  });
 
   return {
     save: save,
@@ -306,6 +407,7 @@ var FF7 = (function () {
     sounds: {
       blip: blip,
       confirm: confirmBeep,
+      cancel: cancelBeep,
       buzzer: buzzer,
       powerOn: powerOnSound,
       powerOff: powerOffSound
@@ -323,6 +425,16 @@ var FF7 = (function () {
       initButton: initPowerButton,
       offAndNavigate: powerOffAndNavigate
     },
-    initClock: initClock
+    clock: {
+      init: initClock,
+      sync: syncClock
+    },
+    router: {
+      register: function (def) { routes.push(def); },
+      go: goRoute,
+      back: routerBack,
+      start: startRouter,
+      current: function () { return currentRoute; }
+    }
   };
 })();

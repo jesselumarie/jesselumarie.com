@@ -47,6 +47,8 @@
   }
 
   function renderParty() {
+    var el = document.getElementById('party');
+    if (!el) return;
     var html = '';
     party.forEach(function (m) {
       {
@@ -71,38 +73,20 @@
           '</div>';
       }
     });
-    document.getElementById('party').innerHTML = html;
+    el.innerHTML = html;
   }
 
-  function refreshDefaultHint() {
-    if (isBirthday()) FF7.setDefaultHint('Happy birthday, Jesse! Limit break ready.');
-    else FF7.setDefaultHint('Welcome to jesselumarie.com');
+  function defaultHint() {
+    if (isBirthday()) return 'Happy birthday, Jesse! Limit break ready.';
+    return 'Welcome to jesselumarie.com';
   }
 
   function applySettings() {
     FF7.applyShellSettings();
-    refreshDefaultHint();
+    FF7.setDefaultHint(defaultHint());
     renderParty();
     FF7.writeSave();
   }
-
-  /* ---------- main menu ---------- */
-  var menuItems = Array.prototype.slice.call(document.querySelectorAll('#menu li:not(.spacer)'));
-  var menuCursor = FF7.cursorList(menuItems, function (li) { li.querySelector('a').click(); });
-
-  document.querySelectorAll('#menu a').forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      var action = a.getAttribute('data-action');
-      if (action === 'config') { e.preventDefault(); FF7.config.open(configItems, applySettings); return; }
-      if (action === 'save') { e.preventDefault(); FF7.sounds.buzzer(); FF7.hint('You cannot save here.'); return; }
-      if (action === 'exit') {
-        e.preventDefault();
-        FF7.power.offAndNavigate(a.href);
-        return;
-      }
-      FF7.sounds.confirm();
-    });
-  });
 
   /* ---------- config / debug menu ---------- */
   var configItems = [
@@ -156,18 +140,120 @@
     }
   ];
 
-  /* ---------- keyboard ---------- */
-  document.addEventListener('keydown', function (e) {
-    var open = FF7.config.isOpen();
-    var cursor = open ? FF7.config.cursor() : menuCursor;
-    if (e.key === 'ArrowDown') { e.preventDefault(); cursor.move(1); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); cursor.move(-1); }
-    else if (e.key === 'Enter') { e.preventDefault(); cursor.activate(); }
-    else if (e.key === 'Escape' && open) { FF7.config.close(); }
-  });
+  /* ---------- main screen (#/) ---------- */
+  var MAIN_LAYOUT =
+    '<div class="layout">' +
+
+      '<section class="party window" aria-label="Party" id="party"></section>' +
+
+      '<nav class="menu window" aria-label="Main menu">' +
+        '<ul id="menu">' +
+          '<li><a href="#/about" data-hint="Learn more about Jesse."><span class="hand">👉</span>About</a></li>' +
+          '<li><a href="#/writing" data-hint="Read Jesse\'s writing."><span class="hand">👉</span>Writing</a></li>' +
+          '<li><a href="https://github.com/jesselumarie" data-hint="Inspect Jesse\'s materia."><span class="hand">👉</span>GitHub</a></li>' +
+          '<li><a href="https://www.linkedin.com/in/jesselumarie" data-hint="Employment record and battle history."><span class="hand">👉</span>LinkedIn</a></li>' +
+          '<li><a href="https://twitter.com/jesselumarie" data-hint="Short-form dispatches."><span class="hand">👉</span>Twitter</a></li>' +
+          '<li><a href="https://instagram.com/jesselumarie" data-hint="Field photography."><span class="hand">👉</span>Instagram</a></li>' +
+          '<li><a href="mailto:jesse.lumarie@gmail.com" data-hint="PHS — send Jesse a message."><span class="hand">👉</span>PHS</a></li>' +
+          '<li><a href="#" data-action="config" data-hint="Adjust windows, sound, and debug options."><span class="hand">👉</span>Config</a></li>' +
+          '<li class="spacer" role="presentation"></li>' +
+          '<li><a href="#" class="disabled" data-action="save" data-hint="You cannot save here."><span class="hand">👉</span>Save</a></li>' +
+          '<li><a href="/" data-action="exit" data-hint="Power off and return to jesselumarie.com"><span class="hand">👉</span>Exit</a></li>' +
+        '</ul>' +
+      '</nav>' +
+
+      '<section class="loc window" aria-label="Location">Boulder, CO</section>' +
+
+      '<section class="timegil window" aria-label="Time and gil">' +
+        '<div class="kv"><span>Time</span> <span class="v time-v" id="time">0:00:00</span></div>' +
+        '<div class="kv"><span>Gil</span> <span class="v" id="gil">2244</span></div>' +
+      '</section>' +
+
+    '</div>';
+
+  var mainCursor = null;
+
+  var mainScreen = {
+    name: 'main',
+    path: '',
+    hint: function () { return defaultHint(); },
+    cursor: function () { return mainCursor; },
+    render: function (mount) {
+      mount.innerHTML = MAIN_LAYOUT;
+      renderParty();
+      FF7.clock.sync();
+
+      var menuItems = Array.prototype.slice.call(mount.querySelectorAll('#menu li:not(.spacer)'));
+      mainCursor = FF7.cursorList(menuItems, function (li) { li.querySelector('a').click(); });
+
+      mount.querySelectorAll('#menu a').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          var action = a.getAttribute('data-action');
+          if (action === 'config') { e.preventDefault(); FF7.config.open(configItems, applySettings); return; }
+          if (action === 'save') { e.preventDefault(); FF7.sounds.buzzer(); FF7.hint('You cannot save here.'); return; }
+          if (action === 'exit') {
+            e.preventDefault();
+            FF7.power.offAndNavigate(a.href);
+            return;
+          }
+          FF7.sounds.confirm();
+        });
+      });
+    }
+  };
+
+  /* ---------- stub screens (replaced in later phases) ---------- */
+  function stubScreen(opts) {
+    var stubCursor = null;
+    return {
+      name: opts.name,
+      path: opts.path,
+      parent: 'main',
+      hint: 'Under construction, kupo.',
+      cursor: function () { return stubCursor; },
+      render: function (mount) {
+        mount.innerHTML =
+          '<div class="dialog window" role="dialog" aria-label="' + opts.title + '" tabindex="-1">' +
+            '<h2>' + opts.title + '</h2>' +
+            '<p>Under construction, kupo.</p>' +
+            '<ul class="dialog-actions">' +
+              '<li><a href="' + opts.fallbackHref + '" data-hint="' + opts.fallbackHint + '"><span class="hand">👉</span>' + opts.fallbackLabel + '</a></li>' +
+              '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span>Back</a></li>' +
+            '</ul>' +
+          '</div>';
+        var dialog = mount.querySelector('.dialog');
+        dialog.focus({ preventScroll: true });
+        var items = Array.prototype.slice.call(mount.querySelectorAll('.dialog-actions li'));
+        stubCursor = FF7.cursorList(items, function (li) { li.querySelector('a').click(); });
+        mount.querySelector('[data-back]').addEventListener('click', function (e) {
+          e.preventDefault();
+          FF7.router.back();
+        });
+      }
+    };
+  }
+
+  FF7.router.register(mainScreen);
+  FF7.router.register(stubScreen({
+    name: 'writing',
+    path: 'writing',
+    title: 'Writing',
+    fallbackHref: '/blog',
+    fallbackLabel: 'Read the blog',
+    fallbackHint: 'Leave the menu and read the blog directly.'
+  }));
+  FF7.router.register(stubScreen({
+    name: 'about',
+    path: 'about',
+    title: 'About',
+    fallbackHref: '/about',
+    fallbackLabel: 'About Jesse',
+    fallbackHint: 'Leave the menu and read the about page directly.'
+  }));
 
   /* ---------- boot ---------- */
   FF7.power.initButton();
   applySettings();
-  FF7.initClock();
+  FF7.clock.init();
+  FF7.router.start(document.getElementById('app'));
 })();

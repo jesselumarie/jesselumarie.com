@@ -1,6 +1,12 @@
 <!doctype html>
 <html>
   <head>
+    <!-- critical canvas color: paints before external CSS loads, prevents white flash -->
+    <style>
+      html { background-color: white; color-scheme: light dark; }
+      @media (prefers-color-scheme: dark) { html { background-color: rgb(17, 17, 17); } }
+    </style>
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-169224616-2"></script>
     <script>

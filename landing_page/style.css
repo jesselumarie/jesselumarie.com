@@ -270,6 +270,12 @@ span.wave {
     border-width: medium;
   }
 
+  /* holder must track the circle size or the circle sits off-center inside it */
+  .bigCircle-holder{
+    width:16vw;
+    height:16vw;
+  }
+
   .bigCircle{
     color: white;
     transition: transform 0.5s;
@@ -278,7 +284,7 @@ span.wave {
     text-align: center;
   }
 
-  .bigCircle:hover, .bigCircle:active{
+  .bigCircle-holder:hover .bigCircle, .bigCircle-holder:active .bigCircle{
     transform: rotateY(180deg);
   }
 

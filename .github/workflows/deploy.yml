@@ -35,8 +35,29 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Sync to S3
-        run: aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete
+      # cp (not sync) so every object gets cache headers, even unchanged ones
+      - name: Upload to S3 with cache headers
+        run: |
+          # images & fonts: browsers/edge keep for a week
+          aws s3 cp s3_assets_to_deploy/ s3://jesselumarie.com --recursive \
+            --exclude "*" \
+            --include "*.png" --include "*.jpg" --include "*.jpeg" --include "*.gif" \
+            --include "*.svg" --include "*.ico" \
+            --include "*.woff" --include "*.woff2" --include "*.ttf" \
+            --cache-control "public, max-age=604800"
+          # css & js: not fingerprinted and change in place, so one hour
+          aws s3 cp s3_assets_to_deploy/ s3://jesselumarie.com --recursive \
+            --exclude "*" --include "*.css" --include "*.js" \
+            --cache-control "public, max-age=3600"
+          # html & the rest: browsers revalidate; edge may cache until invalidated
+          aws s3 cp s3_assets_to_deploy/ s3://jesselumarie.com --recursive \
+            --exclude "*.png" --exclude "*.jpg" --exclude "*.jpeg" --exclude "*.gif" \
+            --exclude "*.svg" --exclude "*.ico" \
+            --exclude "*.woff" --exclude "*.woff2" --exclude "*.ttf" \
+            --exclude "*.css" --exclude "*.js" \
+            --cache-control "no-cache, s-maxage=86400"
+          # uploads are done above; sync only removes files deleted from the repo
+          aws s3 sync s3_assets_to_deploy/ s3://jesselumarie.com --delete
 
       - name: Invalidate CloudFront
         run: aws cloudfront create-invalidation --distribution-id "${{ secrets.AWS_CLOUDFRONT_ID }}" --paths '/*'

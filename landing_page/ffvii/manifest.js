@@ -14,8 +14,8 @@ var FF7_MANIFEST = {
     ],
     equipment: [
       { slot: 'Wpn.', name: 'Keyboard', desc: 'Standard-issue software developer weapon.' },
-      { slot: 'Arm.', name: 'Law degree', desc: 'Former lawyer. Grants resistance to fine print.' },
-      { slot: 'Acc.', name: 'Boulder, CO', desc: 'Currently equipped home base in Colorado.' }
+      { slot: 'Arm.', name: 'Houdini Jacket', desc: 'Escape-artist armor. No bind can hold him.' },
+      { slot: 'Acc.', name: 'Wedding Ring', desc: 'Bonded accessory. Cannot be unequipped.' }
     ],
     materia: [
       { name: 'Writing', color: 'green', href: '#/writing', hint: "Read Jesse's writing." },

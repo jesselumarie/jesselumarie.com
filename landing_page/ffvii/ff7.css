@@ -548,8 +548,9 @@ li.selected > .citem > .hand { opacity: 1; }
 .loading { color: var(--label); margin: 6px; }
 
 /* ---- Article window ---- */
-/* Reactor7 is illegible at paragraph length; body text drops to
-   Roboto Condensed. The window scrolls internally, never the page. */
+/* Body text stays in Reactor7 like the rest of the shell — this is an
+   easter egg, the PSX vibe beats legibility. The window scrolls
+   internally, never the page. */
 .article {
   display: flex;
   flex-direction: column;
@@ -578,7 +579,6 @@ li.selected > .citem > .hand { opacity: 1; }
   min-height: 0;
   overflow-y: auto;
   padding-right: 8px;
-  font-family: 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;
   font-size: 17px;
   line-height: 1.55;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .85);
@@ -605,10 +605,12 @@ li.selected > .citem > .hand { opacity: 1; }
   font-size: 14px;
   text-shadow: none;
 }
-.article-body code {
+/* code keeps a real monospace font — Reactor7 would mangle it, and
+   pygments emits bare <pre> without a <code> wrapper */
+.article-body pre, .article-body code {
   font-family: ui-monospace, Menlo, Consolas, monospace;
-  font-size: .92em;
 }
+.article-body code { font-size: .92em; }
 .article-body blockquote {
   margin: 1em 0;
   padding: 4px 14px;

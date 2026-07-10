@@ -322,18 +322,21 @@ body.no-scanlines .frame { filter: none; }
 }
 
 /* ---- Hint bar (purple like the in-game tutorial window) ---- */
-/* Fixed-size row above the content: hints change constantly, so the
-   bar must never resize or push the screen below it around. One line
-   with an ellipsis on desktop; a fixed two-line box on mobile. */
+/* Fixed-height row above the content: hints change constantly, so the
+   bar must never grow taller or push the screen below it around. On
+   desktop it hugs the text horizontally (one 44px line, ellipsis past
+   the frame edge); mobile uses a fixed full-width two-line box. */
 /* Reactor7's period fills a whole PSX character cell; pull the next
    glyph back so "jesselumarie.com" doesn't read as "jesselumarie. com" */
 .hintbar .dot { margin-right: -.3em; }
 .hintbar {
+  align-self: flex-start;
   background: linear-gradient(180deg, var(--hint-top), var(--hint-bottom));
   padding: 9px 20px;
   font-size: 18px;
   line-height: 1.2;
   height: 44px;
+  max-width: 100%;
   flex: none;
   display: flex;
   align-items: center;
@@ -770,9 +773,9 @@ li.selected > .citem > .hand { opacity: 1; }
 @media (max-width: 720px) {
   body { justify-content: flex-start; }
 
-  /* fixed two-line hint box: one truncated line loses too much of the
-     post summaries at phone widths */
-  .hintbar { height: 62px; padding: 9px 14px; }
+  /* fixed full-width two-line hint box: one truncated line loses too
+     much of the post summaries at phone widths */
+  .hintbar { align-self: stretch; height: 62px; padding: 9px 14px; }
   .hintbar > span {
     white-space: normal;
     display: -webkit-box;

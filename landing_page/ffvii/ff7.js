@@ -163,11 +163,21 @@ var FF7 = (function () {
   }
 
   /* ---------- cursor-driven lists ---------- */
+  function itemHint(li) {
+    var el = li.hasAttribute('data-hint') ? li : li.querySelector('[data-hint]');
+    return el ? el.getAttribute('data-hint') : null;
+  }
+
   function cursorList(items, onActivate) {
     var idx = 0;
     function apply(quiet) {
       items.forEach(function (li, i) { li.classList.toggle('selected', i === idx); });
-      if (!quiet) blip();
+      // the hint tracks the cursor however it moves (mouse or keyboard);
+      // the initial quiet apply keeps the screen's default hint showing
+      if (!quiet) {
+        blip();
+        setHint(itemHint(items[idx]));
+      }
     }
     apply(true);
     items.forEach(function (li, i) {

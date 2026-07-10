@@ -10,8 +10,7 @@ var FF7_MANIFEST = {
   about: {
     fallbackUrl: '/about',
     bio: [
-      "My name is Jesse and I'm a software developer and (former) lawyer currently living in Boulder, Colorado.",
-      'Give me a shout via PHS or at any of the fine establishments below.'
+      'Software developer. Ex-lawyer. Traded the courtroom for a keyboard and never looked back.'
     ],
     equipment: [
       { slot: 'Wpn.', name: 'Keyboard', desc: 'Standard-issue software developer weapon.' },

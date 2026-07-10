@@ -648,7 +648,6 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .equip-bio {
   margin-top: 14px;
-  font-family: 'Roboto Condensed', 'Arial Narrow', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .85);

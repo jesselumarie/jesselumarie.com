@@ -14,7 +14,7 @@ var FF7_MANIFEST = {
     ],
     equipment: [
       { slot: 'Wpn.', name: 'Keyboard', desc: 'Standard-issue software developer weapon.' },
-      { slot: 'Arm.', name: 'Houdini Jacket', desc: 'Escape-artist armor. No bind can hold him.' },
+      { slot: 'Arm.', name: 'Houdini Jacket', desc: 'Pattagucci baby' },
       { slot: 'Acc.', name: 'Wedding Ring', desc: 'Bonded accessory. Cannot be unequipped.' }
     ],
     materia: [

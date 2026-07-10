@@ -172,6 +172,21 @@ body.no-scanlines .frame { filter: none; }
   .frame { filter: blur(.3px) saturate(1.07) contrast(1.03); }
   body.no-scanlines .frame { filter: none; }
 
+  /* the TV keeps one size no matter which screen is showing: pin the
+     shell to the frame's designed 900px width (900 + screen padding/
+     border 56 + tv padding 60 = 1016) and to the main screen's natural
+     height; other screens render (and scroll) inside that fixed area */
+  .tv { width: min(1016px, 100%); }
+  .frame { height: 614px; }
+  #app {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  #app > .window { max-height: 100%; overflow-y: auto; }
+  .layout { flex: 1 1 auto; grid-template-rows: 1fr auto; }
+
   /* ---- chin: badge, vents, knobs, power ---- */
   .chin {
     display: flex;
@@ -558,9 +573,9 @@ li.selected > .citem > .hand { opacity: 1; }
 }
 
 @media (min-width: 900px) {
-  /* leave room for the TV bezel, chin, hint bar, and body padding so
-     the page itself never scrolls */
-  .article { max-height: calc(100svh - 310px); }
+  /* inside the fixed-height frame the app area is definite, so the
+     window can simply fill it */
+  .article { max-height: 100%; }
 }
 
 .ahead {

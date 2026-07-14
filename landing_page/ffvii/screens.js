@@ -96,11 +96,22 @@
   var configItems = [
     {
       label: 'Window color',
-      hint: 'Cycle the window color, like the in-game Config screen.',
+      hint: 'Cycle the preset window colors, like the in-game Config screen.',
       value: function () { return settings.windowColor; },
       act: function () {
         var keys = Object.keys(FF7.windowColors);
         settings.windowColor = keys[(keys.indexOf(settings.windowColor) + 1) % keys.length];
+      }
+    },
+    {
+      label: 'Color setting',
+      hint: 'Tune the window gradient corner by corner, R/G/B.',
+      value: function () { return '›'; },
+      act: function () {
+        FF7.colorConfig.open(
+          function () { FF7.applyShellSettings(); FF7.writeSave(); },
+          function () { FF7.config.refresh(); }
+        );
       }
     },
     {

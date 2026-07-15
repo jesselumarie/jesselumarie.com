@@ -790,34 +790,59 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .msec { margin: 2px 0 4px; font-size: 24px; color: var(--gold); }
 
+/* materia in linked socket pairs, like the game: each pair sits on a
+   metallic capsule, sockets are recessed rings, orbs fill them */
 .materia {
   list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-  column-gap: 10px;
+  margin: 8px 0 4px 66px;
+  /* the empty right tail reads like the game's fixed-length slot strip */
+  padding: 3px 84px 3px 7px;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #b9b9c4 0%, #90909c 45%, #6d6d78 100%);
+  box-shadow: 0 0 0 1px #14141a, inset 0 1px 0 rgba(255, 255, 255, .45);
 }
 .materia li { position: relative; }
 .materia a {
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: #fff;
-  text-decoration: none;
-  font-size: 22px;
-  padding: 6px 6px 6px 66px;
+  padding: 0 2px;
   outline: none;
   cursor: pointer;
 }
+/* the double-bar link joining a pair's sockets */
+.materia li:nth-child(even) a::before {
+  content: "";
+  width: 16px;
+  height: 12px;
+  margin-right: 2px;
+  background: linear-gradient(180deg,
+    #55555f 0 3px, #b8b8c2 3px 5px, #55555f 5px 7px, #b8b8c2 7px 9px, #55555f 9px 12px);
+}
+/* plain strip between pairs */
+.materia li:nth-child(even) { margin-right: 22px; }
+.materia li:last-child { margin-right: 0; }
 
-/* linked materia orbs: shiny sphere per school */
-.orb {
-  width: 14px;
-  height: 14px;
+.materia .hand { left: -60px; }
+
+.socket {
+  display: block;
+  position: relative;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  flex: none;
-  box-shadow: inset -2px -2px 3px rgba(0, 0, 0, .55), 1px 1px 0 rgba(0, 0, 0, .6);
+  background: radial-gradient(circle closest-side,
+    #0a0a0e 0 40%, #2e2e36 44% 62%, #6d6d78 68% 80%, #21212a 86% 100%);
+}
+
+/* shiny sphere seated in the socket */
+.orb {
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  box-shadow: inset -2px -3px 4px rgba(0, 0, 0, .6), inset 1px 2px 2px rgba(255, 255, 255, .35);
 }
 .orb-green  { background: radial-gradient(circle at 35% 30%, #c8ffc8, #17a017 70%); }
 .orb-yellow { background: radial-gradient(circle at 35% 30%, #fff6c0, #d9a800 70%); }
@@ -993,8 +1018,10 @@ li.selected > .citem > .hand { opacity: 1; }
   .equip-topwin { grid-template-columns: 1fr; gap: 6px; padding: 16px 14px; }
   .equip-main { padding: 14px; }
   .equip-slots a { font-size: 20px; padding: 8px 4px 8px 52px; }
-  .materia { grid-template-columns: 1fr 1fr; column-gap: 4px; }
-  .materia a { font-size: 19px; padding: 8px 4px 8px 50px; }
+  .materia { margin-left: 8px; padding-right: 34px; }
+  .materia .hand { left: -44px; }
+  .socket { width: 32px; height: 32px; }
+  .orb { inset: 4px; }
 
   .configscr { padding: 14px; }
   .configlist a { font-size: 20px; padding: 8px 4px 8px 54px; flex-wrap: wrap; }

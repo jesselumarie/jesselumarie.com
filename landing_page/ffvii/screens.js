@@ -639,11 +639,15 @@
           '<div class="window equip-desc" id="equipDesc">' + bioLine + '</div>' +
           '<div class="window equip-main">' +
             '<h3 class="msec">Materia</h3>' +
+            // linked socket pairs like the game's Materia screen; the
+            // description window names whichever orb the hand is on
             '<ul class="materia">' +
               about.materia.map(function (mat) {
-                return '<li><a href="' + esc(mat.href) + '" data-hint="' + esc(mat.hint) + '">' +
+                return '<li><a href="' + esc(mat.href) + '" aria-label="' + esc(mat.name) +
+                  '" data-desc="' + esc(mat.name + ' — ' + mat.hint) + '">' +
                   '<span class="hand"></span>' +
-                  '<span class="orb orb-' + esc(mat.color) + '"></span>' + esc(mat.name) + '</a></li>';
+                  '<span class="socket"><span class="orb orb-' + esc(mat.color) + '"></span></span>' +
+                '</a></li>';
               }).join('') +
             '</ul>' +
             '<ul class="dialog-actions">' +

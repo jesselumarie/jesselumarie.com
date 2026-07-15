@@ -42,10 +42,10 @@ def socket(empty=False):
                     px[x,y] = (44,44,56,255)                  # washer ring
     return im
 
-# ---- orb, 15x17 egg lit from below, like the PSX sprites ----
+# ---- orb, 15x15, lit from below like the PSX sprites ----
 # Measured from the game's Materia screen: dark crown, saturated
 # belt, pale glowing bottom rim, white specular block at top-left,
-# and the egg overhangs the socket's bottom edge.
+# seated fully inside the socket ring.
 COLORS = {                    # dark, mid, low, rim
   'green':  ((10,56,26),   (46,158,88),  (116,216,136), (212,248,212)),
   'yellow': ((90,64,8),    (198,146,30), (238,204,92),  (250,238,168)),
@@ -55,10 +55,10 @@ COLORS = {                    # dark, mid, low, rim
 }
 def orb(name):
     dark, mid, low, rim = COLORS[name]
-    W, H = 15, 17
+    W, H = 15, 15
     im = Image.new('RGBA', (W, H), (0,0,0,0))
     px = im.load()
-    cx, cy, rx, ry = (W-1)/2, (H-1)/2, 7.5, 8.5
+    cx, cy, rx, ry = (W-1)/2, (H-1)/2, 7.5, 7.5
     for y in range(H):
         for x in range(W):
             e = ((x-cx)/rx)**2 + ((y-cy)/ry)**2

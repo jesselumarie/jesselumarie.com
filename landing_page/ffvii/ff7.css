@@ -847,19 +847,19 @@ li.selected > .citem > .hand { opacity: 1; }
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAABP0lEQVR4nJ2UsW7CMBCG7ShPgBADE8pUeeAhGJhQH6EDD8DQGXWomBl4AAYeAWViYM7QIWKwOkUMVse8Qqs75azr5Rwkfinx5ez79F8S25qERqPpb2qubX+slrdDEO99r8A5l4RaDaRBUtCWAS0HSchq9dqDlOW5ByVgLlvjoBCC0fKlAEI9ADNKcFccNB5P4gUKIfxzzOsyclVVX3hJEJcEVl0NubNwOx5PmNjtPo33N4yL4gXHpvmOMJlzbm622w+M1+s3E9vk0kD8uejmpVTYs8rhVtf104Ca1arOUu2k2ifhB4Bgs3nHBPxD8iNwNezl0y9yOOxxzOT+ggWwkBcOgUjAQRC5WyyWcfJ+b6JDLufmZjYr4vP1eomwnAK5pXjBo3zbdaeeGtxhStwR5QbPMw1KEAlSYRpUKnXS/gE+CKq9KYapywAAAABJRU5ErkJggg==');
 }
 
-/* PSX orb sprite (15x17 native at 2x): an egg lit from below that
-   overhangs the socket's bottom edge, like the game */
+/* PSX orb sprite (15px native at 2x), lit from below and seated
+   fully inside the socket ring */
 .orb {
   position: absolute;
-  inset: 5px 4px -1px 4px;
+  inset: 4px;
   background: no-repeat center / 100% 100%;
   image-rendering: pixelated;
 }
-.orb-green  { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAARCAYAAAACCvahAAAAu0lEQVR4nGNkwAK4LKT+o4t9O/GMEV2MkZAmfIYwkaIRXR0TusDX40/BGB/ggqqH24wOCBkAAizozuW2lAbTWQvyGPABLgup/4wgQiXNjoFUcGfWIdzOJgYw6s2LICqUsQEmNysDhmVRNSRpWhZVwwDSR5GzWZBNW/BgC0ENCQo+cDZTj0YFRpolBvRoVDCCnQ2zEdlUfLbC1MNtLbnR8R9ZM7IX0MVhrkVxMroB6ABZI4ZmZEOw+RFdDAD5vkaoIBHe/gAAAABJRU5ErkJggg=='); }
-.orb-yellow { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAARCAYAAAACCvahAAAAtUlEQVR4nGNkwAKiHDj+o4stO/CDEV2MkZAmfIYwkaIRXR0TusDS/d/BGB+IgqqH24wOCBkAAoy4nDulJ4Qhp2QNA0HNOUFieBVhNXzdK9zOJgYwHpskR1QoYwNMGlZ2DCYxXSRpMonpYgDpo8jZLMimfbm3haAGHiUfOJtJyGQJRpolBgiZLGEEOxtmI7Kp+GyFqYfb+u5MzH9kzcheQBeHuRbFyegGoANkjRiakQ3B5kd0MQA9eUXN32uFzwAAAABJRU5ErkJggg=='); }
-.orb-purple { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAARCAYAAAACCvahAAAAuUlEQVR4nGNkwAIsBLz+o4ud+LCNEV2MkZAmfIYwkaIRXR0TusDx91vBGB+wgKqH24wOCBkAAkzozrUU9Abjp9NfMuADFgJe/xlBRJpeDgOpYNalKbidTQxgnGe37T/Zmp9Me/FfyIyPYUXRAaI1RfQ5MLw79YkyZ7Ogm0YICJnxwdlMMlkSGGmWGCCTJcEIdjbMRmRT8dkKUw+3FRZwMIDsBXRxmGtRnIxuADpA1oihGdkQbH5EFwMA57BNOm+Nk/AAAAAASUVORK5CYII='); }
-.orb-red    { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAARCAYAAAACCvahAAAAu0lEQVR4nGNkwAK8eAT+o4tt+/KBEV2MkZAmfIYwkaIRXR0TusDWz+/BGB/wgqqH24wOCBkAAizozvXmFQTTczJSGPABLx6B/4wgokxOg4FU0PXoBm5nEwMYD2hZEBXK2ACTmpcNg9mEOpI0mU2oYwDpo8jZLMimfdi1j6AGATcnOJtJqqcHI80SA6R6ehjBzobZiGwqPlth6uG2Pisp+Y+sGdkL6OIw16I4Gd0AdICsEUMzsiHY/IguBgA+vkYkDtFwTQAAAABJRU5ErkJggg=='); }
-.orb-blue   { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAARCAYAAAACCvahAAAAu0lEQVR4nGNkwAIEZAL+o4t9eLKBEV2MkZAmfIYwkaIRXR0TusD7x+vBGB8QgKqH24wOCBkAAizozhWUDQTTGS1zGPABAZmA/4wgQs2pjIFUcGtfF25nEwMYzeKOERXK2ACTk5MaQ0eVCUmaOqpMGED6KHI2C7Jpu058IqjBzYIPzmbqSBDBSLPEgI4EEUaws2E2IpuKz1aYeritFQve/EfWjOwFdHGYa1GcjG4AOkDWiKEZ2RBsfkQXAwCyI0ZQ942jfAAAAABJRU5ErkJggg=='); }
+.orb-green  { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAtUlEQVR4nGNkwAK4LKT+o4t9O/GMEV2MkZAmfIYwkaIRXR0TusDX40/BGB/ggqqH24wOCBkAAowgU1TS7BjQgZuVAcOuYxcYcIE7sw7hthmfRhhg1JsXQVRAYQNMIOcti6ohSdOyqBqwt3A6mxjACCKu/LgCdvqCB1sIakhQ8AHTOhw6jGCbYZpgEoQ0wtSDNfdoVDASMgBZI0g93NkwUHKj4z8+25E1YmhGNgRmG8xFyJpgAADOT0jnsvNg7AAAAABJRU5ErkJggg=='); }
+.orb-yellow { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAtUlEQVR4nGNkwAKiHDj+o4stO/CDEV2MkZAmfIYwkaIRXR0TusDS/d/BGB+IgqqH24wOCBkAAowgU3KCxBjQgYaVHcONY4cYcIEp617hthmfRhhgPDZJjqiAwgaYQM4ziekiSZNJTBfYWzidTQxgBBG/3q0AO/3LvS0ENfAo+YBpNqEIRrDNME0wCUIaYerBmoVMljASMgBZI0g93Nkw8O5MzH98tiNrxNCMbAjMNpiLkDXBAACJBkht0l3KSQAAAABJRU5ErkJggg=='); }
+.orb-purple { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAu0lEQVR4nGNkwAIsBLz+o4ud+LCNEV2MkZAmfIYwkaIRXR0TusDx91vBGB+wgKqH24wOCBkAAowgU9L0chjQgVuEEcOuFecYcIFZl6bgthmfRhhgnGe3jaiAwgYYn0x78V/IjI9hRdEBojVF9DkwvDv1CbezibKZgYGB4duZb2Cng0wjBITM+MA0lwkXI9hmmCaYBCGNMPVgzTJZEoyEDEDWCFIPdzYMwAIPF0DWiKEZ2RCYbTAXIWuCAQAYN02NB6iEhwAAAABJRU5ErkJggg=='); }
+.orb-red    { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAtUlEQVR4nGNkwAK8eAT+o4tt+/KBEV2MkZAmfIYwkaIRXR0TusDWz+/BGB/wgqqH24wOCBkAAowgU8rkNBjQgZqXDcOtbUcYcIGuRzdw24xPIwwwHtCyICqgsAEmkPPMJtSRpMlsQh3YWzidTQxgBBHfdm0DO/3Drn0ENQi4OYFpLjcvRrDNME0wCUIaYerBmqV6ehgJGYCsEaQe7mwYeFZS8h+f7cgaMTQjGwKzDeYiZE0wAABLt0iRshtcxQAAAABJRU5ErkJggg=='); }
+.orb-blue   { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAtUlEQVR4nGNkwAIEZAL+o4t9eLKBEV2MkZAmfIYwkaIRXR0TusD7x+vBGB8QgKqH24wOCBkAAowgU9ScyhjQgZOTGsO+fbcYcIFb+7pw24xPIwwwmsUdIyqgsAEmkPM6qkxI0tRRZQL2Fk5nEwMYQcS+G7/ATt914hNBDW4WfGDaSYONEWwzTBNMgpBGmHqw5o4EEUZCBiBrBKmHOxsGKha8+Y/PdmSNGJqRDYHZBnMRsiYYAADnkUhraCC1bQAAAABJRU5ErkJggg=='); }
 
 /* ---- Config screen (#/config) ---- */
 .configscr {
@@ -1033,7 +1033,7 @@ li.selected > .citem > .hand { opacity: 1; }
   .materia .hand { left: -44px; }
   .materia li:nth-child(even) { margin-right: 8px; }
   .socket { width: 28px; height: 28px; }
-  .orb { inset: 4px 3px -1px 3px; }
+  .orb { inset: 3px; }
 
   .configscr { padding: 14px; }
   .configlist a { font-size: 20px; padding: 8px 4px 8px 54px; flex-wrap: wrap; }

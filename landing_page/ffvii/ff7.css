@@ -334,18 +334,19 @@ body.no-scanlines .frame { filter: none; }
   gap: 10px;
 }
 
-/* ---- pointing-glove cursor, redrawn from the game's sprite ---- */
+/* ---- pointing-glove cursor, lifted pixel-for-pixel from the game's
+   config screen (42x26 at the menu's native 640-wide res) ---- */
 .hand {
   position: absolute;
-  left: 6px;
+  left: 2px;
   top: 50%;
   translate: 0 -50%;
-  width: 38px;
-  height: 23px;
+  width: 63px;
+  height: 39px;
   opacity: 0;
-  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAPCAYAAAARZmTlAAAAvElEQVR4nLWUSwoCMQyGm6GHmLVkVcSTuBAPKi7mJCKuiuu5hVKZlExoJCn0XzUl5MujKQRF84wfbq9rhtAp0ILn/NrdI6ZuGEiADC6FmNyg6AFordREyYAX4BFVDaMAHDSFgcKtkjoTix7Pt9n3ejnXmZgh9ISt4i8wWgGtveF33JYJDZ0JaSpleVuBwp/brWWNfKin46EZtLSBB6IgiKku5ZZsc0krsezL7b78zhqs50vZQQj0z7n3J/4C7Ntbg+YUt1QAAAAASUVORK5CYII=') no-repeat center / contain;
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACoAAAAaCAYAAADBuc72AAAB20lEQVR4nNWXP07DMBTG7SqnQDAWqRdAHRhQVSGuwMLAAThHByYO0KGnQFVkZcgQ5QKVygjiGkWu9KqXl/fsFzsZ+JY0rp/98/f8L9Yk6ur69qSt+/tztCZTM/NPZHMcWz8+Bf8v959mLBWpgQB5t1xeylYP98ZV9SSwVnIy5hYFpHIEOFVt05wHW2jdgiBcDoCL+U2vjcX8+fw8fH2LdUKCOOizkJykkLQsBEk7g99aWBwH6jiKIXE6cRo1gFJnGlgch/u1kpPcvPPSuHJgOpPak+TjfNp32w/bczQEmeKgQ45wWZEA8SIC9RZTCqSkFbNdeW0279FYD4lPtALSDm4CVOpqdVXNDhZWb+q+2nF06DzitBLa8EZ4WG8KhtXeAwrtfAuJ1nck3dIUyLqUQKfQcAya1udcDUFqb2Gqsz4GCyBOmJ+cYDvUztmZ1CF+DpGr6s4WA4sInhywdzXmbNTRobBt04h3BMlBusBUoGPdeiTFbmXR1NPUcKmCVOKUxmJK5FTO3bTw+9hue7ysPpw2fK2T5hinltnc4cwu9+ZEXYX/gqChjqR3XA4Dw3BrAkKdTHG2N5KX1zf11yWnMuHUyfoUiSnm2uSgWvkB4U17TCjDKAsUv08N+gfeDyjC6JQy3QAAAABJRU5ErkJggg==') no-repeat center / contain;
   image-rendering: pixelated;
-  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, .65));
+  filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, .6));
   pointer-events: none;
   z-index: 4;
 }
@@ -542,7 +543,7 @@ li.selected > .citem > .hand { opacity: 1; }
 
 /* on the main menu the fingertip pokes past the window border,
    exactly like the game */
-.menu .hand { left: -30px; }
+.menu .hand { left: -48px; }
 
 .menu .spacer { height: 30px; }
 
@@ -584,8 +585,9 @@ li.selected > .citem > .hand { opacity: 1; }
     width: 81.4%;
     bottom: 60px;
     min-height: 0;
-    /* keep the growth gauges clear of the overlapping command menu */
-    padding-right: 64px;
+    /* keep the growth gauges clear of the overlapping command menu
+       and its poking hand cursor */
+    padding-right: 112px;
   }
   .menu {
     position: absolute;
@@ -636,7 +638,7 @@ li.selected > .citem > .hand { opacity: 1; }
   color: #fff;
   text-decoration: none;
   font-size: 25px;
-  padding: 6px 6px 6px 46px;
+  padding: 6px 6px 6px 70px;
   outline: none;
   cursor: pointer;
 }
@@ -654,7 +656,7 @@ li.selected > .citem > .hand { opacity: 1; }
   color: #fff;
   text-decoration: none;
   font-size: 24px;
-  padding: 7px 6px 7px 48px;
+  padding: 7px 6px 7px 70px;
   outline: none;
   cursor: pointer;
 }
@@ -780,7 +782,7 @@ li.selected > .citem > .hand { opacity: 1; }
   color: #fff;
   text-decoration: none;
   font-size: 24px;
-  padding: 6px 6px 6px 44px;
+  padding: 6px 6px 6px 68px;
   outline: none;
   cursor: pointer;
 }
@@ -804,7 +806,7 @@ li.selected > .citem > .hand { opacity: 1; }
   color: #fff;
   text-decoration: none;
   font-size: 22px;
-  padding: 6px 6px 6px 42px;
+  padding: 6px 6px 6px 66px;
   outline: none;
   cursor: pointer;
 }
@@ -840,7 +842,7 @@ li.selected > .citem > .hand { opacity: 1; }
   color: #fff;
   text-decoration: none;
   font-size: 26px;
-  padding: 7px 6px 7px 48px;
+  padding: 7px 6px 7px 70px;
   outline: none;
   cursor: pointer;
 }
@@ -854,49 +856,46 @@ li.selected > .citem > .hand { opacity: 1; }
 .copt.active { color: #fff; }
 .cplain { color: #fff; }
 
-.wc-mini { width: 92px; height: 30px; }
+/* ---- window color editor, laid out like the game: the hand parks on
+   a corner of the row's preview window; the flat swatch and the R/G/B
+   panel appear once a corner is picked ---- */
+.wc-previewbox {
+  position: relative;
+  width: 150px;
+  height: 28px;
+  cursor: pointer;
+}
 
-/* ---- window color editor: corner picker + R/G/B sliders ---- */
+.wc-swatch { width: 66px; height: 28px; }
+.wc-swatch[hidden] { display: none; }
+
+/* while the editor is open the hand lives on the preview corner —
+   the list cursor's hand steps aside, like the game */
+.configscr.wc-open .configlist .hand:not(.wc-chand) { opacity: 0; }
+
+/* the parked corner hand: fingertip on the corner being edited */
+.wc-chand { opacity: 1; translate: none; }
+.wc-chand.tl { left: -58px; top: -17px; }
+.wc-chand.tr { left: calc(100% - 62px); top: -17px; }
+.wc-chand.bl { left: -58px; top: calc(100% - 22px); }
+.wc-chand.br { left: calc(100% - 62px); top: calc(100% - 22px); }
+
 .wc-editor {
   position: absolute;
-  top: 12px;
-  right: 20px;
-  width: min(440px, 56%);
-  padding: 14px 16px;
+  top: 66px;
+  left: 38%;
+  right: 24px;
+  padding: 8px 16px;
   z-index: 5;
 }
-
-.wc-top { display: flex; gap: 12px; margin-bottom: 10px; }
-
-.wc-preview { position: relative; flex: 1 1 auto; height: 44px; }
-
-.wc-swatch { flex: none; width: 64px; height: 44px; }
-
-.wc-corner {
-  position: absolute;
-  width: 15px;
-  height: 15px;
-  padding: 0;
-  background: none;
-  border: 2px solid rgba(255, 255, 255, .35);
-  cursor: pointer;
-  outline: none;
-}
-.wc-corner.tl { left: -1px; top: -1px; }
-.wc-corner.tr { right: -1px; top: -1px; }
-.wc-corner.bl { left: -1px; bottom: -1px; }
-.wc-corner.br { right: -1px; bottom: -1px; }
-.wc-corner.selected { border-color: #fff; }
-.wc-corner.armed { animation: wc-blink .6s steps(2) infinite; }
-@keyframes wc-blink { 50% { border-color: rgba(255, 255, 255, .1); } }
 
 .wc-sliders { list-style: none; margin: 0; padding: 0; }
 .wc-sliders li {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 8px 8px 42px;
+  gap: 12px;
+  padding: 7px 8px 7px 66px;
 }
 
 /* R/G/B chips like the game's colored letter blocks */
@@ -936,15 +935,12 @@ li.selected > .citem > .hand { opacity: 1; }
   touch-action: none;
 }
 
-.wc-fill { display: block; height: 100%; position: relative; }
-
 /* square slider knob riding the value, like the game */
-.wc-fill::after {
-  content: "";
+.wc-knob {
   position: absolute;
-  right: -6px;
   top: -5px;
-  width: 12px;
+  margin-left: -7px;
+  width: 14px;
   height: 20px;
   background: linear-gradient(180deg, #f0f0f6, #b8bac8);
   border: 1px solid var(--border-dark);
@@ -988,25 +984,33 @@ li.selected > .citem > .hand { opacity: 1; }
     column-gap: 4px;
   }
   .menu .spacer { display: none; }
-  .menu a { padding: 9px 4px 9px 40px; font-size: 23px; }
-  .menu .hand { left: 2px; width: 32px; height: 19px; }
+  .menu a { padding: 9px 4px 9px 50px; font-size: 23px; }
+  .menu .hand { left: 2px; }
 
   .loc { min-width: 0; justify-self: stretch; }
 
-  .postlist a { font-size: 20px; padding: 9px 4px 9px 42px; gap: 10px; }
+  .postlist a { font-size: 20px; padding: 9px 4px 9px 54px; gap: 10px; }
   .postlist .pdate { font-size: 15px; }
   .article { max-height: calc(100svh - 148px); }
 
-  .hand { width: 32px; height: 19px; }
+  .hand { width: 44px; height: 27px; }
+  .dialog-actions a { padding-left: 54px; }
 
   .equip-topwin { grid-template-columns: 1fr; gap: 6px; padding: 16px 14px; }
   .equip-main { padding: 14px; }
-  .equip-slots a { font-size: 20px; padding: 8px 4px 8px 40px; }
+  .equip-slots a { font-size: 20px; padding: 8px 4px 8px 52px; }
   .materia { grid-template-columns: 1fr 1fr; column-gap: 4px; }
-  .materia a { font-size: 19px; padding: 8px 4px 8px 38px; }
+  .materia a { font-size: 19px; padding: 8px 4px 8px 50px; }
 
   .configscr { padding: 14px; }
-  .configlist a { font-size: 20px; padding: 8px 4px 8px 40px; flex-wrap: wrap; }
+  .configlist a { font-size: 20px; padding: 8px 4px 8px 54px; flex-wrap: wrap; }
   .clabel { width: 8.5em; }
+  .wc-previewbox { width: 110px; height: 24px; }
+  .wc-swatch { width: 52px; height: 24px; }
+  .wc-chand.tl, .wc-chand.bl { left: -40px; }
+  .wc-chand.tr, .wc-chand.br { left: calc(100% - 43px); }
+  .wc-chand.tl, .wc-chand.tr { top: -11px; }
+  .wc-chand.bl, .wc-chand.br { top: calc(100% - 16px); }
   .wc-editor { position: static; width: 100%; margin-top: 10px; }
+  .wc-sliders li { padding-left: 50px; }
 }

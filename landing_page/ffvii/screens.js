@@ -153,23 +153,33 @@
 
   function wcColor() { return settings.windowColor[wcState.corner]; }
 
+  /* Like the game: in corner mode the hand itself parks on a corner of
+     the row's preview window; picking a corner reveals the flat swatch
+     and the R/G/B slider panel below, with the corner hand staying put
+     and a second hand walking the rows. */
   function renderWcEditor(root) {
     var ed = root.querySelector('#wcEditor');
-    if (!ed) return;
-    ed.hidden = !wcState;
-    if (!wcState) return;
-    CORNERS.forEach(function (c) {
-      var b = ed.querySelector('.wc-corner.' + c);
-      b.classList.toggle('selected', wcState.corner === c);
-      b.classList.toggle('armed', wcState.corner === c && wcState.mode === 'corner');
-    });
+    var prev = root.querySelector('#wcPreview');
+    var sw = root.querySelector('#wcSwatch');
+    if (!ed || !prev) return;
+    var sliding = !!wcState && wcState.mode === 'chan';
+    ed.hidden = !sliding;
+    sw.hidden = !sliding;
+    var scr = root.querySelector('.configscr');
+    if (scr) scr.classList.toggle('wc-open', !!wcState);
+    var hand = prev.querySelector('.wc-chand');
+    if (!wcState) { if (hand) hand.remove(); return; }
+    if (!hand) {
+      hand = document.createElement('span');
+      prev.appendChild(hand);
+    }
+    hand.className = 'hand wc-chand ' + wcState.corner;
     var col = wcColor();
-    ed.querySelector('#wcSwatch').style.background =
-      'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
+    sw.style.background = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
     ed.querySelectorAll('.wc-sliders li').forEach(function (li, i) {
-      li.classList.toggle('selected', wcState.mode === 'chan' && wcState.chan === i);
+      li.classList.toggle('selected', sliding && wcState.chan === i);
       li.querySelector('.wc-val').textContent = col[i];
-      li.querySelector('.wc-fill').style.width = (col[i] / 255 * 100) + '%';
+      li.querySelector('.wc-knob').style.left = (col[i] / 255 * 100) + '%';
     });
   }
 
@@ -208,11 +218,11 @@
         if (wcState.mode === 'corner') {
           wcState.mode = 'chan';
           FF7.sounds.confirm();
-          FF7.hint('Left/Right changes the value. Up/Down picks R, G, B.');
+          FF7.hint('Left/Right changes the value.\u00a0 Up/Down picks R, G, B.');
         } else {
           wcState.mode = 'corner';
           FF7.sounds.confirm();
-          FF7.hint('Select colors for each corner of the window.');
+          FF7.hint('Select colors for each corner of the window');
         }
         renderWcEditor(root);
       }
@@ -224,7 +234,7 @@
   function openWcEditor(root) {
     wcState = { mode: 'corner', corner: 'tl', chan: 0 };
     wcCursor = makeWcCursor(root);
-    FF7.hint('Select colors for each corner of the window.');
+    FF7.hint('Select colors for each corner of the window');
     renderWcEditor(root);
   }
 
@@ -239,7 +249,8 @@
   function configRowHTML(it) {
     var val;
     if (it.type === 'window') {
-      val = '<span class="wc-mini window-mini" aria-hidden="true"></span>';
+      val = '<span class="wc-previewbox window-mini" id="wcPreview" aria-hidden="true"></span>' +
+        '<span class="wc-swatch window-mini" id="wcSwatch" hidden></span>';
     } else if (it.type === 'toggle') {
       val = it.options.map(function (o, i) {
         return '<span class="copt' + (it.get() === i ? ' active' : '') +
@@ -270,7 +281,7 @@
       if (wcState && wcState.mode === 'chan') {
         wcState.mode = 'corner';
         FF7.sounds.cancel();
-        FF7.hint('Select colors for each corner of the window.');
+        FF7.hint('Select colors for each corner of the window');
         renderWcEditor(root);
         return true;
       }
@@ -284,21 +295,12 @@
             configItems.map(function () { return '<li></li>'; }).join('') +
           '</ul>' +
           '<div class="wc-editor window" id="wcEditor" hidden>' +
-            '<div class="wc-top">' +
-              '<span class="wc-preview window-mini" aria-hidden="false">' +
-                CORNERS.map(function (c) {
-                  return '<button class="wc-corner ' + c + '" type="button" data-corner="' + c +
-                    '" aria-label="' + c + ' corner"></button>';
-                }).join('') +
-              '</span>' +
-              '<span class="wc-swatch window-mini" id="wcSwatch"></span>' +
-            '</div>' +
             '<ul class="wc-sliders">' +
               CHANNELS.map(function (ch, i) {
                 return '<li data-ch="' + i + '"><span class="hand"></span>' +
                   '<b class="wc-ch wc-' + ch.toLowerCase() + '">' + ch + '</b>' +
                   '<span class="wc-val">0</span>' +
-                  '<span class="wc-bar"><span class="wc-fill"></span></span></li>';
+                  '<span class="wc-bar"><span class="wc-knob"></span></span></li>';
               }).join('') +
             '</ul>' +
           '</div>' +
@@ -332,6 +334,22 @@
         li.addEventListener('click', function (e) {
           e.preventDefault();
           var it = configItems[i];
+          // while editing, clicking a quadrant of the preview picks
+          // that corner; other rows are inert until the editor closes
+          if (wcState) {
+            var prev = e.target.closest('#wcPreview');
+            if (prev) {
+              var r = prev.getBoundingClientRect();
+              wcState.corner =
+                (e.clientY < r.top + r.height / 2 ? 't' : 'b') +
+                (e.clientX < r.left + r.width / 2 ? 'l' : 'r');
+              wcState.mode = 'chan';
+              FF7.sounds.confirm();
+              FF7.hint('Left/Right changes the value.\u00a0 Up/Down picks R, G, B.');
+              renderWcEditor(mount);
+            }
+            return;
+          }
           var opt = e.target.closest('.copt');
           if (opt && it.type === 'toggle') {
             FF7.sounds.confirm();
@@ -346,15 +364,6 @@
 
       // window color editor: mouse/touch controls
       var ed = mount.querySelector('#wcEditor');
-      ed.addEventListener('click', function (e) {
-        var corner = e.target.closest('.wc-corner');
-        if (corner) {
-          wcState.corner = corner.getAttribute('data-corner');
-          wcState.mode = 'chan';
-          FF7.sounds.confirm();
-          renderWcEditor(mount);
-        }
-      });
       ed.querySelectorAll('.wc-sliders li').forEach(function (li, i) {
         var bar = li.querySelector('.wc-bar');
         function setFromPointer(e) {

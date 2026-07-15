@@ -47,12 +47,13 @@
   }
 
   function memberStatsHTML(m) {
+    // HP fills periwinkle, MP teal — the game's stat underline bars
     return '<img class="portrait" src="' + m.img + '" alt="Portrait of ' + m.name + '">' +
       '<div class="stats">' +
         '<p class="mname">' + m.name + '</p>' +
-        '<div class="srow"><span class="lab">LV</span><span class="val">' + m.lv + '</span></div>' +
-        '<div class="srow"><span class="lab">HP</span><span class="val">' + fmtPair(m.hp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
-        '<div class="srow"><span class="lab">MP</span><span class="val">' + fmtPair(m.mp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
+        '<div class="srow"><span class="lab">LV</span><span class="val val-lv"><span class="pnum lvnum">' + m.lv + '</span></span></div>' +
+        '<div class="srow"><span class="lab">HP</span><span class="val">' + fmtPair(m.hp) + '</span><span class="thinbar hpbar"><span style="width:100%"></span></span></div>' +
+        '<div class="srow"><span class="lab">MP</span><span class="val">' + fmtPair(m.mp) + '</span><span class="thinbar mpbar"><span style="width:100%"></span></span></div>' +
       '</div>';
   }
 
@@ -92,34 +93,34 @@
     FF7.writeSave();
   }
 
-  /* ---------- config / debug menu ---------- */
+  /* ---------- config screen (#/config) — the game's Config layout ----------
+     Cyan labels on the left; toggle rows show every option with the
+     active one lit, like Mono/Stereo in the game. "Window color" opens
+     the corner editor: pick a corner of the preview window, then slide
+     R/G/B (0-255). Every window repaints live. */
+
   var configItems = [
     {
-      label: 'Window color',
-      hint: 'Cycle the window color, like the in-game Config screen.',
-      value: function () { return settings.windowColor; },
-      act: function () {
-        var keys = Object.keys(FF7.windowColors);
-        settings.windowColor = keys[(keys.indexOf(settings.windowColor) + 1) % keys.length];
-      }
+      label: 'Window color', type: 'window',
+      hint: 'Select colors for each corner of the window.'
     },
     {
-      label: 'Sound',
+      label: 'Sound', type: 'toggle', options: ['On', 'Off'],
       hint: 'Toggle cursor sound effects.',
-      value: function () { return settings.sound ? 'On' : 'Off'; },
-      act: function () { settings.sound = !settings.sound; }
+      get: function () { return settings.sound ? 0 : 1; },
+      set: function (i) { settings.sound = (i === 0); }
     },
     {
-      label: 'CRT filter',
+      label: 'CRT filter', type: 'toggle', options: ['On', 'Off'],
       hint: 'Toggle the 1997 CRT picture tube.',
-      value: function () { return settings.scanlines ? 'On' : 'Off'; },
-      act: function () { settings.scanlines = !settings.scanlines; }
+      get: function () { return settings.scanlines ? 0 : 1; },
+      set: function (i) { settings.scanlines = (i === 0); }
     },
     {
-      label: 'Birthday mode',
+      label: 'Birthday mode', type: 'toggle', options: ['On', 'Off'],
       hint: 'Debug: pretend it is June 22 and charge the limit gauge.',
-      value: function () { return settings.birthday ? 'On' : 'Off'; },
-      act: function () { settings.birthday = !settings.birthday; }
+      get: function () { return settings.birthday ? 0 : 1; },
+      set: function (i) { settings.birthday = (i === 0); }
     },
     {
       label: 'Reroll limit',
@@ -137,12 +138,259 @@
       }
     },
     {
-      label: 'Close',
+      label: 'Exit',
       hint: 'Return to the menu.',
       value: function () { return ''; },
-      act: function () { FF7.config.close(); }
+      act: function () { FF7.router.back(); }
     }
   ];
+
+  var CORNERS = ['tl', 'tr', 'bl', 'br'];
+  var CHANNELS = ['R', 'G', 'B'];
+
+  var configCursor = null;
+  var wcState = null; // null = list; else { mode:'corner'|'chan', corner, chan }
+
+  function wcColor() { return settings.windowColor[wcState.corner]; }
+
+  function renderWcEditor(root) {
+    var ed = root.querySelector('#wcEditor');
+    if (!ed) return;
+    ed.hidden = !wcState;
+    if (!wcState) return;
+    CORNERS.forEach(function (c) {
+      var b = ed.querySelector('.wc-corner.' + c);
+      b.classList.toggle('selected', wcState.corner === c);
+      b.classList.toggle('armed', wcState.corner === c && wcState.mode === 'corner');
+    });
+    var col = wcColor();
+    ed.querySelector('#wcSwatch').style.background =
+      'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
+    ed.querySelectorAll('.wc-sliders li').forEach(function (li, i) {
+      li.classList.toggle('selected', wcState.mode === 'chan' && wcState.chan === i);
+      li.querySelector('.wc-val').textContent = col[i];
+      li.querySelector('.wc-fill').style.width = (col[i] / 255 * 100) + '%';
+    });
+  }
+
+  function wcApply(root) {
+    applySettings();
+    renderWcEditor(root);
+  }
+
+  function wcSetChannel(root, ch, v) {
+    wcColor()[ch] = Math.max(0, Math.min(255, v));
+    wcApply(root);
+  }
+
+  function makeWcCursor(root) {
+    return {
+      move: function (d) {
+        if (wcState.mode === 'corner') {
+          // up/down flips between the top and bottom corner of a side
+          wcState.corner = { tl: 'bl', bl: 'tl', tr: 'br', br: 'tr' }[wcState.corner];
+        } else {
+          wcState.chan = (wcState.chan + d + 3) % 3;
+        }
+        FF7.sounds.blip();
+        renderWcEditor(root);
+      },
+      moveH: function (d) {
+        if (wcState.mode === 'corner') {
+          wcState.corner = { tl: 'tr', tr: 'tl', bl: 'br', br: 'bl' }[wcState.corner];
+          FF7.sounds.blip();
+          renderWcEditor(root);
+        } else {
+          wcSetChannel(root, wcState.chan, wcColor()[wcState.chan] + d * 4);
+        }
+      },
+      activate: function () {
+        if (wcState.mode === 'corner') {
+          wcState.mode = 'chan';
+          FF7.sounds.confirm();
+          FF7.hint('Left/Right changes the value. Up/Down picks R, G, B.');
+        } else {
+          wcState.mode = 'corner';
+          FF7.sounds.confirm();
+          FF7.hint('Select colors for each corner of the window.');
+        }
+        renderWcEditor(root);
+      }
+    };
+  }
+
+  var wcCursor = null;
+
+  function openWcEditor(root) {
+    wcState = { mode: 'corner', corner: 'tl', chan: 0 };
+    wcCursor = makeWcCursor(root);
+    FF7.hint('Select colors for each corner of the window.');
+    renderWcEditor(root);
+  }
+
+  function closeWcEditor(root) {
+    wcState = null;
+    wcCursor = null;
+    FF7.sounds.cancel();
+    FF7.hint(null);
+    renderWcEditor(root);
+  }
+
+  function configRowHTML(it) {
+    var val;
+    if (it.type === 'window') {
+      val = '<span class="wc-mini window-mini" aria-hidden="true"></span>';
+    } else if (it.type === 'toggle') {
+      val = it.options.map(function (o, i) {
+        return '<span class="copt' + (it.get() === i ? ' active' : '') +
+          '" data-opt="' + i + '">' + o + '</span>';
+      }).join('');
+    } else {
+      val = '<span class="cplain">' + it.value() + '</span>';
+    }
+    return '<a href="#" data-hint="' + it.hint + '"><span class="hand"></span>' +
+      '<span class="clabel">' + it.label + '</span>' +
+      '<span class="cval">' + val + '</span></a>';
+  }
+
+  function renderConfigList(root) {
+    var lis = root.querySelectorAll('#configList li');
+    lis.forEach(function (li, i) { li.innerHTML = configRowHTML(configItems[i]); });
+  }
+
+  var configScreen = {
+    name: 'config',
+    path: 'config',
+    parent: 'main',
+    title: 'Config',
+    hint: 'Customize the menu.',
+    cursor: function () { return wcState ? wcCursor : configCursor; },
+    onEscape: function () {
+      var root = document.getElementById('app');
+      if (wcState && wcState.mode === 'chan') {
+        wcState.mode = 'corner';
+        FF7.sounds.cancel();
+        FF7.hint('Select colors for each corner of the window.');
+        renderWcEditor(root);
+        return true;
+      }
+      if (wcState) { closeWcEditor(root); return true; }
+      return false;
+    },
+    render: function (mount) {
+      mount.innerHTML =
+        '<div class="dialog window configscr" role="dialog" aria-label="Config" tabindex="-1">' +
+          '<ul class="configlist" id="configList">' +
+            configItems.map(function () { return '<li></li>'; }).join('') +
+          '</ul>' +
+          '<div class="wc-editor window" id="wcEditor" hidden>' +
+            '<div class="wc-top">' +
+              '<span class="wc-preview window-mini" aria-hidden="false">' +
+                CORNERS.map(function (c) {
+                  return '<button class="wc-corner ' + c + '" type="button" data-corner="' + c +
+                    '" aria-label="' + c + ' corner"></button>';
+                }).join('') +
+              '</span>' +
+              '<span class="wc-swatch window-mini" id="wcSwatch"></span>' +
+            '</div>' +
+            '<ul class="wc-sliders">' +
+              CHANNELS.map(function (ch, i) {
+                return '<li data-ch="' + i + '"><span class="hand"></span>' +
+                  '<b class="wc-ch wc-' + ch.toLowerCase() + '">' + ch + '</b>' +
+                  '<span class="wc-val">0</span>' +
+                  '<span class="wc-bar"><span class="wc-fill"></span></span></li>';
+              }).join('') +
+            '</ul>' +
+          '</div>' +
+        '</div>';
+
+      var dialog = mount.querySelector('.dialog');
+      dialog.focus({ preventScroll: true });
+      renderConfigList(mount);
+
+      var lis = Array.prototype.slice.call(mount.querySelectorAll('#configList li'));
+      configCursor = FF7.cursorList(lis, function (li) {
+        var i = lis.indexOf(li);
+        var it = configItems[i];
+        if (it.type === 'window') {
+          FF7.sounds.confirm();
+          openWcEditor(mount);
+        } else if (it.type === 'toggle') {
+          FF7.sounds.confirm();
+          it.set(it.get() === 0 ? 1 : 0);
+          applySettings();
+          renderConfigList(mount);
+        } else {
+          FF7.sounds.confirm();
+          it.act();
+          applySettings();
+          renderConfigList(mount);
+        }
+      });
+
+      lis.forEach(function (li, i) {
+        li.addEventListener('click', function (e) {
+          e.preventDefault();
+          var it = configItems[i];
+          var opt = e.target.closest('.copt');
+          if (opt && it.type === 'toggle') {
+            FF7.sounds.confirm();
+            it.set(+opt.getAttribute('data-opt'));
+            applySettings();
+            renderConfigList(mount);
+            return;
+          }
+          configCursor.activate();
+        });
+      });
+
+      // window color editor: mouse/touch controls
+      var ed = mount.querySelector('#wcEditor');
+      ed.addEventListener('click', function (e) {
+        var corner = e.target.closest('.wc-corner');
+        if (corner) {
+          wcState.corner = corner.getAttribute('data-corner');
+          wcState.mode = 'chan';
+          FF7.sounds.confirm();
+          renderWcEditor(mount);
+        }
+      });
+      ed.querySelectorAll('.wc-sliders li').forEach(function (li, i) {
+        var bar = li.querySelector('.wc-bar');
+        function setFromPointer(e) {
+          var r = bar.getBoundingClientRect();
+          var v = Math.round((e.clientX - r.left) / r.width * 255);
+          wcState.chan = i;
+          if (wcState.mode !== 'chan') wcState.mode = 'chan';
+          wcSetChannel(mount, i, v);
+        }
+        bar.addEventListener('pointerdown', function (e) {
+          e.preventDefault();
+          bar.setPointerCapture(e.pointerId);
+          setFromPointer(e);
+          function mv(ev) { setFromPointer(ev); }
+          function up() {
+            bar.removeEventListener('pointermove', mv);
+            bar.removeEventListener('pointerup', up);
+          }
+          bar.addEventListener('pointermove', mv);
+          bar.addEventListener('pointerup', up);
+        });
+        li.addEventListener('mouseenter', function () {
+          if (wcState && wcState.mode === 'chan' && wcState.chan !== i) {
+            wcState.chan = i;
+            FF7.sounds.blip();
+            renderWcEditor(mount);
+          }
+        });
+      });
+    },
+    destroy: function () {
+      wcState = null;
+      wcCursor = null;
+      configCursor = null;
+    }
+  };
 
   /* ---------- main screen (#/) ---------- */
   var MAIN_LAYOUT =
@@ -152,17 +400,17 @@
 
       '<nav class="menu window" aria-label="Main menu">' +
         '<ul id="menu">' +
-          '<li><a href="#/about" data-hint="Learn more about Jesse."><span class="hand">👉</span>About</a></li>' +
-          '<li><a href="#/writing" data-hint="Read Jesse\'s writing."><span class="hand">👉</span>Writing</a></li>' +
-          '<li><a href="https://github.com/jesselumarie" data-hint="Inspect Jesse\'s materia."><span class="hand">👉</span>GitHub</a></li>' +
-          '<li><a href="https://www.linkedin.com/in/jesselumarie" data-hint="Employment record and battle history."><span class="hand">👉</span>LinkedIn</a></li>' +
-          '<li><a href="https://twitter.com/jesselumarie" data-hint="Short-form dispatches."><span class="hand">👉</span>Twitter</a></li>' +
-          '<li><a href="https://instagram.com/jesselumarie" data-hint="Field photography."><span class="hand">👉</span>Instagram</a></li>' +
-          '<li><a href="mailto:jesse.lumarie@gmail.com" data-hint="PHS — send Jesse a message."><span class="hand">👉</span>PHS</a></li>' +
-          '<li><a href="#" data-action="config" data-hint="Adjust windows, sound, and debug options."><span class="hand">👉</span>Config</a></li>' +
+          '<li><a href="#/about" data-hint="Learn more about Jesse."><span class="hand"></span>About</a></li>' +
+          '<li><a href="#/writing" data-hint="Read Jesse\'s writing."><span class="hand"></span>Writing</a></li>' +
+          '<li><a href="https://github.com/jesselumarie" data-hint="Inspect Jesse\'s materia."><span class="hand"></span>GitHub</a></li>' +
+          '<li><a href="https://www.linkedin.com/in/jesselumarie" data-hint="Employment record and battle history."><span class="hand"></span>LinkedIn</a></li>' +
+          '<li><a href="https://twitter.com/jesselumarie" data-hint="Short-form dispatches."><span class="hand"></span>Twitter</a></li>' +
+          '<li><a href="https://instagram.com/jesselumarie" data-hint="Field photography."><span class="hand"></span>Instagram</a></li>' +
+          '<li><a href="mailto:jesse.lumarie@gmail.com" data-hint="PHS — send Jesse a message."><span class="hand"></span>PHS</a></li>' +
+          '<li><a href="#/config" data-hint="Adjust windows, sound, and debug options."><span class="hand"></span>Config</a></li>' +
           '<li class="spacer" role="presentation"></li>' +
-          '<li><a href="#" class="disabled" data-action="save" data-hint="You cannot save here."><span class="hand">👉</span>Save</a></li>' +
-          '<li><a href="/" data-action="exit" data-hint="Power off and return to jesselumarie.com"><span class="hand">👉</span>Exit</a></li>' +
+          '<li><a href="#" class="disabled" data-action="save" data-hint="You cannot save here."><span class="hand"></span>Save</a></li>' +
+          '<li><a href="/" data-action="exit" data-hint="Power off and return to jesselumarie.com"><span class="hand"></span>Exit</a></li>' +
         '</ul>' +
       '</nav>' +
 
@@ -193,7 +441,6 @@
       mount.querySelectorAll('#menu a').forEach(function (a) {
         a.addEventListener('click', function (e) {
           var action = a.getAttribute('data-action');
-          if (action === 'config') { e.preventDefault(); FF7.config.open(configItems, applySettings); return; }
           if (action === 'save') { e.preventDefault(); FF7.sounds.buzzer(); FF7.hint('You cannot save here.'); return; }
           if (action === 'exit') {
             e.preventDefault();
@@ -240,8 +487,8 @@
     return '<h2>' + title + '</h2>' +
       '<p>' + message + '</p>' +
       '<ul class="dialog-actions">' +
-        '<li><a href="' + href + '" data-hint="Leave the menu and open the page directly."><span class="hand">👉</span>' + label + '</a></li>' +
-        '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span>Back</a></li>' +
+        '<li><a href="' + href + '" data-hint="Leave the menu and open the page directly."><span class="hand"></span>' + label + '</a></li>' +
+        '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand"></span>Back</a></li>' +
       '</ul>';
   }
 
@@ -257,13 +504,13 @@
     name: 'writing',
     path: 'writing',
     parent: 'main',
+    title: 'Writing',
     hint: 'Select an entry.',
     cursor: function () { return writingCursor; },
     render: function (mount) {
       writingCursor = null;
       mount.innerHTML =
         '<div class="dialog window submenu" role="dialog" aria-label="Writing" tabindex="-1">' +
-          '<h2>Writing</h2>' +
           '<p class="loading">Loading&hellip;</p>' +
         '</div>';
       var dialog = mount.querySelector('.dialog');
@@ -271,15 +518,14 @@
       fetchBlogIndex().then(function (data) {
         if (!onScreen('writing')) return;
         dialog.innerHTML =
-          '<h2>Writing</h2>' +
           '<ul class="postlist">' +
             data.articles.map(function (a) {
               return '<li><a href="#/writing/' + encodeURIComponent(a.slug) + '" data-hint="' + esc(a.summary) + '">' +
-                '<span class="hand">👉</span>' +
+                '<span class="hand"></span>' +
                 '<span class="ptitle">' + esc(a.title) + '</span>' +
                 '<span class="pdate">' + fmtDate(a.date) + '</span></a></li>';
             }).join('') +
-            '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span><span class="ptitle">Back</span></a></li>' +
+            '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand"></span><span class="ptitle">Back</span></a></li>' +
           '</ul>';
         var items = Array.prototype.slice.call(dialog.querySelectorAll('.postlist li'));
         writingCursor = FF7.cursorList(items, function (li) { li.querySelector('a').click(); });
@@ -305,6 +551,7 @@
     name: 'article',
     path: 'writing/:slug',
     parent: 'writing',
+    title: 'Writing',
     hint: 'Loading…',
     cursor: function () { return articleCursor; },
     render: function (mount, params) {
@@ -335,8 +582,8 @@
           '</header>' +
           '<div class="article-body">' + art.content + '</div>' +
           '<ul class="dialog-actions afoot">' +
-            '<li><a href="#/writing" data-back data-hint="Return to the list of entries."><span class="hand">👉</span>Back</a></li>' +
-            '<li><a href="' + esc(art.url) + '" data-hint="Open this entry on the regular blog."><span class="hand">👉</span>Open in blog</a></li>' +
+            '<li><a href="#/writing" data-back data-hint="Return to the list of entries."><span class="hand"></span>Back</a></li>' +
+            '<li><a href="' + esc(art.url) + '" data-hint="Open this entry on the regular blog."><span class="hand"></span>Open in blog</a></li>' +
           '</ul>';
         wireDialogActions(dialog, function (c) { articleCursor = c; });
       }).catch(function () {
@@ -349,59 +596,74 @@
     }
   };
 
-  /* ---------- about screen (#/about) — the game's Equip layout ---------- */
+  /* ---------- about screen (#/about) — the game's Equip layout ----------
+     Three stacked windows like the real Equip screen: member + slots on
+     top, a one-line description window (shows the selected equipment's
+     text, or the bio), then the lower window with materia and actions. */
   var aboutCursor = null;
   var aboutScreen = {
     name: 'about',
     path: 'about',
     parent: 'main',
+    title: 'About',
     hint: 'Jesse — software developer, former lawyer.',
     cursor: function () { return aboutCursor; },
     render: function (mount) {
       var about = FF7_MANIFEST.about;
       var m = party[0];
+      var bioLine = esc(about.bio.join(' '));
       mount.innerHTML =
-        '<div class="dialog window equip" role="dialog" aria-label="About" tabindex="-1">' +
-          '<div class="equip-top">' +
+        '<div class="equip-wrap" role="dialog" aria-label="About" tabindex="-1">' +
+          '<div class="window equip-topwin">' +
             '<div class="member" data-hint="' + esc(m.hint) + '">' + memberStatsHTML(m) + '</div>' +
             '<ul class="equip-slots">' +
               about.equipment.map(function (eq) {
-                return '<li><a href="#" data-noop data-hint="' + esc(eq.desc) + '">' +
-                  '<span class="hand">👉</span>' +
+                return '<li><a href="#" data-noop data-desc="' + esc(eq.desc) + '" data-hint="' + esc(eq.desc) + '">' +
+                  '<span class="hand"></span>' +
                   '<span class="eslot">' + esc(eq.slot) + '</span>' +
                   '<span class="ename">' + esc(eq.name) + '</span></a></li>';
               }).join('') +
             '</ul>' +
           '</div>' +
-          '<div class="equip-bio">' +
-            about.bio.map(function (line) { return '<p>' + esc(line) + '</p>'; }).join('') +
+          '<div class="window equip-desc" id="equipDesc">' + bioLine + '</div>' +
+          '<div class="window equip-main">' +
+            '<h3 class="msec">Materia</h3>' +
+            '<ul class="materia">' +
+              about.materia.map(function (mat) {
+                return '<li><a href="' + esc(mat.href) + '" data-hint="' + esc(mat.hint) + '">' +
+                  '<span class="hand"></span>' +
+                  '<span class="orb orb-' + esc(mat.color) + '"></span>' + esc(mat.name) + '</a></li>';
+              }).join('') +
+            '</ul>' +
+            '<ul class="dialog-actions">' +
+              '<li><a href="' + esc(about.fallbackUrl) + '" data-hint="Leave the menu and read the about page directly."><span class="hand"></span>About Jesse (plain version)</a></li>' +
+              '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand"></span>Back</a></li>' +
+            '</ul>' +
           '</div>' +
-          '<h3 class="msec">Materia</h3>' +
-          '<ul class="materia">' +
-            about.materia.map(function (mat) {
-              return '<li><a href="' + esc(mat.href) + '" data-hint="' + esc(mat.hint) + '">' +
-                '<span class="hand">👉</span>' +
-                '<span class="orb orb-' + esc(mat.color) + '"></span>' + esc(mat.name) + '</a></li>';
-            }).join('') +
-          '</ul>' +
-          '<ul class="dialog-actions">' +
-            '<li><a href="' + esc(about.fallbackUrl) + '" data-hint="Leave the menu and read the about page directly."><span class="hand">👉</span>About Jesse (plain version)</a></li>' +
-            '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span>Back</a></li>' +
-          '</ul>' +
         '</div>';
 
-      var dialog = mount.querySelector('.dialog');
-      dialog.focus({ preventScroll: true });
+      var wrap = mount.querySelector('.equip-wrap');
+      wrap.focus({ preventScroll: true });
+      var descEl = mount.querySelector('#equipDesc');
+      function syncDesc(li) {
+        var a = li && li.querySelector('[data-desc]');
+        descEl.textContent = a ? a.getAttribute('data-desc') : about.bio.join(' ');
+      }
       var items = Array.prototype.slice.call(
-        dialog.querySelectorAll('.equip-slots li, .materia li, .dialog-actions li'));
+        wrap.querySelectorAll('.equip-slots li, .materia li, .dialog-actions li'));
       aboutCursor = FF7.cursorList(items, function (li) { li.querySelector('a').click(); });
-      dialog.querySelectorAll('[data-noop]').forEach(function (a) {
+      var baseMove = aboutCursor.move;
+      aboutCursor.move = function (d) { baseMove(d); syncDesc(aboutCursor.current()); };
+      items.forEach(function (li) {
+        li.addEventListener('mouseenter', function () { syncDesc(li); });
+      });
+      wrap.querySelectorAll('[data-noop]').forEach(function (a) {
         a.addEventListener('click', function (e) { e.preventDefault(); FF7.sounds.blip(); });
       });
-      dialog.querySelectorAll('.materia a[href^="#/"]').forEach(function (a) {
+      wrap.querySelectorAll('.materia a[href^="#/"]').forEach(function (a) {
         a.addEventListener('click', function () { FF7.sounds.confirm(); });
       });
-      dialog.querySelector('[data-back]').addEventListener('click', function (e) {
+      wrap.querySelector('[data-back]').addEventListener('click', function (e) {
         e.preventDefault();
         FF7.router.back();
       });
@@ -412,6 +674,7 @@
   FF7.router.register(writingScreen);
   FF7.router.register(articleScreen);
   FF7.router.register(aboutScreen);
+  FF7.router.register(configScreen);
 
   /* ---------- boot ---------- */
   FF7.power.initButton();

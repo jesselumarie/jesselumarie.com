@@ -1,4 +1,4 @@
-/* FF7 kit: windows, cursor lists, sounds, save file, hint bar, config overlay.
+/* FF7 kit: windows, cursor lists, sounds, save file, hint bar, router.
    Content-agnostic — site-specific data and screens live in screens.js. */
 var FF7 = (function () {
   'use strict';
@@ -22,20 +22,41 @@ var FF7 = (function () {
   if (typeof settings.sound !== 'boolean') settings.sound = true;
   if (typeof settings.scanlines !== 'boolean') settings.scanlines = true;
   if (typeof settings.birthday !== 'boolean') settings.birthday = false;
-  if (!settings.windowColor) settings.windowColor = 'Blue';
+  // window color: RGB per corner, like the game's Config screen
+  // (PSX defaults: pure blue 176/128/80/32 from top-left to bottom-right)
+  function defaultCorners() {
+    return { tl: [0, 0, 176], tr: [0, 0, 128], bl: [0, 0, 80], br: [0, 0, 32] };
+  }
+  if (!settings.windowColor || typeof settings.windowColor === 'string' ||
+      !settings.windowColor.tl) {
+    settings.windowColor = defaultCorners();
+  }
 
-  /* ---------- hint bar ---------- */
+  /* ---------- hint bar (the game's help window) + screen title tab ---------- */
   var hintEl = document.getElementById('hint');
+  var titleEl = document.getElementById('screenTitle');
   var defaultHint = '';
+  var showingDefault = true;
   function renderHint(t) {
     hintEl.innerHTML = String(t)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/\./g, '<span class="dot">.</span>');
   }
-  function setHint(t) { renderHint(t || defaultHint); }
+  function setHint(t) {
+    showingDefault = !t;
+    renderHint(t || defaultHint);
+  }
   function setDefaultHint(t) {
     defaultHint = t;
-    renderHint(defaultHint);
+    // don't stomp a contextual hint (e.g. the window color editor's)
+    if (showingDefault) renderHint(defaultHint);
+  }
+  // sub-screens get a small title window right of the help bar, like the
+  // game's "Config"/"Equip" tab; the main menu has none
+  function setTitle(t) {
+    if (!titleEl) return;
+    titleEl.textContent = t || '';
+    titleEl.hidden = !t;
   }
 
   document.addEventListener('mouseover', function (e) {
@@ -43,35 +64,77 @@ var FF7 = (function () {
     setHint(t ? t.getAttribute('data-hint') : null);
   });
 
-  /* ---------- sound ---------- */
+  /* ---------- sound ----------
+     Synthesized to match the PSX menu SFX, measured from the real
+     samples (10ms FFT windows): pitch contours, envelopes, timing. */
   var audioCtx = null;
-  function tone(freq, dur, vol) {
-    if (!settings.sound) return;
-    try {
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      var o = audioCtx.createOscillator();
-      var g = audioCtx.createGain();
-      o.type = 'square';
-      o.frequency.value = freq;
-      g.gain.setValueAtTime(vol, audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-      o.connect(g).connect(audioCtx.destination);
-      o.start();
-      o.stop(audioCtx.currentTime + dur + 0.01);
-    } catch (e) { /* silence */ }
-  }
-  function blip() { tone(1320, 0.07, 0.03); }
-  function confirmBeep() { tone(880, 0.09, 0.035); }
-  function buzzer() { tone(160, 0.18, 0.05); }
-  // cancel: softer, lower cousin of the cursor blip (backing out of a menu)
-  function cancelBeep() { tone(990, 0.07, 0.025); }
-
   function getCtx() {
     if (!settings.sound) return null;
     try {
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
       return audioCtx;
     } catch (e) { return null; }
+  }
+
+  // master level for menu SFX (the raw envelopes below mirror the game's
+  // relative levels; this scales them to polite web volume)
+  var SFX_VOL = 0.5;
+
+  function sfxOsc(ctx, type, t0, t1, freqs, gains) {
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.type = type;
+    freqs.forEach(function (f) { o.frequency[f[0]](f[1], t0 + f[2]); });
+    gains.forEach(function (v) { g.gain[v[0]](v[1] * SFX_VOL, t0 + v[2]); });
+    o.connect(g).connect(ctx.destination);
+    o.start(t0); o.stop(t1 + 0.02);
+  }
+
+  // cursor move: 130ms chirp, 1200 -> 2100Hz over 70ms, exponential decay
+  function blip() {
+    var ctx = getCtx(); if (!ctx) return;
+    var t = ctx.currentTime;
+    sfxOsc(ctx, 'sine', t, t + 0.145,
+      [['setValueAtTime', 1200, 0], ['linearRampToValueAtTime', 2100, 0.07]],
+      [['setValueAtTime', 0.09, 0], ['exponentialRampToValueAtTime', 0.01, 0.13],
+       ['linearRampToValueAtTime', 0.0002, 0.145]]);
+  }
+
+  // confirm: bright 11.2kHz ping (55ms), then 6.3kHz tail decaying to 380ms
+  function confirmBeep() {
+    var ctx = getCtx(); if (!ctx) return;
+    var t = ctx.currentTime;
+    sfxOsc(ctx, 'sine', t, t + 0.055,
+      [['setValueAtTime', 11200, 0]],
+      [['setValueAtTime', 0.06, 0], ['setValueAtTime', 0.06, 0.045],
+       ['linearRampToValueAtTime', 0.0002, 0.055]]);
+    sfxOsc(ctx, 'sine', t + 0.085, t + 0.40,
+      [['setValueAtTime', 6300, 0]],
+      [['setValueAtTime', 0.07, 0], ['exponentialRampToValueAtTime', 0.012, 0.295],
+       ['linearRampToValueAtTime', 0.0002, 0.315]]);
+  }
+
+  // cancel: quick two-step blip, 3.15kHz (30ms) then 6.35kHz (30ms)
+  function cancelBeep() {
+    var ctx = getCtx(); if (!ctx) return;
+    var t = ctx.currentTime;
+    sfxOsc(ctx, 'sine', t, t + 0.062,
+      [['setValueAtTime', 3150, 0], ['setValueAtTime', 6350, 0.03]],
+      [['setValueAtTime', 0.05, 0], ['setValueAtTime', 0.06, 0.03],
+       ['exponentialRampToValueAtTime', 0.0002, 0.062]]);
+  }
+
+  // buzzer: harsh ~100Hz buzz in two bursts (100ms, gap, 225ms)
+  function buzzer() {
+    var ctx = getCtx(); if (!ctx) return;
+    var t = ctx.currentTime;
+    [[0, 0.10], [0.12, 0.345]].forEach(function (seg) {
+      var dur = seg[1] - seg[0];
+      sfxOsc(ctx, 'sawtooth', t + seg[0], t + seg[1],
+        [['setValueAtTime', 100, 0]],
+        [['setValueAtTime', 0.11, 0], ['setValueAtTime', 0.11, dur - 0.01],
+         ['linearRampToValueAtTime', 0.0002, dur]]);
+    });
   }
 
   function noiseBurst(ctx, at, dur, vol, filterFreq) {
@@ -192,61 +255,39 @@ var FF7 = (function () {
     };
   }
 
-  /* ---------- window colors / shell settings ---------- */
-  var WINDOW_COLORS = {
-    Blue:     ['#2028b0', '#050840'],
-    Green:    ['#0e7a34', '#032a10'],
-    Crimson:  ['#a01030', '#2c030a'],
-    Violet:   ['#7030c0', '#1a0640'],
-    Midnight: ['#34344e', '#08080f']
-  };
+  /* ---------- window colors / shell settings ----------
+     The PSX renders every window as one quad with a color per vertex
+     (Gouraud shading). Recreate that exactly: bilinear-interpolate the
+     four corner colors into a small canvas and stretch it over each
+     window via a CSS variable. */
+  function cornerGradientURL(c) {
+    var N = 32;
+    var cv = document.createElement('canvas');
+    cv.width = N; cv.height = N;
+    var g = cv.getContext('2d');
+    var img = g.createImageData(N, N);
+    for (var y = 0; y < N; y++) {
+      var fy = y / (N - 1);
+      for (var x = 0; x < N; x++) {
+        var fx = x / (N - 1);
+        var o = (y * N + x) * 4;
+        for (var ch = 0; ch < 3; ch++) {
+          var top = c.tl[ch] + (c.tr[ch] - c.tl[ch]) * fx;
+          var bot = c.bl[ch] + (c.br[ch] - c.bl[ch]) * fx;
+          img.data[o + ch] = Math.round(top + (bot - top) * fy);
+        }
+        img.data[o + 3] = 255;
+      }
+    }
+    g.putImageData(img, 0, 0);
+    return 'url(' + cv.toDataURL() + ')';
+  }
 
   function applyShellSettings() {
-    var c = WINDOW_COLORS[settings.windowColor] || WINDOW_COLORS.Blue;
-    document.documentElement.style.setProperty('--win-top', c[0]);
-    document.documentElement.style.setProperty('--win-bottom', c[1]);
+    document.documentElement.style.setProperty(
+      '--win-bg', cornerGradientURL(settings.windowColor));
     document.body.classList.toggle('no-scanlines', !settings.scanlines);
   }
-
-  /* ---------- config overlay ---------- */
-  var overlay = document.getElementById('configOverlay');
-  var configList = document.getElementById('configList');
-  var configCursor = null;
-  var configItems = [];
-  var onConfigChange = function () {};
-
-  function renderConfig() {
-    configList.innerHTML = configItems.map(function (it) {
-      return '<li><button class="citem" type="button" data-hint="' + it.hint + '">' +
-        '<span class="hand">👉</span><span>' + it.label + '</span>' +
-        '<span class="cval">' + it.value() + '</span></button></li>';
-    }).join('');
-    var lis = Array.prototype.slice.call(configList.children);
-    configCursor = cursorList(lis, function (li) { li.querySelector('button').click(); });
-    lis.forEach(function (li, i) {
-      li.querySelector('button').addEventListener('click', function () {
-        confirmBeep();
-        configItems[i].act();
-        if (overlay.classList.contains('open')) {
-          onConfigChange();
-          renderConfig();
-        }
-      });
-    });
-  }
-
-  function openConfig(items, onChange) {
-    configItems = items;
-    onConfigChange = onChange || function () {};
-    confirmBeep();
-    renderConfig();
-    overlay.classList.add('open');
-  }
-  function closeConfig() {
-    overlay.classList.remove('open');
-    setHint(null);
-  }
-  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeConfig(); });
 
   /* ---------- TV power (desktop shell) ---------- */
   function initPowerButton() {
@@ -289,12 +330,16 @@ var FF7 = (function () {
       var timeEl = document.getElementById('time');
       var gilEl = document.getElementById('gil');
       var s = totalSeconds();
-      if (timeEl) timeEl.textContent = Math.floor(s / 3600) + ':' + pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60);
+      // colons blink once a second, like the game's play-time display
+      if (timeEl) timeEl.innerHTML = Math.floor(s / 3600) +
+        '<span class="tsep">:</span>' + pad(Math.floor(s / 60) % 60) +
+        '<span class="tsep">:</span>' + pad(s % 60);
       if (s > 0 && s % 10 === 0 && s !== lastAccrual) {
         lastAccrual = s;
         save.gil += 7;
       }
-      if (gilEl) gilEl.textContent = save.gil.toLocaleString();
+      // the game prints gil as a bare number — no thousands separator
+      if (gilEl) gilEl.textContent = String(save.gil);
       if (s % 5 === 0) persist();
     }
 
@@ -372,7 +417,9 @@ var FF7 = (function () {
     currentRoute = match;
     routerMount.innerHTML = '';
     var hint = typeof match.def.hint === 'function' ? match.def.hint(match.params) : match.def.hint;
-    if (hint != null) setDefaultHint(hint);
+    if (hint != null) defaultHint = hint;
+    setHint(null); // entering a screen always shows its default hint
+    setTitle(match.def.title || null);
     match.def.render(routerMount, match.params);
   }
 
@@ -393,17 +440,18 @@ var FF7 = (function () {
 
   /* ---------- keyboard ---------- */
   document.addEventListener('keydown', function (e) {
-    var open = overlay.classList.contains('open');
     if (e.key === 'Escape') {
-      if (open) { closeConfig(); return; }
+      // a screen may consume Escape itself (e.g. the window color editor)
+      if (currentRoute && currentRoute.def.onEscape && currentRoute.def.onEscape()) return;
       routerBack();
       return;
     }
-    var cursor = open ? configCursor
-      : (currentRoute && currentRoute.def.cursor ? currentRoute.def.cursor() : null);
+    var cursor = currentRoute && currentRoute.def.cursor ? currentRoute.def.cursor() : null;
     if (!cursor) return;
     if (e.key === 'ArrowDown') { e.preventDefault(); cursor.move(1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); cursor.move(-1); }
+    else if (e.key === 'ArrowLeft' && cursor.moveH) { e.preventDefault(); cursor.moveH(-1); }
+    else if (e.key === 'ArrowRight' && cursor.moveH) { e.preventDefault(); cursor.moveH(1); }
     else if (e.key === 'Enter') { e.preventDefault(); cursor.activate(); }
   });
 
@@ -414,6 +462,7 @@ var FF7 = (function () {
     resetSave: resetSave,
     hint: setHint,
     setDefaultHint: setDefaultHint,
+    setTitle: setTitle,
     sounds: {
       blip: blip,
       confirm: confirmBeep,
@@ -423,14 +472,9 @@ var FF7 = (function () {
       powerOff: powerOffSound
     },
     cursorList: cursorList,
-    windowColors: WINDOW_COLORS,
+    defaultWindowCorners: defaultCorners,
+    cornerGradientURL: cornerGradientURL,
     applyShellSettings: applyShellSettings,
-    config: {
-      open: openConfig,
-      close: closeConfig,
-      isOpen: function () { return overlay.classList.contains('open'); },
-      cursor: function () { return configCursor; }
-    },
     power: {
       initButton: initPowerButton,
       offAndNavigate: powerOffAndNavigate

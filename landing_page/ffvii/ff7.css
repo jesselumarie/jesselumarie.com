@@ -7,19 +7,18 @@
   font-display: swap;
 }
 :root {
-  --win-top: #2028b0;
-  --win-bottom: #050840;
-  --border-light: #e9e9e9;
-  --border-mid: #8f8f8f;
-  --border-dark: #3c3c3c;
-  --label: #9fe8e4;
+  /* Gouraud window fill painted by ff7.js from the four corner colors
+     (PSX defaults: blue 176/128/80/32, top-left to bottom-right) */
+  --win-bg: linear-gradient(135deg, #0222ba 0%, #01104f 55%, #000332 100%);
+  --border-light: #ccd0de;
+  --border-dark: #10101a;
+  --label: #55e2d2;
   --gold: #ffe08a;
-  --bar-track: #262640;
-  --bar-fill-a: #d0a2c4;
-  --bar-fill-b: #8f5f85;
-  --time-val: #8fd8f8;
-  --hint-top: #a35cc9;
-  --hint-bottom: #55287f;
+  --bar-track: rgba(0, 0, 6, .55);
+  --hp-fill: #8898dc;
+  --mp-fill: #7cd8cc;
+  --bar-fill-a: #ecb0c4;
+  --bar-fill-b: #a86e88;
 }
 
 * { box-sizing: border-box; }
@@ -42,9 +41,8 @@ body {
   justify-content: center;
   padding: 12px;
   gap: 10px;
-  background:
-    radial-gradient(ellipse at 50% -20%, rgba(38, 48, 160, .30), transparent 60%),
-    #000;
+  /* the game's menu backdrop is plain black */
+  background: #000;
 }
 
 /* ---- CRT shader stack: scanlines + phosphor triads + roll + vignette ---- */
@@ -185,7 +183,7 @@ body.no-scanlines .frame { filter: none; }
     flex-direction: column;
   }
   #app > .window { max-height: 100%; overflow-y: auto; }
-  .layout { flex: 1 1 auto; grid-template-rows: 1fr auto; }
+  #app > .equip-wrap { max-height: 100%; }
 
   /* ---- chin: badge, vents, knobs, power ---- */
   .chin {
@@ -302,15 +300,30 @@ body.no-scanlines .frame { filter: none; }
   }
 }
 
+/* ---- windows: PSX bevel — thin dark line, light grey ridge, thin dark
+   line, then the Gouraud fill stretched corner-to-corner ---- */
 .window {
-  background: linear-gradient(170deg, var(--win-top) 0%, var(--win-bottom) 90%);
-  border: 3px solid var(--border-light);
-  border-radius: 7px;
+  background-image: var(--win-bg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  border: 4px solid var(--border-light);
+  border-radius: 6px;
   box-shadow:
-    inset 0 0 0 2px var(--border-mid),
-    inset 0 0 0 4px var(--border-dark),
-    0 6px 18px rgba(0, 0, 0, .7);
+    0 0 0 2px var(--border-dark),
+    inset 0 0 0 2px var(--border-dark);
   text-shadow: 2px 2px 0 rgba(0, 0, 0, .85);
+}
+
+/* smaller bevel for swatches and preview chips */
+.window-mini {
+  display: inline-block;
+  background-image: var(--win-bg);
+  background-size: 100% 100%;
+  border: 2px solid var(--border-light);
+  border-radius: 5px;
+  box-shadow:
+    0 0 0 1px var(--border-dark),
+    inset 0 0 0 1px var(--border-dark);
 }
 
 .frame {
@@ -321,23 +334,46 @@ body.no-scanlines .frame { filter: none; }
   gap: 10px;
 }
 
-/* ---- Hint bar (purple like the in-game tutorial window) ---- */
-/* Fixed-height row above the content: hints change constantly, so the
-   bar must never grow taller or push the screen below it around. On
-   desktop it hugs the text horizontally (one 44px line, ellipsis past
-   the frame edge); mobile uses a fixed full-width two-line box. */
+/* ---- pointing-glove cursor, lifted pixel-for-pixel from the game's
+   config screen (42x26 at the menu's native 640-wide res) ---- */
+.hand {
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 63px;
+  height: 39px;
+  opacity: 0;
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACoAAAAaCAYAAADBuc72AAAB20lEQVR4nNWXP07DMBTG7SqnQDAWqRdAHRhQVSGuwMLAAThHByYO0KGnQFVkZcgQ5QKVygjiGkWu9KqXl/fsFzsZ+JY0rp/98/f8L9Yk6ur69qSt+/tztCZTM/NPZHMcWz8+Bf8v959mLBWpgQB5t1xeylYP98ZV9SSwVnIy5hYFpHIEOFVt05wHW2jdgiBcDoCL+U2vjcX8+fw8fH2LdUKCOOizkJykkLQsBEk7g99aWBwH6jiKIXE6cRo1gFJnGlgch/u1kpPcvPPSuHJgOpPak+TjfNp32w/bczQEmeKgQ45wWZEA8SIC9RZTCqSkFbNdeW0279FYD4lPtALSDm4CVOpqdVXNDhZWb+q+2nF06DzitBLa8EZ4WG8KhtXeAwrtfAuJ1nck3dIUyLqUQKfQcAya1udcDUFqb2Gqsz4GCyBOmJ+cYDvUztmZ1CF+DpGr6s4WA4sInhywdzXmbNTRobBt04h3BMlBusBUoGPdeiTFbmXR1NPUcKmCVOKUxmJK5FTO3bTw+9hue7ysPpw2fK2T5hinltnc4cwu9+ZEXYX/gqChjqR3XA4Dw3BrAkKdTHG2N5KX1zf11yWnMuHUyfoUiSnm2uSgWvkB4U17TCjDKAsUv08N+gfeDyjC6JQy3QAAAABJRU5ErkJggg==') no-repeat center / contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, .6));
+  pointer-events: none;
+  z-index: 4;
+}
+
+li.selected > a > .hand,
+li.selected > .hand,
+li.selected > .citem > .hand { opacity: 1; }
+
+/* ---- top row: help window (hints) + screen-title tab, like the game's
+   sub-screens ("Select colors for each corner of the window" | Config) ---- */
+.topbar {
+  display: flex;
+  gap: 10px;
+  height: 44px;
+  flex: none;
+  min-width: 0;
+}
+
 /* Reactor7's period fills a whole PSX character cell; pull the next
    glyph back so "jesselumarie.com" doesn't read as "jesselumarie. com" */
 .hintbar .dot { margin-right: -.3em; }
 .hintbar {
-  align-self: flex-start;
-  background: linear-gradient(180deg, var(--hint-top), var(--hint-bottom));
-  padding: 9px 20px;
-  font-size: 18px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 20px;
+  font-size: 22px;
   line-height: 1.2;
-  height: 44px;
-  max-width: 100%;
-  flex: none;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -350,7 +386,19 @@ body.no-scanlines .frame { filter: none; }
   text-overflow: ellipsis;
 }
 
-/* ---- Main layout: party left, menu column right ---- */
+.titlebar {
+  flex: none;
+  min-width: 150px;
+  padding: 7px 22px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titlebar[hidden] { display: none; }
+
+/* ---- Main layout (mobile fallback: stacked grid) ---- */
 .layout {
   display: grid;
   grid-template-columns: 1fr 245px;
@@ -361,11 +409,11 @@ body.no-scanlines .frame { filter: none; }
   align-items: stretch;
 }
 
-/* ---- Party window (full height even with a solo party, like the game) ---- */
+/* ---- Party window ---- */
 .party {
   grid-area: party;
   min-height: 480px;
-  padding: 24px 26px;
+  padding: 22px 24px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -373,16 +421,15 @@ body.no-scanlines .frame { filter: none; }
 
 .member {
   display: flex;
-  gap: 24px;
+  gap: 22px;
   align-items: center;
 }
 
 .portrait {
-  width: 122px;
-  height: 122px;
+  width: 100px;
+  height: 100px;
   flex: none;
   border: 1px solid #000;
-  box-shadow: 3px 3px 0 rgba(0,0,0,.6);
   object-fit: cover;
   image-rendering: pixelated;
   filter: contrast(1.08) saturate(1.12);
@@ -390,59 +437,66 @@ body.no-scanlines .frame { filter: none; }
 
 .stats { flex: 1 1 200px; min-width: 0; }
 
-.mname { font-size: 26px; letter-spacing: .02em; margin: 0 0 8px; }
+.mname { font-size: 30px; margin: 0 0 6px; }
 
 .srow {
   display: grid;
   grid-template-columns: 2.4em 1fr;
   align-items: baseline;
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: 26px;
+  line-height: 1.3;
 }
 
 .srow .lab { color: var(--label); }
 .srow .val {
   text-align: right;
-  max-width: 10em;
+  max-width: 9.4ch;
   font-variant-numeric: tabular-nums;
 }
+
+/* LV: short right-aligned field at the value column start, like the game */
+.srow .val-lv { text-align: left; }
+.srow .lvnum { min-width: 2.2ch; }
 
 /* fixed-width number cells so the slashes line up like the game */
 .pnum { display: inline-block; min-width: 4.1ch; text-align: right; }
 
+/* stat underlines: HP periwinkle, MP teal, like the game */
 .thinbar {
   grid-column: 2;
-  max-width: 10em;
-  height: 4px;
-  margin-top: 1px;
+  max-width: 9.4ch;
+  height: 3px;
+  /* hug the number baseline, like the game */
+  margin-top: -3px;
+  margin-bottom: 3px;
   background: var(--bar-track);
-  border-top: 1px solid rgba(0,0,0,.8);
-  border-bottom: 1px solid rgba(255,255,255,.22);
 }
 
-.thinbar > span {
-  display: block;
-  height: 100%;
-  background: linear-gradient(to bottom, var(--bar-fill-a), var(--bar-fill-b));
-}
+.thinbar > span { display: block; height: 100%; }
+.hpbar > span { background: var(--hp-fill); }
+.mpbar > span { background: var(--mp-fill); }
 
-/* right block: next level / limit */
+/* right block: next level / limit — hugs its gauges like the game */
 .growth {
-  flex: 1 1 190px;
-  min-width: 160px;
-  font-size: 17px;
+  flex: 0 1 195px;
+  min-width: 150px;
+  font-size: 26px;
   align-self: center;
 }
 
 .growth .glabel { display: flex; justify-content: space-between; gap: 8px; }
-.growth .gsub { color: var(--gold); font-size: 14px; }
+.growth .gsub { color: var(--gold); font-size: 19px; }
 
+/* gauges: light ridge border over a dark track, pink fill */
 .fatbar {
-  height: 10px;
-  margin: 4px 0 12px;
-  background: var(--bar-track);
-  border: 1px solid #000;
-  box-shadow: 0 1px 0 rgba(255,255,255,.25);
+  width: 170px;
+  max-width: 100%;
+  height: 14px;
+  margin: 3px 0 10px;
+  background: #101024;
+  border: 2px solid var(--border-light);
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px var(--border-dark), inset 0 0 0 1px var(--border-dark);
   overflow: hidden;
 }
 
@@ -467,7 +521,8 @@ body.no-scanlines .frame { filter: none; }
 /* ---- Menu window ---- */
 .menu {
   grid-area: menu;
-  padding: 20px 10px 20px 14px;
+  padding: 16px 8px 16px 12px;
+  align-self: start;
 }
 
 .menu ul { list-style: none; margin: 0; padding: 0; }
@@ -477,66 +532,101 @@ body.no-scanlines .frame { filter: none; }
   display: block;
   color: #fff;
   text-decoration: none;
-  font-size: 21px;
-  letter-spacing: .03em;
-  padding: 9px 6px 9px 44px;
+  font-size: 30px;
+  line-height: 1.0;
+  padding: 0 6px 0 20px;
   outline: none;
   cursor: pointer;
 }
 
 .menu a.disabled { color: #8a8a8a; }
 
-.hand {
-  position: absolute;
-  left: 4px;
-  top: 50%;
-  translate: 0 -50%;
-  opacity: 0;
-  font-size: 22px;
-  pointer-events: none;
-  filter: grayscale(1) brightness(1.65) drop-shadow(2px 2px 0 rgba(0,0,0,.8));
-}
+/* on the main menu the fingertip pokes past the window border,
+   exactly like the game */
+.menu .hand { left: -48px; }
 
-li.selected > a > .hand,
-li.selected > .citem > .hand { opacity: 1; }
-
-.menu .spacer { height: 20px; }
+.menu .spacer { height: 30px; }
 
 /* ---- Time / Gil ---- */
 .timegil {
   grid-area: timegil;
-  padding: 14px 18px;
-  font-size: 19px;
+  padding: 12px 18px;
+  font-size: 25px;
   align-self: end;
 }
 
 .kv { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .kv + .kv { margin-top: 8px; }
 .kv .v { font-variant-numeric: tabular-nums; }
-.kv .time-v { color: var(--time-val); }
+
+/* the play-time colons pulse once a second, like the game */
+.tsep { animation: colon-blink 1s steps(1) infinite; }
+@keyframes colon-blink { 50% { opacity: .25; } }
 
 /* ---- Location ---- */
 .loc {
   grid-area: loc;
-  padding: 12px 22px;
-  font-size: 20px;
+  padding: 10px 22px;
+  font-size: 26px;
   align-self: end;
   justify-self: start;
   min-width: 45%;
 }
 
+/* ---- main screen on desktop: overlapping windows, measured off the
+   PSX menu. Party window spans the left ~81%; the command menu,
+   Time/Gil and location windows float over its right and bottom
+   edges, exactly like the game. ---- */
+@media (min-width: 900px) {
+  .layout { position: relative; flex: 1 1 auto; display: block; }
+  .party {
+    position: absolute;
+    left: 0; top: 0;
+    width: 81.4%;
+    bottom: 60px;
+    min-height: 0;
+    /* keep the growth gauges clear of the overlapping command menu
+       and its poking hand cursor */
+    padding-right: 112px;
+  }
+  .menu {
+    position: absolute;
+    top: 8px; right: 0;
+    width: 23.8%;
+    z-index: 2;
+    align-self: auto;
+  }
+  .timegil {
+    position: absolute;
+    right: 0;
+    width: 23.8%;
+    top: 71.5%;
+    z-index: 2;
+    align-self: auto;
+  }
+  .loc {
+    position: absolute;
+    left: 50.5%; right: 0;
+    /* overlaps the party window's bottom border, like the game */
+    top: calc(100% - 76px);
+    z-index: 3;
+    min-width: 0;
+    justify-self: stretch;
+    align-self: auto;
+  }
+}
+
 /* ---- Dialog screens (stubs, articles) ---- */
 .dialog {
   padding: 20px 24px;
-  font-size: 19px;
+  font-size: 25px;
   outline: none;
 }
 
 .dialog h2 {
   margin: 0 0 12px;
-  font-size: 22px;
+  font-size: 28px;
   color: var(--gold);
-  letter-spacing: .02em;
 }
 
 .dialog a { color: var(--gold); text-decoration: none; }
@@ -546,9 +636,9 @@ li.selected > .citem > .hand { opacity: 1; }
 .dialog-actions a {
   display: block;
   color: #fff;
-  font-size: 19px;
-  letter-spacing: .03em;
-  padding: 8px 6px 8px 42px;
+  text-decoration: none;
+  font-size: 25px;
+  padding: 6px 6px 6px 70px;
   outline: none;
   cursor: pointer;
 }
@@ -565,14 +655,13 @@ li.selected > .citem > .hand { opacity: 1; }
   gap: 14px;
   color: #fff;
   text-decoration: none;
-  font-size: 19px;
-  letter-spacing: .03em;
-  padding: 9px 6px 9px 44px;
+  font-size: 24px;
+  padding: 7px 6px 7px 70px;
   outline: none;
   cursor: pointer;
 }
 .postlist .ptitle { min-width: 0; }
-.postlist .pdate { color: var(--label); font-size: 15px; flex: none; }
+.postlist .pdate { color: var(--label); font-size: 18px; flex: none; }
 
 .loading { color: var(--label); margin: 6px; }
 
@@ -600,23 +689,23 @@ li.selected > .citem > .hand { opacity: 1; }
   margin-bottom: 10px;
 }
 
-.atitle { margin: 0; font-size: 22px; color: var(--gold); letter-spacing: .02em; }
-.adate { color: var(--label); font-size: 15px; flex: none; }
+.atitle { margin: 0; font-size: 28px; color: var(--gold); }
+.adate { color: var(--label); font-size: 18px; flex: none; }
 
 .article-body {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   padding-right: 8px;
-  font-size: 17px;
-  line-height: 1.55;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, .85);
+  font-size: 22px;
+  line-height: 1.45;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, .85);
 }
 
 .article-body > :first-child { margin-top: 0; }
 .article-body h2, .article-body h3 { color: var(--gold); margin: 1.2em 0 .4em; }
-.article-body h2 { font-size: 20px; }
-.article-body h3 { font-size: 18px; }
+.article-body h2 { font-size: 26px; }
+.article-body h3 { font-size: 24px; }
 .article-body a { color: var(--gold); text-decoration: underline; }
 .article-body img {
   max-width: 100%;
@@ -649,14 +738,39 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .afoot { margin-top: 12px; flex: none; }
 
-/* ---- About / Equip screen ---- */
-.equip { padding: 20px 22px; }
+/* ---- About: the game's Equip screen, three stacked windows ---- */
+.equip-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  outline: none;
+}
 
-.equip-top {
+.equip-topwin {
+  flex: none;
+  padding: 16px 22px;
   display: grid;
-  grid-template-columns: 1fr 250px;
-  gap: 18px;
+  grid-template-columns: 1fr 360px;
+  gap: 16px;
   align-items: center;
+}
+
+.equip-desc {
+  flex: none;
+  min-height: 44px;
+  padding: 8px 18px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+}
+
+.equip-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 22px;
 }
 
 .equip-slots { list-style: none; margin: 0; padding: 0; }
@@ -667,115 +781,208 @@ li.selected > .citem > .hand { opacity: 1; }
   gap: 10px;
   color: #fff;
   text-decoration: none;
-  font-size: 18px;
-  letter-spacing: .03em;
-  padding: 8px 6px 8px 40px;
+  font-size: 24px;
+  padding: 6px 6px 6px 68px;
   outline: none;
   cursor: pointer;
 }
 .eslot { color: var(--label); flex: none; min-width: 3.2em; }
 
-.equip-bio {
-  margin-top: 14px;
-  font-size: 16px;
-  line-height: 1.5;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, .85);
-}
-.equip-bio p { margin: 0 0 6px; }
+.msec { margin: 2px 0 4px; font-size: 24px; color: var(--gold); }
 
-.msec { margin: 16px 0 4px; font-size: 18px; color: var(--gold); letter-spacing: .02em; }
-
+/* materia sockets, like the game's Materia screen: dumbbell pairs —
+   two bright metal donuts joined by a solid grooved bar — resting on
+   a subtle recessed track that runs the row's full fixed length */
 .materia {
   list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  column-gap: 10px;
+  margin: 8px 0 4px 66px;
+  /* short tail past the spare pair, like the game's slot track */
+  padding: 2px 16px 2px 3px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  background: rgba(0, 0, 12, .3);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 6, .55), inset 0 -1px 0 rgba(255, 255, 255, .16);
 }
 .materia li { position: relative; }
 .materia a {
   display: flex;
   align-items: center;
-  gap: 9px;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+}
+/* solid grooved bar joining a pair, tucked under both rings */
+.materia li:nth-child(even) a::before {
+  content: "";
+  width: 20px;
+  height: 16px;
+  margin: 0 -4px;
+  background: linear-gradient(180deg,
+    #e2e2ea 0 2px, #9a9aa6 2px 5px, #3a3a44 5px 7px, #b2b2be 7px 9px,
+    #3a3a44 9px 11px, #8a8a96 11px 14px, #52525c 14px 16px);
+  box-shadow: 0 1px 1px rgba(0, 0, 6, .5);
+}
+/* narrow track gap between pairs */
+.materia li:nth-child(even) { margin-right: 10px; }
+.materia li:last-child { margin-right: 0; }
+
+.materia .hand { left: -60px; }
+
+.materia .mt-empty a { cursor: default; }
+
+/* metal donut socket: pixel-art sprite (19px native, PSX-banded
+   shading), shown at 2x like the rest of the shell's sprites */
+.socket {
+  display: block;
+  position: relative;
+  width: 38px;
+  height: 38px;
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAABGElEQVR4nK3UoQ7CMBAA0HaZRkyiCPLEPgKBInwCYt9BEASN4AMQfAKZQqARiAVRSRANsoIfgHThLkd3hYXsxNJdcy/Xra1Wkciy/jM259xdS3n9DTHGNAoAIIpqCZKQGOoYqDkUIpPJtIGU5b6BIpiGS+OQtVZJ+TIAfb0HE0zwrkLo8XA0ttZ+dMzrUuzqdDrXidVqSRBHcNzrZQTO54uP7rR/bLc7goy5qLYBkBNYFDNFy+wiki6x1D+qqvobqFht98vcbNb1i/9D/qO2CYCctgjWJ+H5agMCgzC8U0O410ajMU3ebldxmwDkajAY0vvxeCAsxUF4pHjBr7x7r068NXiHseAdYe7rfSahiISQiEloGLGb9gWtmI8DPj24cAAAAABJRU5ErkJggg==') no-repeat center / 100% 100%;
+  image-rendering: pixelated;
+}
+
+/* unfilled socket: same donut with the recessed washer inside */
+.mt-empty .socket {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAABP0lEQVR4nJ2UsW7CMBCG7ShPgBADE8pUeeAhGJhQH6EDD8DQGXWomBl4AAYeAWViYM7QIWKwOkUMVse8Qqs75azr5Rwkfinx5ez79F8S25qERqPpb2qubX+slrdDEO99r8A5l4RaDaRBUtCWAS0HSchq9dqDlOW5ByVgLlvjoBCC0fKlAEI9ADNKcFccNB5P4gUKIfxzzOsyclVVX3hJEJcEVl0NubNwOx5PmNjtPo33N4yL4gXHpvmOMJlzbm622w+M1+s3E9vk0kD8uejmpVTYs8rhVtf104Ca1arOUu2k2ifhB4Bgs3nHBPxD8iNwNezl0y9yOOxxzOT+ggWwkBcOgUjAQRC5WyyWcfJ+b6JDLufmZjYr4vP1eomwnAK5pXjBo3zbdaeeGtxhStwR5QbPMw1KEAlSYRpUKnXS/gE+CKq9KYapywAAAABJRU5ErkJggg==');
+}
+
+/* PSX orb sprite (15px native at 2x), lit from below and seated
+   fully inside the socket ring */
+.orb {
+  position: absolute;
+  inset: 4px;
+  background: no-repeat center / 100% 100%;
+  image-rendering: pixelated;
+}
+.orb-green  { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAtUlEQVR4nGNkwAK4LKT+o4t9O/GMEV2MkZAmfIYwkaIRXR0TusDX40/BGB/ggqqH24wOCBkAAowgU1TS7BjQgZuVAcOuYxcYcIE7sw7hthmfRhhg1JsXQVRAYQNMIOcti6ohSdOyqBqwt3A6mxjACCKu/LgCdvqCB1sIakhQ8AHTOhw6jGCbYZpgEoQ0wtSDNfdoVDASMgBZI0g93NkwUHKj4z8+25E1YmhGNgRmG8xFyJpgAADOT0jnsvNg7AAAAABJRU5ErkJggg=='); }
+.orb-yellow { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAtUlEQVR4nGNkwAKiHDj+o4stO/CDEV2MkZAmfIYwkaIRXR0TusDS/d/BGB+IgqqH24wOCBkAAowgU3KCxBjQgYaVHcONY4cYcIEp617hthmfRhhgPDZJjqiAwgaYQM4ziekiSZNJTBfYWzidTQxgBBG/3q0AO/3LvS0ENfAo+YBpNqEIRrDNME0wCUIaYerBmoVMljASMgBZI0g93Nkw8O5MzH98tiNrxNCMbAjMNpiLkDXBAACJBkht0l3KSQAAAABJRU5ErkJggg=='); }
+.orb-purple { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAu0lEQVR4nGNkwAIsBLz+o4ud+LCNEV2MkZAmfIYwkaIRXR0TusDx91vBGB+wgKqH24wOCBkAAowgU9L0chjQgVuEEcOuFecYcIFZl6bgthmfRhhgnGe3jaiAwgYYn0x78V/IjI9hRdEBojVF9DkwvDv1CbezibKZgYGB4duZb2Cng0wjBITM+MA0lwkXI9hmmCaYBCGNMPVgzTJZEoyEDEDWCFIPdzYMwAIPF0DWiKEZ2RCYbTAXIWuCAQAYN02NB6iEhwAAAABJRU5ErkJggg=='); }
+.orb-red    { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAtUlEQVR4nGNkwAK8eAT+o4tt+/KBEV2MkZAmfIYwkaIRXR0TusDWz+/BGB/wgqqH24wOCBkAAowgU8rkNBjQgZqXDcOtbUcYcIGuRzdw24xPIwwwHtCyICqgsAEmkPPMJtSRpMlsQh3YWzidTQxgBBHfdm0DO/3Drn0ENQi4OYFpLjcvRrDNME0wCUIaYerBmqV6ehgJGYCsEaQe7mwYeFZS8h+f7cgaMTQjGwKzDeYiZE0wAABLt0iRshtcxQAAAABJRU5ErkJggg=='); }
+.orb-blue   { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAtUlEQVR4nGNkwAIEZAL+o4t9eLKBEV2MkZAmfIYwkaIRXR0TusD7x+vBGB8QgKqH24wOCBkAAowgU9ScyhjQgZOTGsO+fbcYcIFb+7pw24xPIwwwmsUdIyqgsAEmkPM6qkxI0tRRZQL2Fk5nEwMYQcS+G7/ATt914hNBDW4WfGDaSYONEWwzTBNMgpBGmHqw5o4EEUZCBiBrBKmHOxsGKha8+Y/PdmSNGJqRDYHZBnMRsiYYAADnkUhraCC1bQAAAABJRU5ErkJggg=='); }
+
+/* ---- Config screen (#/config) ---- */
+.configscr {
+  position: relative;
+  padding: 18px 24px;
+  flex: 1 1 auto;
+}
+
+.configlist { list-style: none; margin: 0; padding: 0; }
+.configlist li { position: relative; }
+
+.configlist a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   color: #fff;
   text-decoration: none;
-  font-size: 17px;
-  letter-spacing: .03em;
-  padding: 7px 6px 7px 38px;
+  font-size: 26px;
+  padding: 7px 6px 7px 70px;
   outline: none;
   cursor: pointer;
 }
 
-/* linked materia orbs: shiny sphere per school */
-.orb {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  flex: none;
-  box-shadow: inset -2px -2px 3px rgba(0, 0, 0, .55), 1px 1px 0 rgba(0, 0, 0, .6);
-}
-.orb-green  { background: radial-gradient(circle at 35% 30%, #c8ffc8, #17a017 70%); }
-.orb-yellow { background: radial-gradient(circle at 35% 30%, #fff6c0, #d9a800 70%); }
-.orb-purple { background: radial-gradient(circle at 35% 30%, #e9d0ff, #7a30c0 70%); }
-.orb-red    { background: radial-gradient(circle at 35% 30%, #ffc4c4, #c02020 70%); }
-.orb-blue   { background: radial-gradient(circle at 35% 30%, #c4e2ff, #2050c0 70%); }
+.clabel { color: var(--label); flex: none; width: 10.5em; min-width: 0; }
 
-/* ---- Config (debug) modal ---- */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, .55);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  z-index: 50;
+.cval { display: flex; align-items: center; gap: 1.6em; min-width: 0; }
+
+/* toggles show every option, the active one lit — like Mono/Stereo */
+.copt { color: #8a8a8a; }
+.copt.active { color: #fff; }
+.cplain { color: #fff; }
+
+/* ---- window color editor, laid out like the game: the hand parks on
+   a corner of the row's preview window; the flat swatch and the R/G/B
+   panel appear once a corner is picked ---- */
+.wc-previewbox {
+  position: relative;
+  width: 150px;
+  height: 28px;
+  cursor: pointer;
 }
 
-.overlay.open { display: flex; }
+.wc-swatch { width: 66px; height: 28px; }
+.wc-swatch[hidden] { display: none; }
 
-.config {
-  width: min(92vw, 430px);
-  padding: 16px 14px;
+/* while the editor is open the hand lives on the preview corner —
+   the list cursor's hand steps aside, like the game */
+.configscr.wc-open .configlist .hand:not(.wc-chand) { opacity: 0; }
+
+/* the parked corner hand: fingertip on the corner being edited */
+.wc-chand { opacity: 1; translate: none; }
+.wc-chand.tl { left: -58px; top: -17px; }
+.wc-chand.tr { left: calc(100% - 62px); top: -17px; }
+.wc-chand.bl { left: -58px; top: calc(100% - 22px); }
+.wc-chand.br { left: calc(100% - 62px); top: calc(100% - 22px); }
+
+.wc-editor {
+  position: absolute;
+  top: 66px;
+  left: 38%;
+  right: 24px;
+  padding: 8px 16px;
+  z-index: 5;
 }
 
-.config h2 {
-  margin: 0 0 10px;
-  font-size: 19px;
-  color: var(--gold);
-  letter-spacing: .02em;
-}
-
-.config ul { list-style: none; margin: 0; padding: 0; }
-.config li { position: relative; }
-
-.config .citem {
-  width: 100%;
+.wc-sliders { list-style: none; margin: 0; padding: 0; }
+.wc-sliders li {
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  background: none;
-  border: none;
-  color: #fff;
-  font: inherit;
-  font-size: 18px;
-  letter-spacing: .03em;
-  text-shadow: inherit;
-  padding: 9px 6px 9px 40px;
-  cursor: pointer;
-  outline: none;
-  text-align: left;
+  padding: 7px 8px 7px 66px;
 }
 
-.config .cval { color: var(--label); }
+/* R/G/B as colored letters, exactly like the game */
+.wc-ch {
+  flex: none;
+  min-width: 1.3ch;
+  font-size: 26px;
+  font-weight: normal;
+  text-align: center;
+}
+.wc-r { color: #ff5040; }
+.wc-g { color: #40d840; }
+.wc-b { color: #5890ff; }
+
+.wc-val {
+  width: 3ch;
+  flex: none;
+  text-align: right;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.wc-bar {
+  position: relative;
+  flex: 1 1 auto;
+  height: 12px;
+  background: rgba(0, 0, 6, .5);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+/* square slider knob riding the value, like the game */
+.wc-knob {
+  position: absolute;
+  top: -5px;
+  margin-left: -7px;
+  width: 14px;
+  height: 20px;
+  background: linear-gradient(180deg, #f0f0f6, #b8bac8);
+  border: 1px solid var(--border-dark);
+}
 
 @media (max-width: 720px) {
   body { justify-content: flex-start; }
 
   /* fixed full-width two-line hint box: one truncated line loses too
      much of the post summaries at phone widths */
-  .hintbar { align-self: stretch; height: 62px; padding: 9px 14px; }
+  .topbar { height: 62px; }
+  .hintbar { padding: 9px 14px; font-size: 17px; }
   .hintbar > span {
     white-space: normal;
     display: -webkit-box;
@@ -783,6 +990,7 @@ li.selected > .citem > .hand { opacity: 1; }
     line-clamp: 2;
     -webkit-box-orient: vertical;
   }
+  .titlebar { min-width: 0; padding: 9px 12px; font-size: 17px; }
 
   .layout {
     grid-template-columns: 1fr 1fr;
@@ -795,10 +1003,10 @@ li.selected > .citem > .hand { opacity: 1; }
   .party { padding: 18px 16px; min-height: 0; }
   .member { gap: 14px; flex-wrap: wrap; }
   .portrait { width: 96px; height: 96px; }
-  .mname { font-size: 22px; }
-  .srow { font-size: 16px; }
+  .mname { font-size: 26px; }
+  .srow { font-size: 20px; }
   .stats { flex: 1 1 160px; }
-  .growth { flex: 1 1 100%; min-width: 0; font-size: 16px; }
+  .growth { flex: 1 1 100%; min-width: 0; font-size: 19px; }
 
   .menu ul {
     display: grid;
@@ -806,17 +1014,36 @@ li.selected > .citem > .hand { opacity: 1; }
     column-gap: 4px;
   }
   .menu .spacer { display: none; }
-  .menu a { padding: 11px 4px 11px 36px; font-size: 18px; }
+  .menu a { padding: 9px 4px 9px 50px; font-size: 23px; }
+  .menu .hand { left: 2px; }
 
   .loc { min-width: 0; justify-self: stretch; }
 
-  .postlist a { font-size: 17px; padding: 10px 4px 10px 38px; gap: 10px; }
-  .postlist .pdate { font-size: 13px; }
-  .article { max-height: calc(100svh - 130px); }
+  .postlist a { font-size: 20px; padding: 9px 4px 9px 54px; gap: 10px; }
+  .postlist .pdate { font-size: 15px; }
+  .article { max-height: calc(100svh - 148px); }
 
-  .equip { padding: 16px 14px; }
-  .equip-top { grid-template-columns: 1fr; gap: 6px; }
-  .equip-slots a { font-size: 17px; padding: 8px 4px 8px 36px; }
-  .materia { grid-template-columns: 1fr 1fr; column-gap: 4px; }
-  .materia a { font-size: 16px; padding: 8px 4px 8px 34px; }
+  .hand { width: 44px; height: 27px; }
+  .dialog-actions a { padding-left: 54px; }
+
+  .equip-topwin { grid-template-columns: 1fr; gap: 6px; padding: 16px 14px; }
+  .equip-main { padding: 14px; }
+  .equip-slots a { font-size: 20px; padding: 8px 4px 8px 52px; }
+  .materia { margin-left: 4px; padding-right: 10px; }
+  .materia .hand { left: -44px; }
+  .materia li:nth-child(even) { margin-right: 8px; }
+  .socket { width: 28px; height: 28px; }
+  .orb { inset: 3px; }
+
+  .configscr { padding: 14px; }
+  .configlist a { font-size: 20px; padding: 8px 4px 8px 54px; flex-wrap: wrap; }
+  .clabel { width: 8.5em; }
+  .wc-previewbox { width: 110px; height: 24px; }
+  .wc-swatch { width: 52px; height: 24px; }
+  .wc-chand.tl, .wc-chand.bl { left: -40px; }
+  .wc-chand.tr, .wc-chand.br { left: calc(100% - 43px); }
+  .wc-chand.tl, .wc-chand.tr { top: -11px; }
+  .wc-chand.bl, .wc-chand.br { top: calc(100% - 16px); }
+  .wc-editor { position: static; width: 100%; margin-top: 10px; }
+  .wc-sliders li { padding-left: 50px; }
 }

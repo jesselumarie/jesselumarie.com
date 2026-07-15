@@ -193,12 +193,14 @@ var FF7 = (function () {
   }
 
   /* ---------- window colors / shell settings ---------- */
+  /* Corner-gradient presets. Blue is the PSX default: pure blue channel
+     fading 176 -> 32 across the window, per the in-game Config screen. */
   var WINDOW_COLORS = {
-    Blue:     ['#2028b0', '#050840'],
-    Green:    ['#0e7a34', '#032a10'],
-    Crimson:  ['#a01030', '#2c030a'],
-    Violet:   ['#7030c0', '#1a0640'],
-    Midnight: ['#34344e', '#08080f']
+    Blue:     ['#0000b0', '#000020'],
+    Green:    ['#00a000', '#001800'],
+    Crimson:  ['#a80000', '#180000'],
+    Violet:   ['#8000b0', '#100020'],
+    Midnight: ['#383850', '#08080c']
   };
 
   function applyShellSettings() {
@@ -218,7 +220,7 @@ var FF7 = (function () {
   function renderConfig() {
     configList.innerHTML = configItems.map(function (it) {
       return '<li><button class="citem" type="button" data-hint="' + it.hint + '">' +
-        '<span class="hand">👉</span><span>' + it.label + '</span>' +
+        '<span class="hand"></span><span>' + it.label + '</span>' +
         '<span class="cval">' + it.value() + '</span></button></li>';
     }).join('');
     var lis = Array.prototype.slice.call(configList.children);
@@ -294,7 +296,8 @@ var FF7 = (function () {
         lastAccrual = s;
         save.gil += 7;
       }
-      if (gilEl) gilEl.textContent = save.gil.toLocaleString();
+      // the game prints gil as plain digits — no thousands separators
+      if (gilEl) gilEl.textContent = String(save.gil);
       if (s % 5 === 0) persist();
     }
 

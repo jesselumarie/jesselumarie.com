@@ -46,13 +46,20 @@
     return '<span class="pnum">' + pair[0] + '</span>/<span class="pnum">' + pair[1] + '</span>';
   }
 
+  /* LV right-aligns with the HP/MP current-value column, like the game:
+     pad with an invisible slash + empty cell so the metrics match fmtPair */
+  function fmtLv(lv) {
+    return '<span class="pnum">' + lv + '</span><span class="ghost">/</span><span class="pnum"></span>';
+  }
+
+  /* LV/HP/MP only, no gauges — the PSX main menu draws no bars */
   function memberStatsHTML(m) {
     return '<img class="portrait" src="' + m.img + '" alt="Portrait of ' + m.name + '">' +
       '<div class="stats">' +
         '<p class="mname">' + m.name + '</p>' +
-        '<div class="srow"><span class="lab">LV</span><span class="val">' + m.lv + '</span></div>' +
-        '<div class="srow"><span class="lab">HP</span><span class="val">' + fmtPair(m.hp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
-        '<div class="srow"><span class="lab">MP</span><span class="val">' + fmtPair(m.mp) + '</span><span class="thinbar"><span style="width:100%"></span></span></div>' +
+        '<div class="srow"><span class="lab">LV</span><span class="val">' + fmtLv(m.lv) + '</span></div>' +
+        '<div class="srow"><span class="lab">HP</span><span class="val">' + fmtPair(m.hp) + '</span></div>' +
+        '<div class="srow"><span class="lab">MP</span><span class="val">' + fmtPair(m.mp) + '</span></div>' +
       '</div>';
   }
 
@@ -152,24 +159,23 @@
 
       '<nav class="menu window" aria-label="Main menu">' +
         '<ul id="menu">' +
-          '<li><a href="#/about" data-hint="Learn more about Jesse."><span class="hand">👉</span>About</a></li>' +
-          '<li><a href="#/writing" data-hint="Read Jesse\'s writing."><span class="hand">👉</span>Writing</a></li>' +
-          '<li><a href="https://github.com/jesselumarie" data-hint="Inspect Jesse\'s materia."><span class="hand">👉</span>GitHub</a></li>' +
-          '<li><a href="https://www.linkedin.com/in/jesselumarie" data-hint="Employment record and battle history."><span class="hand">👉</span>LinkedIn</a></li>' +
-          '<li><a href="https://twitter.com/jesselumarie" data-hint="Short-form dispatches."><span class="hand">👉</span>Twitter</a></li>' +
-          '<li><a href="https://instagram.com/jesselumarie" data-hint="Field photography."><span class="hand">👉</span>Instagram</a></li>' +
-          '<li><a href="mailto:jesse.lumarie@gmail.com" data-hint="PHS — send Jesse a message."><span class="hand">👉</span>PHS</a></li>' +
-          '<li><a href="#" data-action="config" data-hint="Adjust windows, sound, and debug options."><span class="hand">👉</span>Config</a></li>' +
-          '<li class="spacer" role="presentation"></li>' +
-          '<li><a href="#" class="disabled" data-action="save" data-hint="You cannot save here."><span class="hand">👉</span>Save</a></li>' +
-          '<li><a href="/" data-action="exit" data-hint="Power off and return to jesselumarie.com"><span class="hand">👉</span>Exit</a></li>' +
+          '<li><a href="#/about" data-hint="Learn more about Jesse."><span class="hand"></span>About</a></li>' +
+          '<li><a href="#/writing" data-hint="Read Jesse\'s writing."><span class="hand"></span>Writing</a></li>' +
+          '<li><a href="https://github.com/jesselumarie" data-hint="Inspect Jesse\'s materia."><span class="hand"></span>GitHub</a></li>' +
+          '<li><a href="https://www.linkedin.com/in/jesselumarie" data-hint="Employment record and battle history."><span class="hand"></span>LinkedIn</a></li>' +
+          '<li><a href="https://twitter.com/jesselumarie" data-hint="Short-form dispatches."><span class="hand"></span>Twitter</a></li>' +
+          '<li><a href="https://instagram.com/jesselumarie" data-hint="Field photography."><span class="hand"></span>Instagram</a></li>' +
+          '<li><a href="mailto:jesse.lumarie@gmail.com" data-hint="PHS — send Jesse a message."><span class="hand"></span>PHS</a></li>' +
+          '<li><a href="#" data-action="config" data-hint="Adjust windows, sound, and debug options."><span class="hand"></span>Config</a></li>' +
+          '<li><a href="#" class="disabled" data-action="save" data-hint="You cannot save here."><span class="hand"></span>Save</a></li>' +
+          '<li><a href="/" data-action="exit" data-hint="Power off and return to jesselumarie.com"><span class="hand"></span>Exit</a></li>' +
         '</ul>' +
       '</nav>' +
 
       '<section class="loc window" aria-label="Location">Boulder, CO</section>' +
 
       '<section class="timegil window" aria-label="Time and gil">' +
-        '<div class="kv"><span>Time</span> <span class="v time-v" id="time">0:00:00</span></div>' +
+        '<div class="kv"><span>Time</span> <span class="v" id="time">0:00:00</span></div>' +
         '<div class="kv"><span>Gil</span> <span class="v" id="gil">2244</span></div>' +
       '</section>' +
 
@@ -240,8 +246,8 @@
     return '<h2>' + title + '</h2>' +
       '<p>' + message + '</p>' +
       '<ul class="dialog-actions">' +
-        '<li><a href="' + href + '" data-hint="Leave the menu and open the page directly."><span class="hand">👉</span>' + label + '</a></li>' +
-        '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span>Back</a></li>' +
+        '<li><a href="' + href + '" data-hint="Leave the menu and open the page directly."><span class="hand"></span>' + label + '</a></li>' +
+        '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand"></span>Back</a></li>' +
       '</ul>';
   }
 
@@ -275,11 +281,11 @@
           '<ul class="postlist">' +
             data.articles.map(function (a) {
               return '<li><a href="#/writing/' + encodeURIComponent(a.slug) + '" data-hint="' + esc(a.summary) + '">' +
-                '<span class="hand">👉</span>' +
+                '<span class="hand"></span>' +
                 '<span class="ptitle">' + esc(a.title) + '</span>' +
                 '<span class="pdate">' + fmtDate(a.date) + '</span></a></li>';
             }).join('') +
-            '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span><span class="ptitle">Back</span></a></li>' +
+            '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand"></span><span class="ptitle">Back</span></a></li>' +
           '</ul>';
         var items = Array.prototype.slice.call(dialog.querySelectorAll('.postlist li'));
         writingCursor = FF7.cursorList(items, function (li) { li.querySelector('a').click(); });
@@ -335,8 +341,8 @@
           '</header>' +
           '<div class="article-body">' + art.content + '</div>' +
           '<ul class="dialog-actions afoot">' +
-            '<li><a href="#/writing" data-back data-hint="Return to the list of entries."><span class="hand">👉</span>Back</a></li>' +
-            '<li><a href="' + esc(art.url) + '" data-hint="Open this entry on the regular blog."><span class="hand">👉</span>Open in blog</a></li>' +
+            '<li><a href="#/writing" data-back data-hint="Return to the list of entries."><span class="hand"></span>Back</a></li>' +
+            '<li><a href="' + esc(art.url) + '" data-hint="Open this entry on the regular blog."><span class="hand"></span>Open in blog</a></li>' +
           '</ul>';
         wireDialogActions(dialog, function (c) { articleCursor = c; });
       }).catch(function () {
@@ -367,7 +373,7 @@
             '<ul class="equip-slots">' +
               about.equipment.map(function (eq) {
                 return '<li><a href="#" data-noop data-hint="' + esc(eq.desc) + '">' +
-                  '<span class="hand">👉</span>' +
+                  '<span class="hand"></span>' +
                   '<span class="eslot">' + esc(eq.slot) + '</span>' +
                   '<span class="ename">' + esc(eq.name) + '</span></a></li>';
               }).join('') +
@@ -380,13 +386,13 @@
           '<ul class="materia">' +
             about.materia.map(function (mat) {
               return '<li><a href="' + esc(mat.href) + '" data-hint="' + esc(mat.hint) + '">' +
-                '<span class="hand">👉</span>' +
+                '<span class="hand"></span>' +
                 '<span class="orb orb-' + esc(mat.color) + '"></span>' + esc(mat.name) + '</a></li>';
             }).join('') +
           '</ul>' +
           '<ul class="dialog-actions">' +
-            '<li><a href="' + esc(about.fallbackUrl) + '" data-hint="Leave the menu and read the about page directly."><span class="hand">👉</span>About Jesse (plain version)</a></li>' +
-            '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand">👉</span>Back</a></li>' +
+            '<li><a href="' + esc(about.fallbackUrl) + '" data-hint="Leave the menu and read the about page directly."><span class="hand"></span>About Jesse (plain version)</a></li>' +
+            '<li><a href="#/" data-back data-hint="Return to the menu."><span class="hand"></span>Back</a></li>' +
           '</ul>' +
         '</div>';
 

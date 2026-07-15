@@ -7,19 +7,21 @@
   font-display: swap;
 }
 :root {
-  --win-top: #2028b0;
-  --win-bottom: #050840;
-  --border-light: #e9e9e9;
-  --border-mid: #8f8f8f;
-  --border-dark: #3c3c3c;
-  --label: #9fe8e4;
-  --gold: #ffe08a;
-  --bar-track: #262640;
-  --bar-fill-a: #d0a2c4;
-  --bar-fill-b: #8f5f85;
-  --time-val: #8fd8f8;
-  --hint-top: #a35cc9;
-  --hint-bottom: #55287f;
+  /* PSX default window color: pure-blue 4-corner gradient
+     TL (0,0,176) TR (0,0,128) BL (0,0,80) BR (0,0,32) — the corner
+     values are planar, so one 153.43deg linear gradient reproduces the
+     in-game Gouraud fill exactly */
+  --win-top: #0000b0;
+  --win-bottom: #000020;
+  --border-light: #e8e8e8;
+  --border-dark: #6f6f6f;
+  --outline: rgba(0, 0, 0, .95);
+  --label: #a0d8f8;
+  --gold: #f0e048;
+  --disabled: #808080;
+  --bar-track: #202038;
+  --bar-fill-a: #e0a8c8;
+  --bar-fill-b: #96547e;
 }
 
 * { box-sizing: border-box; }
@@ -174,10 +176,11 @@ body.no-scanlines .frame { filter: none; }
 
   /* the TV keeps one size no matter which screen is showing: pin the
      shell to the frame's designed 900px width (900 + screen padding/
-     border 56 + tv padding 60 = 1016) and to the main screen's natural
-     height; other screens render (and scroll) inside that fixed area */
+     border 56 + tv padding 60 = 1016). The frame keeps the PSX screen's
+     10:7 aspect (320x224 -> 900x630) plus the hint bar row above it;
+     other screens render (and scroll) inside that fixed area */
   .tv { width: min(1016px, 100%); }
-  .frame { height: 614px; }
+  .frame { height: 696px; }
   #app {
     flex: 1 1 auto;
     min-height: 0;
@@ -185,7 +188,7 @@ body.no-scanlines .frame { filter: none; }
     flex-direction: column;
   }
   #app > .window { max-height: 100%; overflow-y: auto; }
-  .layout { flex: 1 1 auto; grid-template-rows: 1fr auto; }
+  .layout { flex: 1 1 auto; }
 
   /* ---- chin: badge, vents, knobs, power ---- */
   .chin {
@@ -302,15 +305,19 @@ body.no-scanlines .frame { filter: none; }
   }
 }
 
+/* PSX window dressing: black outline, gray beveled tube (lit from the
+   top), black inner outline, then the blue Gouraud gradient. Windows are
+   drawn flat on the screen — no drop shadow in the game. */
 .window {
-  background: linear-gradient(170deg, var(--win-top) 0%, var(--win-bottom) 90%);
-  border: 3px solid var(--border-light);
-  border-radius: 7px;
+  border: 6px solid transparent;
+  border-radius: 12px;
+  background:
+    linear-gradient(153.43deg, var(--win-top), var(--win-bottom)) padding-box,
+    linear-gradient(to bottom, var(--border-light), var(--border-dark)) border-box;
   box-shadow:
-    inset 0 0 0 2px var(--border-mid),
-    inset 0 0 0 4px var(--border-dark),
-    0 6px 18px rgba(0, 0, 0, .7);
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, .85);
+    0 0 0 2px var(--outline),
+    inset 0 0 0 2px var(--outline);
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, .85);
 }
 
 .frame {
@@ -321,21 +328,20 @@ body.no-scanlines .frame { filter: none; }
   gap: 10px;
 }
 
-/* ---- Hint bar (purple like the in-game tutorial window) ---- */
+/* ---- Hint bar: the full-width description window from the game's
+   Item/Magic/Equip screens (standard blue window, one line of text) ---- */
 /* Fixed-height row above the content: hints change constantly, so the
-   bar must never grow taller or push the screen below it around. On
-   desktop it hugs the text horizontally (one 44px line, ellipsis past
-   the frame edge); mobile uses a fixed full-width two-line box. */
+   bar must never grow taller or push the screen below it around.
+   Mobile uses a fixed full-width two-line box. */
 /* Reactor7's period fills a whole PSX character cell; pull the next
    glyph back so "jesselumarie.com" doesn't read as "jesselumarie. com" */
 .hintbar .dot { margin-right: -.3em; }
 .hintbar {
-  align-self: flex-start;
-  background: linear-gradient(180deg, var(--hint-top), var(--hint-bottom));
-  padding: 9px 20px;
-  font-size: 18px;
+  align-self: stretch;
+  padding: 8px 22px;
+  font-size: 26px;
   line-height: 1.2;
-  height: 44px;
+  height: 56px;
   max-width: 100%;
   flex: none;
   display: flex;
@@ -350,13 +356,18 @@ body.no-scanlines .frame { filter: none; }
   text-overflow: ellipsis;
 }
 
-/* ---- Main layout: party left, menu column right ---- */
+/* ---- Main layout: party left (full height), right column stacks the
+   command menu on top with Time/Gil and the location name pinned to the
+   bottom-right corner, exactly like the game ---- */
 .layout {
   display: grid;
   grid-template-columns: 1fr 245px;
+  grid-template-rows: auto 1fr auto auto;
   grid-template-areas:
     "party menu"
-    "loc   timegil";
+    "party ."
+    "party timegil"
+    "party loc";
   gap: 10px;
   align-items: stretch;
 }
@@ -365,7 +376,7 @@ body.no-scanlines .frame { filter: none; }
 .party {
   grid-area: party;
   min-height: 480px;
-  padding: 24px 26px;
+  padding: 28px 30px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -373,16 +384,17 @@ body.no-scanlines .frame { filter: none; }
 
 .member {
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap; /* growth block drops below at narrow widths */
+  gap: 30px;
   align-items: center;
 }
 
+/* PSX portraits are taller than wide (7:8), drawn flat on the window */
 .portrait {
-  width: 122px;
-  height: 122px;
+  width: 138px;
+  height: 158px;
   flex: none;
   border: 1px solid #000;
-  box-shadow: 3px 3px 0 rgba(0,0,0,.6);
   object-fit: cover;
   image-rendering: pixelated;
   filter: contrast(1.08) saturate(1.12);
@@ -390,14 +402,14 @@ body.no-scanlines .frame { filter: none; }
 
 .stats { flex: 1 1 200px; min-width: 0; }
 
-.mname { font-size: 26px; letter-spacing: .02em; margin: 0 0 8px; }
+.mname { font-size: 26px; margin: 0 0 10px; }
 
 .srow {
   display: grid;
-  grid-template-columns: 2.4em 1fr;
+  grid-template-columns: 2.2em 1fr;
   align-items: baseline;
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: 26px;
+  line-height: 1.3;
 }
 
 .srow .lab { color: var(--label); }
@@ -409,33 +421,18 @@ body.no-scanlines .frame { filter: none; }
 
 /* fixed-width number cells so the slashes line up like the game */
 .pnum { display: inline-block; min-width: 4.1ch; text-align: right; }
-
-.thinbar {
-  grid-column: 2;
-  max-width: 10em;
-  height: 4px;
-  margin-top: 1px;
-  background: var(--bar-track);
-  border-top: 1px solid rgba(0,0,0,.8);
-  border-bottom: 1px solid rgba(255,255,255,.22);
-}
-
-.thinbar > span {
-  display: block;
-  height: 100%;
-  background: linear-gradient(to bottom, var(--bar-fill-a), var(--bar-fill-b));
-}
+.ghost { visibility: hidden; }
 
 /* right block: next level / limit */
 .growth {
-  flex: 1 1 190px;
+  flex: 1 1 160px;
   min-width: 160px;
-  font-size: 17px;
+  font-size: 20px;
   align-self: center;
 }
 
 .growth .glabel { display: flex; justify-content: space-between; gap: 8px; }
-.growth .gsub { color: var(--gold); font-size: 14px; }
+.growth .gsub { color: var(--gold); font-size: 16px; }
 
 .fatbar {
   height: 10px;
@@ -467,7 +464,7 @@ body.no-scanlines .frame { filter: none; }
 /* ---- Menu window ---- */
 .menu {
   grid-area: menu;
-  padding: 20px 10px 20px 14px;
+  padding: 12px 8px 12px 10px;
 }
 
 .menu ul { list-style: none; margin: 0; padding: 0; }
@@ -477,66 +474,67 @@ body.no-scanlines .frame { filter: none; }
   display: block;
   color: #fff;
   text-decoration: none;
-  font-size: 21px;
-  letter-spacing: .03em;
-  padding: 9px 6px 9px 44px;
+  font-size: 26px;
+  line-height: 1.15;
+  padding: 3px 6px 3px 54px;
   outline: none;
   cursor: pointer;
 }
 
-.menu a.disabled { color: #8a8a8a; }
+.menu a.disabled { color: var(--disabled); }
 
+/* the game's white glove cursor, redrawn pixel-for-pixel as an SVG */
 .hand {
   position: absolute;
   left: 4px;
   top: 50%;
+  width: 44px;
+  height: 32px;
   translate: 0 -50%;
   opacity: 0;
-  font-size: 22px;
   pointer-events: none;
-  filter: grayscale(1) brightness(1.65) drop-shadow(2px 2px 0 rgba(0,0,0,.8));
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' shape-rendering='crispEdges'%3E%3Cpath fill='%23181818' d='M6 0h4v1h-4zM4 1h2v1h-2zM10 1h6v1h-6zM2 2h2v1h-2zM16 2h1v1h-1zM1 3h1v1h-1zM16 3h1v1h-1zM0 4h1v1h-1zM9 4h7v1h-7zM0 5h1v1h-1zM11 5h1v1h-1zM0 6h1v1h-1zM12 6h1v1h-1zM0 7h1v1h-1zM12 7h1v1h-1zM0 8h1v1h-1zM12 8h1v1h-1zM1 9h1v1h-1zM11 9h1v1h-1zM1 10h1v1h-1zM10 10h1v1h-1zM2 11h1v1h-1zM9 11h1v1h-1zM3 12h6v1h-6z'/%3E%3Cpath fill='%23f8f8f8' d='M6 1h4v1h-4zM4 2h12v1h-12zM2 3h14v1h-14zM1 4h8v1h-8zM1 5h10v1h-10zM1 6h11v1h-11zM1 7h11v1h-11zM2 8h10v1h-10zM3 9h8v1h-8zM4 10h6v1h-6z'/%3E%3Cpath fill='%23b4b4bc' d='M1 8h1v1h-1zM2 9h1v1h-1zM2 10h2v1h-2zM3 11h6v1h-6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, .8));
 }
 
 li.selected > a > .hand,
 li.selected > .citem > .hand { opacity: 1; }
 
-.menu .spacer { height: 20px; }
-
 /* ---- Time / Gil ---- */
 .timegil {
   grid-area: timegil;
-  padding: 14px 18px;
-  font-size: 19px;
+  padding: 14px 20px;
+  font-size: 26px;
   align-self: end;
 }
 
 .kv { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-.kv + .kv { margin-top: 8px; }
+.kv + .kv { margin-top: 6px; }
+.kv > span:first-child { color: var(--label); }
 .kv .v { font-variant-numeric: tabular-nums; }
-.kv .time-v { color: var(--time-val); }
 
-/* ---- Location ---- */
+/* ---- Location (bottom-right corner, under Time/Gil, like the game) ---- */
 .loc {
   grid-area: loc;
-  padding: 12px 22px;
-  font-size: 20px;
+  padding: 10px 22px;
+  font-size: 26px;
   align-self: end;
-  justify-self: start;
-  min-width: 45%;
+  justify-self: end;
+  min-width: 245px;
+  text-align: left;
 }
 
 /* ---- Dialog screens (stubs, articles) ---- */
 .dialog {
   padding: 20px 24px;
-  font-size: 19px;
+  font-size: 22px;
   outline: none;
 }
 
 .dialog h2 {
   margin: 0 0 12px;
-  font-size: 22px;
+  font-size: 26px;
   color: var(--gold);
-  letter-spacing: .02em;
 }
 
 .dialog a { color: var(--gold); text-decoration: none; }
@@ -546,9 +544,8 @@ li.selected > .citem > .hand { opacity: 1; }
 .dialog-actions a {
   display: block;
   color: #fff;
-  font-size: 19px;
-  letter-spacing: .03em;
-  padding: 8px 6px 8px 42px;
+  font-size: 22px;
+  padding: 6px 6px 6px 54px;
   outline: none;
   cursor: pointer;
 }
@@ -565,14 +562,13 @@ li.selected > .citem > .hand { opacity: 1; }
   gap: 14px;
   color: #fff;
   text-decoration: none;
-  font-size: 19px;
-  letter-spacing: .03em;
-  padding: 9px 6px 9px 44px;
+  font-size: 22px;
+  padding: 7px 6px 7px 54px;
   outline: none;
   cursor: pointer;
 }
 .postlist .ptitle { min-width: 0; }
-.postlist .pdate { color: var(--label); font-size: 15px; flex: none; }
+.postlist .pdate { color: var(--label); font-size: 16px; flex: none; }
 
 .loading { color: var(--label); margin: 6px; }
 
@@ -600,15 +596,15 @@ li.selected > .citem > .hand { opacity: 1; }
   margin-bottom: 10px;
 }
 
-.atitle { margin: 0; font-size: 22px; color: var(--gold); letter-spacing: .02em; }
-.adate { color: var(--label); font-size: 15px; flex: none; }
+.atitle { margin: 0; font-size: 26px; color: var(--gold); }
+.adate { color: var(--label); font-size: 16px; flex: none; }
 
 .article-body {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   padding-right: 8px;
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.55;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .85);
 }
@@ -654,7 +650,7 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .equip-top {
   display: grid;
-  grid-template-columns: 1fr 250px;
+  grid-template-columns: 1fr 310px;
   gap: 18px;
   align-items: center;
 }
@@ -667,9 +663,8 @@ li.selected > .citem > .hand { opacity: 1; }
   gap: 10px;
   color: #fff;
   text-decoration: none;
-  font-size: 18px;
-  letter-spacing: .03em;
-  padding: 8px 6px 8px 40px;
+  font-size: 22px;
+  padding: 6px 6px 6px 50px;
   outline: none;
   cursor: pointer;
 }
@@ -677,13 +672,13 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .equip-bio {
   margin-top: 14px;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .85);
 }
 .equip-bio p { margin: 0 0 6px; }
 
-.msec { margin: 16px 0 4px; font-size: 18px; color: var(--gold); letter-spacing: .02em; }
+.msec { margin: 16px 0 4px; font-size: 22px; color: var(--gold); }
 
 .materia {
   list-style: none;
@@ -700,9 +695,8 @@ li.selected > .citem > .hand { opacity: 1; }
   gap: 9px;
   color: #fff;
   text-decoration: none;
-  font-size: 17px;
-  letter-spacing: .03em;
-  padding: 7px 6px 7px 38px;
+  font-size: 20px;
+  padding: 6px 6px 6px 48px;
   outline: none;
   cursor: pointer;
 }
@@ -742,9 +736,8 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .config h2 {
   margin: 0 0 10px;
-  font-size: 19px;
+  font-size: 24px;
   color: var(--gold);
-  letter-spacing: .02em;
 }
 
 .config ul { list-style: none; margin: 0; padding: 0; }
@@ -759,10 +752,9 @@ li.selected > .citem > .hand { opacity: 1; }
   border: none;
   color: #fff;
   font: inherit;
-  font-size: 18px;
-  letter-spacing: .03em;
+  font-size: 22px;
   text-shadow: inherit;
-  padding: 9px 6px 9px 40px;
+  padding: 7px 6px 7px 50px;
   cursor: pointer;
   outline: none;
   text-align: left;
@@ -775,7 +767,7 @@ li.selected > .citem > .hand { opacity: 1; }
 
   /* fixed full-width two-line hint box: one truncated line loses too
      much of the post summaries at phone widths */
-  .hintbar { align-self: stretch; height: 62px; padding: 9px 14px; }
+  .hintbar { align-self: stretch; height: 62px; padding: 9px 14px; font-size: 16px; }
   .hintbar > span {
     white-space: normal;
     display: -webkit-box;
@@ -786,6 +778,7 @@ li.selected > .citem > .hand { opacity: 1; }
 
   .layout {
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
     grid-template-areas:
       "party party"
       "menu  menu"
@@ -794,29 +787,38 @@ li.selected > .citem > .hand { opacity: 1; }
 
   .party { padding: 18px 16px; min-height: 0; }
   .member { gap: 14px; flex-wrap: wrap; }
-  .portrait { width: 96px; height: 96px; }
-  .mname { font-size: 22px; }
-  .srow { font-size: 16px; }
+  .portrait { width: 98px; height: 112px; }
+  .mname { font-size: 20px; }
+  .srow { font-size: 18px; }
   .stats { flex: 1 1 160px; }
   .growth { flex: 1 1 100%; min-width: 0; font-size: 16px; }
+  .growth .gsub { font-size: 14px; }
 
   .menu ul {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 4px;
   }
-  .menu .spacer { display: none; }
-  .menu a { padding: 11px 4px 11px 36px; font-size: 18px; }
+  .menu a { padding: 9px 4px 9px 40px; font-size: 18px; }
+  .hand { width: 30px; height: 22px; filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, .8)); }
 
-  .loc { min-width: 0; justify-self: stretch; }
+  .timegil { font-size: 18px; padding: 10px 14px; }
+  .loc { font-size: 18px; padding: 10px 14px; min-width: 0; justify-self: stretch; text-align: left; }
 
-  .postlist a { font-size: 17px; padding: 10px 4px 10px 38px; gap: 10px; }
+  .dialog { font-size: 18px; }
+  .dialog h2 { font-size: 20px; }
+  .dialog-actions a { font-size: 18px; padding: 8px 4px 8px 40px; }
+  .postlist a { font-size: 17px; padding: 10px 4px 10px 40px; gap: 10px; }
   .postlist .pdate { font-size: 13px; }
+  .atitle { font-size: 20px; }
   .article { max-height: calc(100svh - 130px); }
 
   .equip { padding: 16px 14px; }
   .equip-top { grid-template-columns: 1fr; gap: 6px; }
-  .equip-slots a { font-size: 17px; padding: 8px 4px 8px 36px; }
+  .equip-slots a { font-size: 17px; padding: 8px 4px 8px 40px; }
+  .msec { font-size: 18px; }
   .materia { grid-template-columns: 1fr 1fr; column-gap: 4px; }
-  .materia a { font-size: 16px; padding: 8px 4px 8px 34px; }
+  .materia a { font-size: 16px; padding: 8px 4px 8px 38px; }
+  .config .citem { font-size: 18px; padding: 8px 4px 8px 40px; }
+  .config h2 { font-size: 20px; }
 }

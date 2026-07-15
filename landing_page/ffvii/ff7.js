@@ -23,12 +23,18 @@ var FF7 = (function () {
   if (typeof settings.scanlines !== 'boolean') settings.scanlines = true;
   if (typeof settings.birthday !== 'boolean') settings.birthday = false;
   // window color: RGB per corner, like the game's Config screen
-  // (PSX defaults: pure blue 176/128/80/32 from top-left to bottom-right)
   function defaultCorners() {
-    return { tl: [0, 0, 176], tr: [0, 0, 128], bl: [0, 0, 80], br: [0, 0, 32] };
+    // the game's default window vertex colors
+    return { tl: [2, 34, 186], tr: [2, 24, 145], bl: [0, 15, 105], br: [0, 3, 50] };
   }
   if (!settings.windowColor || typeof settings.windowColor === 'string' ||
       !settings.windowColor.tl) {
+    settings.windowColor = defaultCorners();
+  }
+  // saves created before the vertex colors were corrected carry the old
+  // approximated default; treat those as "never customized"
+  if (String(settings.windowColor.tl) === '0,0,176' &&
+      String(settings.windowColor.br) === '0,0,32') {
     settings.windowColor = defaultCorners();
   }
 
@@ -65,8 +71,10 @@ var FF7 = (function () {
   });
 
   /* ---------- sound ----------
-     Synthesized to match the PSX menu SFX, measured from the real
-     samples (10ms FFT windows): pitch contours, envelopes, timing. */
+     The real PSX menu samples (sfx/*.mp3), decoded into WebAudio
+     buffers on first use. The synthesized versions below (tuned to the
+     same samples with 10ms FFT windows) stay as a fallback for when
+     the files can't load. */
   var audioCtx = null;
   function getCtx() {
     if (!settings.sound) return null;
@@ -74,6 +82,36 @@ var FF7 = (function () {
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
       return audioCtx;
     } catch (e) { return null; }
+  }
+
+  var SFX_URLS = { cursor: 'sfx/cursor.mp3', confirm: 'sfx/confirm.mp3',
+                   cancel: 'sfx/cancel.mp3', buzzer: 'sfx/buzzer.mp3' };
+  var sfxBufs = {};
+  var sfxLoading = false;
+  function loadSamples(ctx) {
+    if (sfxLoading) return;
+    sfxLoading = true;
+    Object.keys(SFX_URLS).forEach(function (name) {
+      fetch(SFX_URLS[name])
+        .then(function (r) { return r.ok ? r.arrayBuffer() : Promise.reject(); })
+        .then(function (ab) { return ctx.decodeAudioData(ab); })
+        .then(function (buf) { sfxBufs[name] = buf; })
+        .catch(function () { /* fall back to the synth version */ });
+    });
+  }
+
+  // plays the real sample when decoded, else the synth stand-in
+  function playSfx(name, synth) {
+    var ctx = getCtx(); if (!ctx) return;
+    loadSamples(ctx);
+    var buf = sfxBufs[name];
+    if (!buf) { synth(ctx); return; }
+    var src = ctx.createBufferSource();
+    var g = ctx.createGain();
+    src.buffer = buf;
+    g.gain.value = SFX_VOL;
+    src.connect(g).connect(ctx.destination);
+    src.start();
   }
 
   // master level for menu SFX (the raw envelopes below mirror the game's
@@ -91,8 +129,8 @@ var FF7 = (function () {
   }
 
   // cursor move: 130ms chirp, 1200 -> 2100Hz over 70ms, exponential decay
-  function blip() {
-    var ctx = getCtx(); if (!ctx) return;
+  function blip() { playSfx('cursor', blipSynth); }
+  function blipSynth(ctx) {
     var t = ctx.currentTime;
     sfxOsc(ctx, 'sine', t, t + 0.145,
       [['setValueAtTime', 1200, 0], ['linearRampToValueAtTime', 2100, 0.07]],
@@ -101,8 +139,8 @@ var FF7 = (function () {
   }
 
   // confirm: bright 11.2kHz ping (55ms), then 6.3kHz tail decaying to 380ms
-  function confirmBeep() {
-    var ctx = getCtx(); if (!ctx) return;
+  function confirmBeep() { playSfx('confirm', confirmSynth); }
+  function confirmSynth(ctx) {
     var t = ctx.currentTime;
     sfxOsc(ctx, 'sine', t, t + 0.055,
       [['setValueAtTime', 11200, 0]],
@@ -115,8 +153,8 @@ var FF7 = (function () {
   }
 
   // cancel: quick two-step blip, 3.15kHz (30ms) then 6.35kHz (30ms)
-  function cancelBeep() {
-    var ctx = getCtx(); if (!ctx) return;
+  function cancelBeep() { playSfx('cancel', cancelSynth); }
+  function cancelSynth(ctx) {
     var t = ctx.currentTime;
     sfxOsc(ctx, 'sine', t, t + 0.062,
       [['setValueAtTime', 3150, 0], ['setValueAtTime', 6350, 0.03]],
@@ -125,8 +163,8 @@ var FF7 = (function () {
   }
 
   // buzzer: harsh ~100Hz buzz in two bursts (100ms, gap, 225ms)
-  function buzzer() {
-    var ctx = getCtx(); if (!ctx) return;
+  function buzzer() { playSfx('buzzer', buzzerSynth); }
+  function buzzerSynth(ctx) {
     var t = ctx.currentTime;
     [[0, 0.10], [0.12, 0.345]].forEach(function (seg) {
       var dur = seg[1] - seg[0];

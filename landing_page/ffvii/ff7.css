@@ -9,7 +9,7 @@
 :root {
   /* Gouraud window fill painted by ff7.js from the four corner colors
      (PSX defaults: blue 176/128/80/32, top-left to bottom-right) */
-  --win-bg: linear-gradient(135deg, #0000b0 0%, #000050 55%, #000020 100%);
+  --win-bg: linear-gradient(135deg, #0222ba 0%, #01104f 55%, #000332 100%);
   --border-light: #ccd0de;
   --border-dark: #10101a;
   --label: #55e2d2;
@@ -306,8 +306,8 @@ body.no-scanlines .frame { filter: none; }
   background-image: var(--win-bg);
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  border: 3px solid var(--border-light);
-  border-radius: 8px;
+  border: 4px solid var(--border-light);
+  border-radius: 6px;
   box-shadow:
     0 0 0 2px var(--border-dark),
     inset 0 0 0 2px var(--border-dark);
@@ -370,8 +370,8 @@ li.selected > .citem > .hand { opacity: 1; }
 .hintbar {
   flex: 1 1 auto;
   min-width: 0;
-  padding: 9px 20px;
-  font-size: 18px;
+  padding: 7px 20px;
+  font-size: 22px;
   line-height: 1.2;
   display: flex;
   align-items: center;
@@ -388,8 +388,8 @@ li.selected > .citem > .hand { opacity: 1; }
 .titlebar {
   flex: none;
   min-width: 150px;
-  padding: 9px 22px;
-  font-size: 19px;
+  padding: 7px 22px;
+  font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -436,14 +436,14 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .stats { flex: 1 1 200px; min-width: 0; }
 
-.mname { font-size: 24px; letter-spacing: .02em; margin: 0 0 6px; }
+.mname { font-size: 30px; margin: 0 0 6px; }
 
 .srow {
   display: grid;
   grid-template-columns: 2.4em 1fr;
   align-items: baseline;
-  font-size: 18px;
-  line-height: 1.45;
+  font-size: 26px;
+  line-height: 1.3;
 }
 
 .srow .lab { color: var(--label); }
@@ -477,20 +477,20 @@ li.selected > .citem > .hand { opacity: 1; }
 
 /* right block: next level / limit — hugs its gauges like the game */
 .growth {
-  flex: 0 1 170px;
+  flex: 0 1 195px;
   min-width: 150px;
-  font-size: 17px;
+  font-size: 26px;
   align-self: center;
 }
 
 .growth .glabel { display: flex; justify-content: space-between; gap: 8px; }
-.growth .gsub { color: var(--gold); font-size: 14px; }
+.growth .gsub { color: var(--gold); font-size: 19px; }
 
 /* gauges: light ridge border over a dark track, pink fill */
 .fatbar {
-  width: 150px;
+  width: 170px;
   max-width: 100%;
-  height: 12px;
+  height: 14px;
   margin: 3px 0 10px;
   background: #101024;
   border: 2px solid var(--border-light);
@@ -531,10 +531,9 @@ li.selected > .citem > .hand { opacity: 1; }
   display: block;
   color: #fff;
   text-decoration: none;
-  font-size: 22px;
-  letter-spacing: .03em;
-  line-height: 1.18;
-  padding: 2px 6px 2px 20px;
+  font-size: 30px;
+  line-height: 1.0;
+  padding: 0 6px 0 20px;
   outline: none;
   cursor: pointer;
 }
@@ -545,13 +544,13 @@ li.selected > .citem > .hand { opacity: 1; }
    exactly like the game */
 .menu .hand { left: -30px; }
 
-.menu .spacer { height: 22px; }
+.menu .spacer { height: 30px; }
 
 /* ---- Time / Gil ---- */
 .timegil {
   grid-area: timegil;
-  padding: 14px 18px;
-  font-size: 19px;
+  padding: 12px 18px;
+  font-size: 25px;
   align-self: end;
 }
 
@@ -566,8 +565,8 @@ li.selected > .citem > .hand { opacity: 1; }
 /* ---- Location ---- */
 .loc {
   grid-area: loc;
-  padding: 12px 22px;
-  font-size: 20px;
+  padding: 10px 22px;
+  font-size: 26px;
   align-self: end;
   justify-self: start;
   min-width: 45%;
@@ -618,15 +617,14 @@ li.selected > .citem > .hand { opacity: 1; }
 /* ---- Dialog screens (stubs, articles) ---- */
 .dialog {
   padding: 20px 24px;
-  font-size: 19px;
+  font-size: 25px;
   outline: none;
 }
 
 .dialog h2 {
   margin: 0 0 12px;
-  font-size: 22px;
+  font-size: 28px;
   color: var(--gold);
-  letter-spacing: .02em;
 }
 
 .dialog a { color: var(--gold); text-decoration: none; }
@@ -637,9 +635,8 @@ li.selected > .citem > .hand { opacity: 1; }
   display: block;
   color: #fff;
   text-decoration: none;
-  font-size: 19px;
-  letter-spacing: .03em;
-  padding: 8px 6px 8px 46px;
+  font-size: 25px;
+  padding: 6px 6px 6px 46px;
   outline: none;
   cursor: pointer;
 }
@@ -656,14 +653,13 @@ li.selected > .citem > .hand { opacity: 1; }
   gap: 14px;
   color: #fff;
   text-decoration: none;
-  font-size: 19px;
-  letter-spacing: .03em;
-  padding: 9px 6px 9px 48px;
+  font-size: 24px;
+  padding: 7px 6px 7px 48px;
   outline: none;
   cursor: pointer;
 }
 .postlist .ptitle { min-width: 0; }
-.postlist .pdate { color: var(--label); font-size: 15px; flex: none; }
+.postlist .pdate { color: var(--label); font-size: 18px; flex: none; }
 
 .loading { color: var(--label); margin: 6px; }
 
@@ -691,23 +687,23 @@ li.selected > .citem > .hand { opacity: 1; }
   margin-bottom: 10px;
 }
 
-.atitle { margin: 0; font-size: 22px; color: var(--gold); letter-spacing: .02em; }
-.adate { color: var(--label); font-size: 15px; flex: none; }
+.atitle { margin: 0; font-size: 28px; color: var(--gold); }
+.adate { color: var(--label); font-size: 18px; flex: none; }
 
 .article-body {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   padding-right: 8px;
-  font-size: 17px;
-  line-height: 1.55;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, .85);
+  font-size: 22px;
+  line-height: 1.45;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, .85);
 }
 
 .article-body > :first-child { margin-top: 0; }
 .article-body h2, .article-body h3 { color: var(--gold); margin: 1.2em 0 .4em; }
-.article-body h2 { font-size: 20px; }
-.article-body h3 { font-size: 18px; }
+.article-body h2 { font-size: 26px; }
+.article-body h3 { font-size: 24px; }
 .article-body a { color: var(--gold); text-decoration: underline; }
 .article-body img {
   max-width: 100%;
@@ -762,8 +758,8 @@ li.selected > .citem > .hand { opacity: 1; }
 .equip-desc {
   flex: none;
   min-height: 44px;
-  padding: 10px 18px;
-  font-size: 17px;
+  padding: 8px 18px;
+  font-size: 22px;
   display: flex;
   align-items: center;
 }
@@ -783,22 +779,21 @@ li.selected > .citem > .hand { opacity: 1; }
   gap: 10px;
   color: #fff;
   text-decoration: none;
-  font-size: 18px;
-  letter-spacing: .03em;
-  padding: 8px 6px 8px 44px;
+  font-size: 24px;
+  padding: 6px 6px 6px 44px;
   outline: none;
   cursor: pointer;
 }
 .eslot { color: var(--label); flex: none; min-width: 3.2em; }
 
-.msec { margin: 2px 0 4px; font-size: 18px; color: var(--gold); letter-spacing: .02em; }
+.msec { margin: 2px 0 4px; font-size: 24px; color: var(--gold); }
 
 .materia {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
   column-gap: 10px;
 }
 .materia li { position: relative; }
@@ -808,9 +803,8 @@ li.selected > .citem > .hand { opacity: 1; }
   gap: 9px;
   color: #fff;
   text-decoration: none;
-  font-size: 17px;
-  letter-spacing: .03em;
-  padding: 7px 6px 7px 42px;
+  font-size: 22px;
+  padding: 6px 6px 6px 42px;
   outline: none;
   cursor: pointer;
 }
@@ -845,9 +839,8 @@ li.selected > .citem > .hand { opacity: 1; }
   gap: 12px;
   color: #fff;
   text-decoration: none;
-  font-size: 20px;
-  letter-spacing: .03em;
-  padding: 8px 6px 8px 48px;
+  font-size: 26px;
+  padding: 7px 6px 7px 48px;
   outline: none;
   cursor: pointer;
 }
@@ -908,13 +901,13 @@ li.selected > .citem > .hand { opacity: 1; }
 
 /* R/G/B chips like the game's colored letter blocks */
 .wc-ch {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: normal;
   color: #fff;
   border-radius: 3px;
@@ -928,7 +921,7 @@ li.selected > .citem > .hand { opacity: 1; }
   width: 3ch;
   flex: none;
   text-align: right;
-  font-size: 18px;
+  font-size: 22px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -963,7 +956,7 @@ li.selected > .citem > .hand { opacity: 1; }
   /* fixed full-width two-line hint box: one truncated line loses too
      much of the post summaries at phone widths */
   .topbar { height: 62px; }
-  .hintbar { padding: 9px 14px; }
+  .hintbar { padding: 9px 14px; font-size: 17px; }
   .hintbar > span {
     white-space: normal;
     display: -webkit-box;
@@ -971,7 +964,7 @@ li.selected > .citem > .hand { opacity: 1; }
     line-clamp: 2;
     -webkit-box-orient: vertical;
   }
-  .titlebar { min-width: 0; padding: 9px 12px; font-size: 16px; }
+  .titlebar { min-width: 0; padding: 9px 12px; font-size: 17px; }
 
   .layout {
     grid-template-columns: 1fr 1fr;
@@ -984,10 +977,10 @@ li.selected > .citem > .hand { opacity: 1; }
   .party { padding: 18px 16px; min-height: 0; }
   .member { gap: 14px; flex-wrap: wrap; }
   .portrait { width: 96px; height: 96px; }
-  .mname { font-size: 22px; }
-  .srow { font-size: 16px; }
+  .mname { font-size: 26px; }
+  .srow { font-size: 20px; }
   .stats { flex: 1 1 160px; }
-  .growth { flex: 1 1 100%; min-width: 0; font-size: 16px; }
+  .growth { flex: 1 1 100%; min-width: 0; font-size: 19px; }
 
   .menu ul {
     display: grid;
@@ -995,25 +988,25 @@ li.selected > .citem > .hand { opacity: 1; }
     column-gap: 4px;
   }
   .menu .spacer { display: none; }
-  .menu a { padding: 11px 4px 11px 40px; font-size: 18px; }
+  .menu a { padding: 9px 4px 9px 40px; font-size: 23px; }
   .menu .hand { left: 2px; width: 32px; height: 19px; }
 
   .loc { min-width: 0; justify-self: stretch; }
 
-  .postlist a { font-size: 17px; padding: 10px 4px 10px 42px; gap: 10px; }
-  .postlist .pdate { font-size: 13px; }
+  .postlist a { font-size: 20px; padding: 9px 4px 9px 42px; gap: 10px; }
+  .postlist .pdate { font-size: 15px; }
   .article { max-height: calc(100svh - 148px); }
 
   .hand { width: 32px; height: 19px; }
 
   .equip-topwin { grid-template-columns: 1fr; gap: 6px; padding: 16px 14px; }
   .equip-main { padding: 14px; }
-  .equip-slots a { font-size: 17px; padding: 8px 4px 8px 40px; }
+  .equip-slots a { font-size: 20px; padding: 8px 4px 8px 40px; }
   .materia { grid-template-columns: 1fr 1fr; column-gap: 4px; }
-  .materia a { font-size: 16px; padding: 8px 4px 8px 38px; }
+  .materia a { font-size: 19px; padding: 8px 4px 8px 38px; }
 
   .configscr { padding: 14px; }
-  .configlist a { font-size: 17px; padding: 8px 4px 8px 40px; flex-wrap: wrap; }
+  .configlist a { font-size: 20px; padding: 8px 4px 8px 40px; flex-wrap: wrap; }
   .clabel { width: 8.5em; }
   .wc-editor { position: static; width: 100%; margin-top: 10px; }
 }

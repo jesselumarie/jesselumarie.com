@@ -42,32 +42,42 @@ def socket(empty=False):
                     px[x,y] = (44,44,56,255)                  # washer ring
     return im
 
-# ---- orb, 15x15, banded sphere ----
-COLORS = {
-  'green':  ((152,240,160), (40,184,56),  (16,96,24),   (8,48,16)),
-  'yellow': ((255,232,138), (224,184,28), (138,106,8),  (74,56,4)),
-  'purple': ((216,176,255), (136,68,204), (76,28,120),  (40,12,68)),
-  'red':    ((255,152,144), (216,40,32),  (120,16,8),   (64,6,4)),
-  'blue':   ((152,192,255), (48,96,208),  (20,44,120),  (10,24,64)),
+# ---- orb, 15x17 egg lit from below, like the PSX sprites ----
+# Measured from the game's Materia screen: dark crown, saturated
+# belt, pale glowing bottom rim, white specular block at top-left,
+# and the egg overhangs the socket's bottom edge.
+COLORS = {                    # dark, mid, low, rim
+  'green':  ((10,56,26),   (46,158,88),  (116,216,136), (212,248,212)),
+  'yellow': ((90,64,8),    (198,146,30), (238,204,92),  (250,238,168)),
+  'purple': ((56,16,74),   (158,62,182), (228,150,232), (246,204,246)),
+  'red':    ((74,12,16),   (192,42,56),  (230,116,116), (246,186,182)),
+  'blue':   ((16,28,80),   (54,94,198),  (120,160,236), (190,216,250)),
 }
 def orb(name):
-    light, base, dark, edge = COLORS[name]
-    S = 15
-    im = Image.new('RGBA', (S, S), (0,0,0,0))
+    dark, mid, low, rim = COLORS[name]
+    W, H = 15, 17
+    im = Image.new('RGBA', (W, H), (0,0,0,0))
     px = im.load()
-    cx = cy = (S-1)/2
-    lx, ly = 5, 4                                            # light point
-    for y in range(S):
-        for x in range(S):
-            d = math.hypot(x-cx, y-cy)
-            if d > 7.5: continue
-            dl = math.hypot(x-lx, y-ly)
-            if d > 6.6:        c = edge                       # dark rim
-            elif dl < 1.7:     c = (255,255,255)              # specular
-            elif dl < 3.4:     c = light
-            elif dl < 5.6:     c = base
-            else:              c = dark
+    cx, cy, rx, ry = (W-1)/2, (H-1)/2, 7.5, 8.5
+    for y in range(H):
+        for x in range(W):
+            e = ((x-cx)/rx)**2 + ((y-cy)/ry)**2
+            if e > 1: continue
+            if e > 0.88:
+                c = dark if y < cy else low            # outline: hard top, softer below
+            elif e > 0.55 and y >= cy + 1:
+                c = rim                                # glowing lower rim
+            elif y >= cy + 2.5:
+                c = low
+            elif y >= cy - 2:
+                c = mid
+            else:
+                c = dark                               # crown
             px[x,y] = c + (255,)
+    # white specular block, top-left, sitting in the crown
+    for sx, sy in ((4,3),(5,3),(4,4),(5,4),(6,4)):
+        px[sx,sy] = (255,255,255,255)
+    px[6,5] = low + (255,)
     return im
 
 out = {}

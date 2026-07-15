@@ -615,7 +615,7 @@
     path: 'about',
     parent: 'main',
     title: 'About',
-    hint: 'Jesse — software developer, former lawyer.',
+    hint: 'Select equipment.',
     cursor: function () { return aboutCursor; },
     render: function (mount) {
       var about = FF7_MANIFEST.about;
@@ -624,10 +624,12 @@
       mount.innerHTML =
         '<div class="equip-wrap" role="dialog" aria-label="About" tabindex="-1">' +
           '<div class="window equip-topwin">' +
-            '<div class="member" data-hint="' + esc(m.hint) + '">' + memberStatsHTML(m) + '</div>' +
+            '<div class="member">' + memberStatsHTML(m) + '</div>' +
             '<ul class="equip-slots">' +
+              // the description window below shows eq.desc; no data-hint,
+              // or the same text would render twice (here and the help bar)
               about.equipment.map(function (eq) {
-                return '<li><a href="#" data-noop data-desc="' + esc(eq.desc) + '" data-hint="' + esc(eq.desc) + '">' +
+                return '<li><a href="#" data-noop data-desc="' + esc(eq.desc) + '">' +
                   '<span class="hand"></span>' +
                   '<span class="eslot">' + esc(eq.slot) + '</span>' +
                   '<span class="ename">' + esc(eq.name) + '</span></a></li>';

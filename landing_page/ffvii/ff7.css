@@ -831,43 +831,34 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .materia .mt-empty a { cursor: default; }
 
-/* faint recessed washer inside an unfilled socket, like the game */
-.mt-empty .socket::after {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  border: 3px solid #24242c;
-  border-radius: 50%;
-}
-
-/* metal donut: shaded ring around a dark hole */
+/* metal donut socket: pixel-art sprite (19px native, PSX-banded
+   shading), shown at 2x like the rest of the shell's sprites */
 .socket {
   display: block;
   position: relative;
   width: 38px;
   height: 38px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle closest-side, #08080c 0 56%, rgba(0, 0, 0, 0) 60%),
-    linear-gradient(180deg, #dcdce4 0%, #a2a2ae 45%, #5e5e6a 100%);
-  box-shadow: 0 1px 2px rgba(0, 0, 6, .6), 0 0 0 1px rgba(10, 10, 16, .75);
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAABGElEQVR4nK3UoQ7CMBAA0HaZRkyiCPLEPgKBInwCYt9BEASN4AMQfAKZQqARiAVRSRANsoIfgHThLkd3hYXsxNJdcy/Xra1Wkciy/jM259xdS3n9DTHGNAoAIIpqCZKQGOoYqDkUIpPJtIGU5b6BIpiGS+OQtVZJ+TIAfb0HE0zwrkLo8XA0ttZ+dMzrUuzqdDrXidVqSRBHcNzrZQTO54uP7rR/bLc7goy5qLYBkBNYFDNFy+wiki6x1D+qqvobqFht98vcbNb1i/9D/qO2CYCctgjWJ+H5agMCgzC8U0O410ajMU3ebldxmwDkajAY0vvxeCAsxUF4pHjBr7x7r068NXiHseAdYe7rfSahiISQiEloGLGb9gWtmI8DPj24cAAAAABJRU5ErkJggg==') no-repeat center / 100% 100%;
+  image-rendering: pixelated;
 }
 
-/* glassy sphere seated in the ring, like the game's orbs */
+/* unfilled socket: same donut with the recessed washer inside */
+.mt-empty .socket {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAYAAAByUDbMAAABP0lEQVR4nJ2UsW7CMBCG7ShPgBADE8pUeeAhGJhQH6EDD8DQGXWomBl4AAYeAWViYM7QIWKwOkUMVse8Qqs75azr5Rwkfinx5ez79F8S25qERqPpb2qubX+slrdDEO99r8A5l4RaDaRBUtCWAS0HSchq9dqDlOW5ByVgLlvjoBCC0fKlAEI9ADNKcFccNB5P4gUKIfxzzOsyclVVX3hJEJcEVl0NubNwOx5PmNjtPo33N4yL4gXHpvmOMJlzbm622w+M1+s3E9vk0kD8uejmpVTYs8rhVtf104Ca1arOUu2k2ifhB4Bgs3nHBPxD8iNwNezl0y9yOOxxzOT+ggWwkBcOgUjAQRC5WyyWcfJ+b6JDLufmZjYr4vP1eomwnAK5pXjBo3zbdaeeGtxhStwR5QbPMw1KEAlSYRpUKnXS/gE+CKq9KYapywAAAABJRU5ErkJggg==');
+}
+
+/* PSX-banded orb sprite seated in the ring (15px native at 2x) */
 .orb {
   position: absolute;
   inset: 4px;
-  border-radius: 50%;
-  box-shadow:
-    inset -3px -4px 6px rgba(0, 0, 10, .5),
-    inset 2px 3px 3px rgba(255, 255, 255, .35),
-    0 1px 2px rgba(0, 0, 6, .5);
+  background: no-repeat center / 100% 100%;
+  image-rendering: pixelated;
 }
-.orb-green  { background: radial-gradient(circle at 32% 26%, #fff 0 9%, #a8f8b0 16% 28%, #2cc43c 55%, #0a5c16 90%); }
-.orb-yellow { background: radial-gradient(circle at 32% 26%, #fff 0 9%, #ffee9a 16% 28%, #e8c010 55%, #705404 90%); }
-.orb-purple { background: radial-gradient(circle at 32% 26%, #fff 0 9%, #dcb8ff 16% 28%, #8c44d4 55%, #38126a 90%); }
-.orb-red    { background: radial-gradient(circle at 32% 26%, #fff 0 9%, #ffb0a8 16% 28%, #dc2c24 55%, #6a0e06 90%); }
-.orb-blue   { background: radial-gradient(circle at 32% 26%, #fff 0 9%, #a8ccff 16% 28%, #3464dc 55%, #0e2a72 90%); }
+.orb-green  { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAtklEQVR4nGNkwAI4DAT+o4v9uPCBEV2MEZumCQcmgPkTTsyAyz2ouIFhCCOyRpgmZIBswIsVDxh+XPgBN4ARXWM6fzxc8cyPC1EMeLHiAdR2iAFMDBQAFpCtCh0aJGniMOBgYGAQ+M+IrLnAIoOgn2EA5HQmXArxaYQBsM0gZ0hEKDDgAtg0/kC2GZsCfOIoUQUJBOLAD2pEFVgzyBSQaaTYCmJjTdvYvAAzHGvaxmYIqmbMXAUATApoLl6M4uQAAAAASUVORK5CYII='); }
+.orb-yellow { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAuUlEQVR4nGNkwAK8LFj+o4ttO/GHEV2MEZumrRvawPyHFybB5bIaXmAYwoisEaYJGSAbsGrTG4YD5/7ADWDC0CheisAMDAzyBnkohjkYscBdCNZMLmABmTKtQYIkTQ5GLCDqP5iE+Q3sxJfdOP2MDpjwKUQPLHTACHI2yBlhfiIMuAA2jQfO/UHYjE0BPnEQAMcXzHZiwQFoXFMUVWDNIFNAppFiK4iNNW1j8wLMcKxpG5shyABbrgIAJYJctHN3q90AAAAASUVORK5CYII='); }
+.orb-purple { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAuElEQVR4nGNkwAI0eFz+o4vd+LKHEV2MEZumDUt2g/kbppyFyy04UYFhCCOyRpgmZIBswJEbaxjufDgDN4AJXaO6PwKDQECOMYphKgImcBeCNZMLWECmJFh0kKRJRcAERP1nQvfbzY0IjCyODTAhc9AVogcWOmAEORvkDBuNEAZcAJvGOx/OIGzGpgCfOAiA4wtmO7HgDjSuKYoqsGaQKSDTSLEVxMaatrF5AWY41rSNzRBkgC1XAQDycl5B1nwylQAAAABJRU5ErkJggg=='); }
+.orb-red    { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAsElEQVR4nGNkwAIc2Fj+o4sd+PWHEV2MEZum/ZN6wPybEybA5TLuPcEwhBFZI0wTMkA2YMGLFwwnvv2BG8CIoTE9H6Fz5kQUAxa8eAGmYQYwMVAAWEC2zlCSIUmTBRcLiPrPiKxZvaCAoJ9hAOR0JlwK8WmEAbDNIGckSEgw4ALYNJ5AthmbAnziKFEFDQSiwAlqRBVYM8gUkGmk2ApiY03b2LwAMxxr2sZmCDLAlqsArx9nMq/w45AAAAAASUVORK5CYII='); }
+.orb-blue   { background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAt0lEQVR4nGNkwAK4JBz+o4t9e3GAEV2MEZumvhX7wfwZCy7C5W7tKMAwhBFZI0wTMkA24MmZFQzf3pyAG8CErjHdHoFBICNBH9VLIhZwF4I1kwtYQKaoeUwgSROXiAWI+s+C7DeQE2cexO1ndMCETyF6YKEDRpCzQc6QMYlgwAWwafz25gTCZmwK8ImDADi+YLYTC75B45qiqAJrBpkCMo0UW0FsrGkbmxdghmNN29gMQdGMJVcBAD9SXDZVaM4mAAAAAElFTkSuQmCC'); }
 
 /* ---- Config screen (#/config) ---- */
 .configscr {
@@ -1042,7 +1033,6 @@ li.selected > .citem > .hand { opacity: 1; }
   .materia li:nth-child(even) { margin-right: 8px; }
   .socket { width: 28px; height: 28px; }
   .orb { inset: 3px; }
-  .mt-empty .socket::after { inset: 8px; border-width: 2px; }
 
   .configscr { padding: 14px; }
   .configlist a { font-size: 20px; padding: 8px 4px 8px 54px; flex-wrap: wrap; }

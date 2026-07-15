@@ -201,10 +201,46 @@ var FF7 = (function () {
     Midnight: ['#34344e', '#08080f']
   };
 
+  function clamp255(n) { return Math.max(0, Math.min(255, Math.round(n))); }
+  function hexToRgb(h) {
+    h = String(h).replace('#', '');
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  }
+  function rgbToHex(c) {
+    return '#' + c.map(function (n) {
+      var s = clamp255(n).toString(16);
+      return s.length < 2 ? '0' + s : s;
+    }).join('');
+  }
+  function gradientCss(topRgb, bottomRgb) {
+    return 'linear-gradient(170deg, ' + rgbToHex(topRgb) + ' 0%, ' + rgbToHex(bottomRgb) + ' 90%)';
+  }
+
+  // Seed the custom gradient stops from whichever preset is active, so the
+  // color-setting editor opens on the colors currently on screen.
+  var seedColor = WINDOW_COLORS[settings.windowColor] || WINDOW_COLORS.Blue;
+  if (!Array.isArray(settings.customTop) || settings.customTop.length !== 3) {
+    settings.customTop = hexToRgb(seedColor[0]);
+  }
+  if (!Array.isArray(settings.customBottom) || settings.customBottom.length !== 3) {
+    settings.customBottom = hexToRgb(seedColor[1]);
+  }
+
   function applyShellSettings() {
-    var c = WINDOW_COLORS[settings.windowColor] || WINDOW_COLORS.Blue;
-    document.documentElement.style.setProperty('--win-top', c[0]);
-    document.documentElement.style.setProperty('--win-bottom', c[1]);
+    var top, bottom;
+    if (settings.windowColor === 'Custom') {
+      top = settings.customTop;
+      bottom = settings.customBottom;
+    } else {
+      var c = WINDOW_COLORS[settings.windowColor] || WINDOW_COLORS.Blue;
+      top = hexToRgb(c[0]);
+      bottom = hexToRgb(c[1]);
+      // keep the custom stops mirroring the active preset until the user edits
+      settings.customTop = top.slice();
+      settings.customBottom = bottom.slice();
+    }
+    document.documentElement.style.setProperty('--win-top', rgbToHex(top));
+    document.documentElement.style.setProperty('--win-bottom', rgbToHex(bottom));
     document.body.classList.toggle('no-scanlines', !settings.scanlines);
   }
 
@@ -247,6 +283,161 @@ var FF7 = (function () {
     setHint(null);
   }
   overlay.addEventListener('click', function (e) { if (e.target === overlay) closeConfig(); });
+
+  /* ---------- color-setting overlay (full window-gradient control) ----------
+     A faithful nod to FF7's Config > Color Setting screen: pick the top or
+     bottom corner of the window gradient and tune it channel by channel with
+     Left/Right, watching a live preview. Editing marks windowColor 'Custom'. */
+  var colorOverlay = document.getElementById('colorOverlay');
+  var colorList = colorOverlay ? colorOverlay.querySelector('#colorList') : null;
+  var colorPreview = colorOverlay ? colorOverlay.querySelector('#colorPreview') : null;
+  var colorCursor = null;
+  var colorTarget = 'top';
+  var onColorChange = function () {};
+  var onColorClose = function () {};
+  var COLOR_STEP = 8;
+  var CHANNELS = [
+    { key: 'R', name: 'red' },
+    { key: 'G', name: 'green' },
+    { key: 'B', name: 'blue' }
+  ];
+
+  function activeCorner() {
+    return colorTarget === 'top' ? settings.customTop : settings.customBottom;
+  }
+
+  function colorRowDefs() {
+    var rows = [{
+      type: 'corner',
+      hint: 'Left/Right: switch between the top and bottom of the gradient.',
+      label: 'Corner',
+      value: function () { return '‹ ' + (colorTarget === 'top' ? 'Top' : 'Bottom') + ' ›'; }
+    }];
+    CHANNELS.forEach(function (ch, i) {
+      rows.push({
+        type: 'chan', ch: i,
+        hint: 'Left/Right: set ' + ch.name + ' from 0 to 255.',
+        label: ch.key,
+        value: function () { return activeCorner()[i]; }
+      });
+    });
+    rows.push({ type: 'reset', hint: 'Restore the default blue gradient.', label: 'Reset', value: function () { return ''; } });
+    rows.push({ type: 'back', hint: 'Return to Config.', label: 'Back', value: function () { return ''; } });
+    return rows;
+  }
+
+  function markCustom() {
+    settings.windowColor = 'Custom';
+    applyShellSettings();
+    onColorChange();
+    refreshColorRows();
+  }
+
+  function adjustChannel(chIndex, delta) {
+    var corner = activeCorner();
+    corner[chIndex] = clamp255(corner[chIndex] + delta);
+    markCustom();
+  }
+
+  function resetColors() {
+    settings.customTop = hexToRgb(WINDOW_COLORS.Blue[0]);
+    settings.customBottom = hexToRgb(WINDOW_COLORS.Blue[1]);
+    settings.windowColor = 'Blue';
+    applyShellSettings();
+    onColorChange();
+    refreshColorRows();
+  }
+
+  // Update values/bars/preview in place so the cursor position survives edits.
+  function refreshColorRows() {
+    if (!colorList) return;
+    var lis = colorList.children;
+    var defs = colorRowDefs();
+    for (var i = 0; i < lis.length && i < defs.length; i++) {
+      var def = defs[i];
+      var valEl = lis[i].querySelector('.cval');
+      if (valEl) valEl.textContent = def.value();
+      if (def.type === 'chan') {
+        var fill = lis[i].querySelector('.cbar > i');
+        if (fill) fill.style.width = (activeCorner()[def.ch] / 255 * 100) + '%';
+      }
+    }
+    if (colorPreview) colorPreview.style.background = gradientCss(settings.customTop, settings.customBottom);
+  }
+
+  function renderColor() {
+    if (!colorList) return;
+    var defs = colorRowDefs();
+    colorList.innerHTML = defs.map(function (r) {
+      if (r.type === 'chan') {
+        return '<li><div class="crow chanrow" data-hint="' + r.hint + '">' +
+          '<span class="hand">👉</span>' +
+          '<span class="clabel">' + r.label + '</span>' +
+          '<button class="cadj" type="button" data-adj="-1" tabindex="-1" aria-label="Decrease ' + r.label + '">◄</button>' +
+          '<span class="cbar"><i></i></span>' +
+          '<button class="cadj" type="button" data-adj="1" tabindex="-1" aria-label="Increase ' + r.label + '">►</button>' +
+          '<span class="cval">' + r.value() + '</span>' +
+          '</div></li>';
+      }
+      return '<li><button class="crow actrow" type="button" data-hint="' + r.hint + '">' +
+        '<span class="hand">👉</span><span class="clabel">' + r.label + '</span>' +
+        '<span class="cval">' + r.value() + '</span></button></li>';
+    }).join('');
+
+    var lis = Array.prototype.slice.call(colorList.children);
+    colorCursor = cursorList(lis, activateColorRow);
+
+    lis.forEach(function (li, i) {
+      var def = defs[i];
+      li.setAttribute('data-type', def.type);
+      if (def.type === 'chan') li.setAttribute('data-ch', def.ch);
+      if (def.type === 'chan') {
+        li.querySelectorAll('.cadj').forEach(function (btn) {
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            adjustChannel(def.ch, parseInt(btn.getAttribute('data-adj'), 10) * COLOR_STEP);
+          });
+        });
+      } else {
+        li.querySelector('.crow').addEventListener('click', function () { activateColorRow(li); });
+      }
+    });
+    refreshColorRows();
+  }
+
+  function activateColorRow(li) {
+    var type = li.getAttribute('data-type');
+    if (type === 'corner') { confirmBeep(); colorTarget = (colorTarget === 'top' ? 'bottom' : 'top'); refreshColorRows(); }
+    else if (type === 'reset') { confirmBeep(); resetColors(); }
+    else if (type === 'back') { closeColor(); }
+    else { blip(); }
+  }
+
+  // Left/Right on a selected row: toggle the corner or nudge a channel.
+  function colorAdjust(dir) {
+    if (!colorCursor) return;
+    var li = colorCursor.current();
+    var type = li.getAttribute('data-type');
+    if (type === 'corner') { colorTarget = (colorTarget === 'top' ? 'bottom' : 'top'); blip(); refreshColorRows(); }
+    else if (type === 'chan') { blip(); adjustChannel(parseInt(li.getAttribute('data-ch'), 10), dir * COLOR_STEP); }
+  }
+
+  function openColor(onChange, onClose) {
+    onColorChange = onChange || function () {};
+    onColorClose = onClose || function () {};
+    confirmBeep();
+    renderColor();
+    colorOverlay.classList.add('open');
+  }
+  function closeColor() {
+    cancelBeep();
+    colorOverlay.classList.remove('open');
+    onColorClose();
+    setHint(null);
+  }
+  if (colorOverlay) {
+    colorOverlay.addEventListener('click', function (e) { if (e.target === colorOverlay) closeColor(); });
+  }
 
   /* ---------- TV power (desktop shell) ---------- */
   function initPowerButton() {
@@ -393,10 +584,21 @@ var FF7 = (function () {
 
   /* ---------- keyboard ---------- */
   document.addEventListener('keydown', function (e) {
+    var colorOpen = colorOverlay && colorOverlay.classList.contains('open');
     var open = overlay.classList.contains('open');
     if (e.key === 'Escape') {
+      if (colorOpen) { closeColor(); return; }
       if (open) { closeConfig(); return; }
       routerBack();
+      return;
+    }
+    // the color-setting overlay sits on top of Config and adds Left/Right control
+    if (colorOpen) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); colorCursor.move(1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); colorCursor.move(-1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); colorAdjust(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); colorAdjust(1); }
+      else if (e.key === 'Enter') { e.preventDefault(); colorCursor.activate(); }
       return;
     }
     var cursor = open ? configCursor
@@ -428,8 +630,14 @@ var FF7 = (function () {
     config: {
       open: openConfig,
       close: closeConfig,
+      refresh: function () { if (overlay.classList.contains('open')) renderConfig(); },
       isOpen: function () { return overlay.classList.contains('open'); },
       cursor: function () { return configCursor; }
+    },
+    colorConfig: {
+      open: openColor,
+      close: closeColor,
+      isOpen: function () { return colorOverlay && colorOverlay.classList.contains('open'); }
     },
     power: {
       initButton: initPowerButton,

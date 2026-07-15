@@ -770,6 +770,79 @@ li.selected > .citem > .hand { opacity: 1; }
 
 .config .cval { color: var(--label); }
 
+/* ---- Color Setting (window-gradient editor) ---- */
+.colorcfg { width: min(92vw, 460px); }
+
+.cpreview {
+  height: 76px;
+  margin: 0 0 12px;
+  border-radius: 3px;
+  /* live gradient set inline; falls back to the current window colors */
+  background: linear-gradient(170deg, var(--win-top) 0%, var(--win-bottom) 90%);
+}
+
+.colorcfg ul { list-style: none; margin: 0; padding: 0; }
+.colorcfg li { position: relative; }
+
+.crow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  color: #fff;
+  font: inherit;
+  font-size: 18px;
+  letter-spacing: .03em;
+  text-shadow: inherit;
+  padding: 9px 6px 9px 40px;
+  cursor: pointer;
+  outline: none;
+  text-align: left;
+}
+
+.crow .clabel { min-width: 1.4em; }
+.crow .cval {
+  margin-left: auto;
+  color: var(--label);
+  font-variant-numeric: tabular-nums;
+  min-width: 2.6em;
+  text-align: right;
+}
+
+li.selected > .crow > .hand { opacity: 1; }
+
+.cbar {
+  flex: 1 1 auto;
+  height: 12px;
+  border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 2px;
+  background: rgba(0, 0, 0, .35);
+  overflow: hidden;
+}
+.cbar > i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--gold);
+  transition: width .05s linear;
+}
+
+.cadj {
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  color: var(--label);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1;
+  padding: 4px 6px;
+  cursor: pointer;
+  outline: none;
+}
+.cadj:hover { color: #fff; }
+
 @media (max-width: 720px) {
   body { justify-content: flex-start; }
 
@@ -813,6 +886,10 @@ li.selected > .citem > .hand { opacity: 1; }
   .postlist a { font-size: 17px; padding: 10px 4px 10px 38px; gap: 10px; }
   .postlist .pdate { font-size: 13px; }
   .article { max-height: calc(100svh - 130px); }
+
+  .colorcfg { width: min(94vw, 430px); }
+  .colorcfg .crow { padding: 8px 4px 8px 34px; gap: 6px; }
+  .colorcfg .cbar { min-width: 0; }
 
   .equip { padding: 16px 14px; }
   .equip-top { grid-template-columns: 1fr; gap: 6px; }

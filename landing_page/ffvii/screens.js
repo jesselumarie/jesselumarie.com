@@ -649,6 +649,9 @@
                   '<span class="socket"><span class="orb orb-' + esc(mat.color) + '"></span></span>' +
                 '</a></li>';
               }).join('') +
+              // a spare linked pair, empty like the game's unfilled slots
+              '<li class="mt-empty" aria-hidden="true"><a tabindex="-1"><span class="socket"></span></a></li>' +
+              '<li class="mt-empty" aria-hidden="true"><a tabindex="-1"><span class="socket"></span></a></li>' +
             '</ul>' +
             '<ul class="dialog-actions">' +
               '<li><a href="' + esc(about.fallbackUrl) + '" data-hint="Leave the menu and read the about page directly."><span class="hand"></span>About Jesse (plain version)</a></li>' +
@@ -665,7 +668,7 @@
         descEl.textContent = a ? a.getAttribute('data-desc') : about.bio.join(' ');
       }
       var items = Array.prototype.slice.call(
-        wrap.querySelectorAll('.equip-slots li, .materia li, .dialog-actions li'));
+        wrap.querySelectorAll('.equip-slots li, .materia li:not(.mt-empty), .dialog-actions li'));
       aboutCursor = FF7.cursorList(items, function (li) { li.querySelector('a').click(); });
       var baseMove = aboutCursor.move;
       aboutCursor.move = function (d) { baseMove(d); syncDesc(aboutCursor.current()); };

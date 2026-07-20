@@ -321,10 +321,11 @@ span.wave {
     transform: rotateY(180deg);
   }
 
-  /* keep the monogram at the same ~0.64x-of-circle ratio as desktop, and
-     re-apply the optical nudge the rule above resets via translate3d */
+  /* size the monogram to the 16vw circle with a bit more breathing room
+     than desktop, and re-apply the optical nudge the rule above resets
+     via translate3d */
   .bigCircle-front {
-    font-size: 10vw;
+    font-size: 8.5vw;
     line-height: 1;
     max-width: none;
     transform: translateY(-0.06em);

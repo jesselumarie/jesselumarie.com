@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'MessySharpie';
+  src: url('https://cdn.jsdelivr.net/gh/jesselumarie/messy-sharpie@main/MessySharpie.woff2') format('woff2');
+  font-display: swap;
+}
+
 :root {
   --background-color: white;
   --main-color: #011035;
@@ -25,7 +31,7 @@
 html, body {
   background-color: white;
   background-color: var(--background-color);
-  font-family: 'Futura', 'Open Sans';
+  font-family: 'MessySharpie', 'Open Sans';
   margin: 0;
   padding: 0;
   text-align:center;

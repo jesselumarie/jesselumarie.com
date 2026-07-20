@@ -167,6 +167,16 @@ a:hover {
   position: absolute;
 }
 
+/* MessySharpie's glyphs run wider than Futura's: cap the monogram size and
+   drop the max-width box so the letters fit inside the circle. The font draws
+   its caps ~0.06em below the em-box center, so nudge up to optically center. */
+.bigCircle-front {
+  font-size: 6rem;
+  line-height: 1;
+  max-width: none;
+  transform: translateY(-0.06em);
+}
+
 .bigCircle-back {
   font-size: 5rem;
   transform: rotateY(180deg);
@@ -309,6 +319,15 @@ span.wave {
   .bigCircle-back {
     font-size: 2rem;
     transform: rotateY(180deg);
+  }
+
+  /* keep the monogram at the same ~0.64x-of-circle ratio as desktop, and
+     re-apply the optical nudge the rule above resets via translate3d */
+  .bigCircle-front {
+    font-size: 10vw;
+    line-height: 1;
+    max-width: none;
+    transform: translateY(-0.06em);
   }
 
   .smallCircle {

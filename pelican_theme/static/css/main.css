@@ -86,9 +86,13 @@ body {
   font-size: 4rem;
 }
 
+/* MessySharpie runs wider than Futura and draws its caps ~0.06em below the
+   em-box center: let the monogram out of the max-width box and nudge it up
+   so it sits optically centered in the circle */
 .bigCircle-inner {
   color: white;
-  max-width: 50%;
+  line-height: 1;
+  transform: translateY(-0.06em);
 }
 
 .smallCircle {
@@ -594,7 +598,7 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
   .bigCircle {
     width: 100px;
     height: 100px;
-    font-size: 4rem;
+    font-size: 3.5rem;
   }
 
   .smallCircle {

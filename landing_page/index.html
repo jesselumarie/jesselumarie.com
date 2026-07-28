@@ -5,6 +5,10 @@
     <style>
       html { background-color: white; color-scheme: light dark; }
       @media (prefers-color-scheme: dark) { html { background-color: rgb(17, 17, 17); } }
+      /* swap pages atomically: hold the old page until the new one is ready,
+         then cut over in one frame — no crossfade, no blank frame */
+      @view-transition { navigation: auto; }
+      ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
     </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -48,8 +52,8 @@
     <script type="speculationrules">
       { "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
     </script>
-    <link rel="prefetch" href="/about">
-    <link rel="prefetch" href="/blog">
+    <link rel="prefetch" href="/about/">
+    <link rel="prefetch" href="/blog/">
 
     <title>Jesse Lumarie</title>
   </head>
@@ -69,7 +73,7 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-4" >
-          <a class="pull-right center-block smallCircle" href="https://jesselumarie.com/about">
+          <a class="pull-right center-block smallCircle" href="/about/">
             <div class="smallCircle-inner">About</div>
           </a>
         </div>
@@ -84,7 +88,7 @@
            </div>
          </div>
          <div class="col-xs-4" >
-          <a class="pull-left center-block smallCircle" href="https://jesselumarie.com/blog">
+          <a class="pull-left center-block smallCircle" href="/blog/">
             <div class="smallCircle-inner">Writing</div>
           </a>
          </div>

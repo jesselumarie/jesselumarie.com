@@ -18,6 +18,10 @@
         <style>
           html { background-color: #3c3c3e; color-scheme: light dark; }
           @media (prefers-color-scheme: dark) { html { background-color: #29292b; } }
+          /* swap pages atomically: hold the old page until the new one is ready,
+             then cut over in one frame — no crossfade, no blank frame */
+          @view-transition { navigation: auto; }
+          ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
         </style>
         <link rel="shortcut icon" href="{{ SITEURL }}/theme/images/jl_icon.png"/>
         <!-- connect to CDNs early so render-blocking CSS resolves faster
@@ -55,7 +59,7 @@
       { "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
     </script>
     <link rel="prefetch" href="/">
-    <link rel="prefetch" href="/about">
+    <link rel="prefetch" href="/about/">
 </head>
 
 <body id="index" class="home">
@@ -64,17 +68,17 @@
 		<div class = "visible-sm-12 hidden-md hidden-lg mobile-topbar">
       <div class="row">
         <div class="col-xs-4" >
-          <a class="smallCircle pull-right" href="https://jesselumarie.com/about">
+          <a class="smallCircle pull-right" href="/about/">
             <div class="smallCircle-inner">About</div>
           </a>
         </div>
         <div class="col-xs-4" >
-          <a href="https://jesselumarie.com" class="center-block bigCircle">
+          <a href="/" class="center-block bigCircle">
             <div class="bigCircle-inner">JL</div>
           </a>
         </div>
         <div class="col-xs-4" >
-          <a class="smallCircle pull-left" href="https://jesselumarie.com/blog">
+          <a class="smallCircle pull-left" href="/blog/">
             <div class="smallCircle-inner">Writing</div>
           </a>
         </div>
@@ -88,19 +92,19 @@
 
 			<div class = "logo">
 				<div class = "row">
-          <a class="smallCircle center-block" href="https://jesselumarie.com/about">
+          <a class="smallCircle center-block" href="/about/">
             <div class="smallCircle-inner">About</div>
           </a>
 				</div>
 
         <div class = "row">
-          <a href="https://jesselumarie.com" class="center-block bigCircle">
+          <a href="/" class="center-block bigCircle">
             <div class="bigCircle-inner">JL</div>
           </a>
         </div>
 
 				<div class = "row">
-          <a class="center-block smallCircle" href="https://jesselumarie.com/blog">
+          <a class="center-block smallCircle" href="/blog/">
             <div class="smallCircle-inner">Writing</div>
           </a>
         </div>

@@ -104,7 +104,7 @@
   function init() {
     var link = document.createElement('a');
     link.className = 'moogle-walk';
-    link.href = '/ffvii';
+    link.href = '/ffvii/';
     link.setAttribute('aria-label', 'A moogle! Follow it to the FFVII menu, kupo');
     link.title = 'Kupo!';
 

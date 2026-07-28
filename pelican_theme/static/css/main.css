@@ -4,12 +4,6 @@
 @import url("pygment.css");
 @import url("typogrify.css");
 
-/* crossfade same-origin page navigations instead of hard-swapping
-   (Chrome 126+/Safari 18.2+; older browsers just ignore this) */
-@view-transition {
-  navigation: auto;
-}
-
 @font-face {
   font-family: 'MessySharpie';
   src: url('https://cdn.jsdelivr.net/gh/jesselumarie/messy-sharpie@main/MessySharpie.woff2') format('woff2');

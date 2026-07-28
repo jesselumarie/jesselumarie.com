@@ -1,9 +1,3 @@
-/* crossfade same-origin page navigations instead of hard-swapping
-   (Chrome 126+/Safari 18.2+; older browsers just ignore this) */
-@view-transition {
-  navigation: auto;
-}
-
 /* Reactor7 by Caveras (caveras.net) — FFVII PSX menu font recreation, free for personal use */
 @font-face {
   font-family: 'Reactor7';

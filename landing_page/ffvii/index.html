@@ -6,6 +6,12 @@
   <title>Jesse Lumarie — Menu</title>
   <meta name="description" content="The website of Jesse Lumarie, presented as a Final Fantasy VII menu.">
   <link rel="shortcut icon" href="../jl_icon.png">
+  <!-- swap pages atomically: hold the old page until the new one is ready,
+       then cut over in one frame — no crossfade, no blank frame -->
+  <style>
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+  </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&display=swap" rel="stylesheet">

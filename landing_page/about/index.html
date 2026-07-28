@@ -42,9 +42,15 @@
 
     <link href='../style.css' rel='stylesheet' type='text/css'>
 
-    <!-- prerender same-site links on hover so navigation is instant (Chromium); prefetch as fallback -->
+    <!-- prerender nav targets at load, not on hover: a hover-triggered prerender
+         can be activated while still half-loaded, flashing a blank page. By load
+         + a beat, these are fully rendered off-screen, so clicking is an instant
+         complete-frame swap (Chromium); prefetch covers everything else. -->
     <script type="speculationrules">
-      { "prerender": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }] }
+      {
+        "prerender": [{ "urls": ["/", "/blog/"], "eagerness": "immediate" }],
+        "prefetch": [{ "where": { "href_matches": "/*" }, "eagerness": "moderate" }]
+      }
     </script>
     <link rel="prefetch" href="/">
     <link rel="prefetch" href="/blog/">

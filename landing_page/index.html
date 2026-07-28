@@ -3,21 +3,8 @@
   <head>
     <!-- critical canvas color: paints before external CSS loads, prevents white flash -->
     <style>
-      /* the canvas itself carries the page skeleton (navy 10vh header band over
-         white): if the browser ever paints this document before its content is
-         ready, the frame shows the header band holding still instead of a
-         full-viewport white flash. Invisible once body/.header paint over it. */
-      html {
-        background-color: white;
-        background-image: linear-gradient(to bottom, #011035 0, #011035 10vh, white 10vh);
-        color-scheme: light dark;
-      }
-      @media (prefers-color-scheme: dark) {
-        html {
-          background-color: rgb(17, 17, 17);
-          background-image: linear-gradient(to bottom, rgb(50, 50, 50) 0, rgb(50, 50, 50) 10vh, rgb(17, 17, 17) 10vh);
-        }
-      }
+      html { background-color: white; color-scheme: light dark; }
+      @media (prefers-color-scheme: dark) { html { background-color: rgb(17, 17, 17); } }
       /* swap pages atomically: hold the old page until the new one is ready,
          then cut over in one frame — no crossfade, no blank frame */
       @view-transition { navigation: auto; }
@@ -61,6 +48,9 @@
     <!-- pixel Jesse strolls by too; click him for lumarie.family -->
     <script defer src="jesse.js?v=12"></script>
 
+    <!-- swap / and /about/ in place instead of a full page navigation -->
+    <script defer src="nav.js"></script>
+
     <!-- prerender nav targets at load, not on hover: a hover-triggered prerender
          can be activated while still half-loaded, flashing a blank page. By load
          + a beat, these are fully rendered off-screen, so clicking is an instant
@@ -78,6 +68,7 @@
   </head>
 
   <body>
+   <div id="page">
     <div class="header">
     </div>
 
@@ -138,6 +129,7 @@
 
   <div class="footer">
   </div>
+   </div>
 
   </body>
 </html>

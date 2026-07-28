@@ -31,7 +31,7 @@
 html, body {
   background-color: white;
   background-color: var(--background-color);
-  font-family: 'MessySharpie', 'Open Sans';
+  font-family: 'MessySharpie', Futura, 'Open Sans', sans-serif;
   margin: 0;
   padding: 0;
   text-align:center;

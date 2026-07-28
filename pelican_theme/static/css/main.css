@@ -45,7 +45,7 @@ html {
 body {
     color: #333333;
     font-size: 87.5%; /* Base font size: 14px */
-    font-family: 'MessySharpie', 'Open Sans', sans-serif;
+    font-family: 'MessySharpie', Futura, 'Open Sans', sans-serif;
     line-height: 1.429;
     margin: 0;
     padding: 0;
@@ -214,12 +214,12 @@ body {
   font-weight:normal;
   font-size:14px;
   text-decoration:none;
-    font-family: 'MessySharpie', 'Open Sans', sans-serif;
+    font-family: 'MessySharpie', Futura, 'Open Sans', sans-serif;
 }
 
 .tags_text{
   font-size: 16px;
-  font-family: 'MessySharpie','Open Sans', sans-serif;
+  font-family: 'MessySharpie', Futura, 'Open Sans', sans-serif;
   font-weight:bold;
 }
 
@@ -254,7 +254,7 @@ h6 {font-size: 1.6em}		/* 14px */
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.1;
   margin-bottom: .8em;
-    font-family: 'MessySharpie',sans-serif;
+    font-family: 'MessySharpie', Futura, sans-serif;
 }
 
 h3, h4, h5, h6 { margin-top: .8em; }

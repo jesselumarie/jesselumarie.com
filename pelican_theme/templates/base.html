@@ -66,6 +66,11 @@
     </script>
     <link rel="prefetch" href="/">
     <link rel="prefetch" href="/about/">
+
+    <!-- flash-free hop back to the landing pages: nav.js swaps / and /about/
+         into this page in place instead of doing a real navigation whose
+         first paint is a white canvas over this dark shell -->
+    <script defer src="/nav.js"></script>
 </head>
 
 <body id="index" class="home">

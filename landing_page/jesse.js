@@ -62,7 +62,7 @@
       '@keyframes jesse-face{0%,49.999%{transform:scaleX(-1);}' +
       '50%,100%{transform:scaleX(1);}}' +
       '.jesse-sprite{width:100%;height:100%;' +
-      'background-image:url(jesse-walk.png?v=12);' +
+      'background-image:url(/jesse-walk.png?v=12);' +
       'background-size:' + (W * SHEET_FRAMES) + 'px ' + H + 'px;' +
       'background-repeat:no-repeat;image-rendering:pixelated;' +
       'animation:jesse-step 1s steps(' + FRAME_COUNT + ') infinite;}' +

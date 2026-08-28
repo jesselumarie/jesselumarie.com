@@ -1,10 +1,24 @@
 <!doctype html>
 <html>
   <head>
+    <script>
+      /* Restore a manual theme before first paint; otherwise follow the OS. */
+      (function () {
+        var saved = null;
+        try { saved = localStorage.getItem('jl-theme'); } catch (error) {}
+        var dark = saved === 'dark' ||
+          (saved !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+      }());
+    </script>
     <!-- critical canvas color: paints before external CSS loads, prevents white flash -->
     <style>
-      html { background-color: white; color-scheme: light dark; }
-      @media (prefers-color-scheme: dark) { html { background-color: rgb(17, 17, 17); } }
+      html { background-color: white; color-scheme: light; }
+      html[data-theme="dark"] { background-color: rgb(17, 17, 17); color-scheme: dark; }
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme]) { background-color: rgb(17, 17, 17); color-scheme: dark; }
+      }
       /* swap pages atomically: hold the old page until the new one is ready,
          then cut over in one frame — no crossfade, no blank frame */
       @view-transition { navigation: auto; }
@@ -51,6 +65,9 @@
     <!-- swap / and /about/ in place instead of a full page navigation -->
     <script defer src="/nav.js"></script>
 
+    <!-- a WebGL pull chain switches between light and dark mode -->
+    <script defer src="/theme-toggle.js?v=4"></script>
+
     <!-- prerender nav targets at load, not on hover: a hover-triggered prerender
          can be activated while still half-loaded, flashing a blank page. By load
          + a beat, these are fully rendered off-screen, so clicking is an instant
@@ -71,6 +88,14 @@
   </head>
 
   <body>
+    <button class="lamp-pull" type="button" aria-label="Pull chain to turn off the lights" aria-pressed="false" title="Pull to switch light / dark mode">
+      <canvas class="lamp-pull__canvas" width="160" height="140" aria-hidden="true"></canvas>
+      <span class="lamp-pull__fallback" aria-hidden="true">
+        <span class="lamp-pull__chain"></span>
+        <span class="lamp-pull__weight"></span>
+      </span>
+    </button>
+
    <div id="page">
     <div class="header">
     </div>

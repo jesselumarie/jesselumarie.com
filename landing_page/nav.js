@@ -63,6 +63,7 @@
 
   function crossShellSwap(doc, url, push, cssLink) {
     var incoming = doc.getElementById('page');
+    var lamp = doc.querySelector('.lamp-pull');
     if (!incoming) { location.href = url; return; }
     // one frame: theme CSS out, landing CSS live, landing body in.
     // style.css comes after the blog's inline canvas style in the head,
@@ -72,7 +73,8 @@
     document.title = doc.title;
     document.body.removeAttribute('id');
     document.body.removeAttribute('class');
-    document.body.replaceChildren(incoming);
+    if (lamp) document.body.replaceChildren(lamp, incoming);
+    else document.body.replaceChildren(incoming);
     loadNewScripts(doc);
     crossed = true;
     if (push) history.pushState({}, '', url);

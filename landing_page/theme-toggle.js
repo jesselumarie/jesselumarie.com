@@ -8,9 +8,11 @@
   var CANVAS_HEIGHT = 140;
   var ANCHOR_X = 100;
   var CHAIN_SEGMENTS = 12;
-  var SEGMENT_LENGTH = 5.4;
-  var REST_LENGTH = CHAIN_SEGMENTS * SEGMENT_LENGTH;
-  var MAX_PAYOUT = 14;
+  var DEFAULT_REST_LENGTH = CHAIN_SEGMENTS * 5.4;
+  var HEADER_BOB_OFFSET = 16;
+  var MIN_REST_LENGTH = 14;
+  var MAX_PAYOUT = 18;
+  var MAX_REST_LENGTH = CANVAS_HEIGHT - MAX_PAYOUT - 10;
   var FIXED_STEP = 1 / 120;
   var GRAVITY = 1250;
 
@@ -23,8 +25,16 @@
     return Math.hypot(deltaX, deltaY) >= PULL_THRESHOLD;
   }
 
+  function calculateRestLength(headerHeight) {
+    if (typeof headerHeight !== 'number' || !isFinite(headerHeight)) return DEFAULT_REST_LENGTH;
+    return Math.max(MIN_REST_LENGTH,
+      Math.min(MAX_REST_LENGTH, headerHeight - HEADER_BOB_OFFSET));
+  }
+
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
+      calculateRestLength: calculateRestLength,
+      maxPayout: MAX_PAYOUT,
       resolveTheme: resolveTheme,
       shouldToggleFromPull: shouldToggleFromPull
     };
@@ -240,12 +250,13 @@
     var storedTheme = null;
     var theme;
     var points = [];
-    var segmentLength = SEGMENT_LENGTH;
+    var restLength = DEFAULT_REST_LENGTH;
+    var segmentLength = restLength / CHAIN_SEGMENTS;
     var dragTarget = null;
     var dragging = false;
     var activePointer = null;
     var pointerStart = { x: 0, y: 0 };
-    var bobStart = { x: ANCHOR_X, y: REST_LENGTH };
+    var bobStart = { x: ANCHOR_X, y: restLength };
     var pullDelta = { x: 0, y: 0 };
     var pointerVelocity = { x: 0, y: 0 };
     var lastPointerSample = null;
@@ -261,17 +272,23 @@
     try { storedTheme = localStorage.getItem(STORAGE_KEY); } catch (error) {}
     theme = resolveTheme(storedTheme, themeQuery.matches);
 
+    function measureRestLength() {
+      var header = document.querySelector('.header');
+      return calculateRestLength(header ? header.getBoundingClientRect().height : null);
+    }
+
     function resetChain() {
+      restLength = measureRestLength();
+      segmentLength = restLength / CHAIN_SEGMENTS;
       points = [];
       for (var i = 0; i <= CHAIN_SEGMENTS; i++) {
         points.push({
           x: ANCHOR_X,
-          y: i * SEGMENT_LENGTH,
+          y: i * segmentLength,
           oldX: ANCHOR_X,
-          oldY: i * SEGMENT_LENGTH
+          oldY: i * segmentLength
         });
       }
-      segmentLength = SEGMENT_LENGTH;
       dragTarget = null;
       draw();
     }
@@ -421,7 +438,7 @@
         var eased = 1 - Math.pow(1 - progress, 3);
         for (var i = 0; i < points.length; i++) {
           points[i].x = ANCHOR_X;
-          points[i].y = i * SEGMENT_LENGTH * eased;
+          points[i].y = i * segmentLength * eased;
           points[i].oldX = points[i].x;
           points[i].oldY = points[i].y;
         }
@@ -466,9 +483,9 @@
       var anchorDx = rawX - ANCHOR_X;
       var anchorDy = rawY;
       var radialDistance = Math.hypot(anchorDx, anchorDy) || 0.0001;
-      var tension = Math.max(0, radialDistance - REST_LENGTH);
+      var tension = Math.max(0, radialDistance - restLength);
       var payout = Math.min(MAX_PAYOUT, tension * 0.55);
-      var reach = REST_LENGTH + payout;
+      var reach = restLength + payout;
       if (radialDistance > reach) {
         rawX = ANCHOR_X + anchorDx / radialDistance * reach;
         rawY = anchorDy / radialDistance * reach;
@@ -499,7 +516,7 @@
     function releaseChain() {
       dragging = false;
       dragTarget = null;
-      segmentLength = SEGMENT_LENGTH;
+      segmentLength = restLength / CHAIN_SEGMENTS;
       var bob = points[points.length - 1];
       var speed = Math.hypot(pointerVelocity.x, pointerVelocity.y);
       var scale = speed > 900 ? 900 / speed : 1;
@@ -612,7 +629,11 @@
     if (motionQuery.addEventListener) motionQuery.addEventListener('change', handleMotionPreference);
     else motionQuery.addListener(handleMotionPreference);
 
-    window.addEventListener('resize', draw);
+    window.addEventListener('resize', function () {
+      if (dragging || introActive) draw();
+      else resetChain();
+    });
+    window.addEventListener('jl:page-swap', resetChain);
     canvas.addEventListener('webglcontextlost', function (event) {
       event.preventDefault();
       render = null;

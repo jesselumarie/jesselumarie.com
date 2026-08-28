@@ -38,6 +38,7 @@
     if (!incoming || !current) { location.href = url; return; }
     document.title = doc.title;
     current.replaceWith(incoming);
+    window.dispatchEvent(new Event('jl:page-swap'));
     if (push) history.pushState({}, '', url);
     scrollTo(0, 0);
   }

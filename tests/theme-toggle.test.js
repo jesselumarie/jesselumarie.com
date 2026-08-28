@@ -26,6 +26,13 @@ test('a deliberate pull crosses the threshold in any direction', () => {
   assert.equal(themeToggle.shouldToggleFromPull(15, 15), false);
 });
 
+test('lamp rests above the responsive header edge and has a little extra payout', () => {
+  assert.equal(themeToggle.calculateRestLength(72), 56);
+  assert.equal(themeToggle.calculateRestLength(84), 68);
+  assert.equal(themeToggle.calculateRestLength(40), 24);
+  assert.equal(themeToggle.maxPayout, 18);
+});
+
 test('landing page includes an accessible WebGL lamp-chain control', () => {
   assert.match(landingPage, /class="lamp-pull"/);
   assert.match(landingPage, /<canvas[^>]+aria-hidden="true"/);
@@ -48,6 +55,16 @@ test('theme toggles synthesize a lazy Web Audio switch click', () => {
 
 test('lamp survives direct and cross-shell navigation', () => {
   assert.match(aboutPage, /class="lamp-pull"/);
-  assert.match(aboutPage, /theme-toggle\.js/);
+  assert.match(landingPage, /theme-toggle\.js\?v=5/);
+  assert.match(aboutPage, /theme-toggle\.js\?v=5/);
   assert.match(navigationSource, /replaceChildren\(lamp, incoming\)/);
+});
+
+test('in-place navigation requests a fresh WebGL lamp frame', () => {
+  assert.match(navigationSource, /jl:page-swap/);
+  assert.match(themeSource, /jl:page-swap/);
+});
+
+test('the shared landing shell loads About page fonts before navigation', () => {
+  assert.match(landingPage, /fonts\.googleapis\.com\/css\?family=Vollkorn/);
 });

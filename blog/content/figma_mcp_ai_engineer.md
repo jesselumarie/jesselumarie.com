@@ -1,4 +1,4 @@
-Title: Talking Figma's MCP server at AI Engineer
+Title: Figma’s MCP server at AI Engineer
 Date: 2026-09-08
 Category: Figma
 Tags: programming,figma,design,ai,mcp

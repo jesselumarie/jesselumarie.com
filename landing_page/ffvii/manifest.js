@@ -13,7 +13,7 @@ var FF7_MANIFEST = {
       'Software developer. Ex-lawyer. Traded the courtroom for a keyboard and never looked back.'
     ],
     equipment: [
-      { slot: 'Wpn.', name: 'Keyboard', desc: 'Standard-issue software developer weapon.' },
+      { slot: 'Wpn.', name: 'Keyboard', desc: 'Vortex Pok3r, blank keycaps' },
       { slot: 'Arm.', name: 'Houdini Jacket', desc: 'Pattagucci baby' },
       { slot: 'Acc.', name: 'Wedding Ring', desc: 'Bonded accessory. Cannot be unequipped.' }
     ],

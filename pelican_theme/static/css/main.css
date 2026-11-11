@@ -419,6 +419,46 @@ aside, nav, article, figure {
 article img{
     width: 100%;
 }
+
+/* Compact, captioned images for the family calendar post. */
+.calendar-figure {
+    width: 100%;
+    max-width: 660px;
+    margin: 28px auto;
+}
+.calendar-figure--portrait {max-width: 340px;}
+.calendar-figure--detail {max-width: 420px;}
+.calendar-figure--controls {max-width: 340px;}
+.calendar-figure a {display: block;}
+.calendar-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 3px;
+}
+.calendar-figure figcaption {
+    margin-top: 10px;
+    font-family: 'MessySharpie', Futura, 'Open Sans', sans-serif;
+    font-size: 1.1em;
+    line-height: 1.45;
+    color: var(--text-color);
+    opacity: .8;
+}
+.calendar-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    max-width: 780px;
+    margin: 28px auto;
+}
+.calendar-gallery .calendar-figure {margin: 0;}
+.calendar-gallery--details {max-width: 680px;}
+@media (max-width: 600px) {
+    .calendar-gallery {
+        grid-template-columns: minmax(0, 1fr);
+        max-width: 340px;
+    }
+}
 /***** Layout *****/
 .body {
     clear: both;

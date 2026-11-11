@@ -17,7 +17,7 @@ With the help of Figma's agent and Codex, I built some software for an e-ink cal
 
 The problem: the 32-inch panels I kept finding cost more than $1,500. This is too much money. But, for reasons I still don't understand, I found a [Samsung EM32DX on Newegg](https://www.newegg.com/samsung-em32dx/p/15Z-001C-00D50) for about $600. Still not cheap, but a much better price.
 
-While the panel charged, I hooked up my computer so Codex could set up the display and the calendar service. I'd seen this [Himekuri calendar](https://www.bestmadeco.com/products/japanese-daily-calendar-2027), and wanted something similar in vibes: a big date, a clear view of the day, and the feel of a paper calendar.
+While the panel charged, I hooked up my computer so Codex could set up the display and the calendar service. I'd seen this [Himekuri calendar](https://www.bestmadeco.com/products/japanese-daily-calendar-2027), and wanted something similar in vibes: a big date, a clear view of the day, and the feel of a paper calendar. I kicked it off with a prompt:
 
 <figure class="calendar-figure">
   <a href="{static}/images/figma-calendar/initial-prompt.webp"><img src="{static}/images/figma-calendar/initial-prompt.webp" width="1522" height="426" alt="The initial Codex prompt asking for a Himekuri-style calendar, a Mac mini service, and a local interface." loading="lazy" decoding="async"></a>
@@ -48,7 +48,7 @@ Tweaking little things, like where the bats or snowflakes sit among the branches
   <figcaption>A closer look at October, exported from Figma. Small adjustments to the bats and leaves are much easier to judge on the canvas.</figcaption>
 </figure>
 
-### School lunch and the service in the closet
+### School lunch and the mini in the closet
 
 My kids get lunch through their school, so I also made a little widget to show what's on the menu. Figma made it easy to view the illustrations together, tweak each generation, and keep them in line with the Himekuri feel.
 

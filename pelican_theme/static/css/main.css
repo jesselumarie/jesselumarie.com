@@ -438,7 +438,6 @@ article img{
 }
 .calendar-figure figcaption {
     margin-top: 10px;
-    font-family: 'MessySharpie', Futura, 'Open Sans', sans-serif;
     font-size: 1.1em;
     line-height: 1.45;
     color: var(--text-color);

@@ -10,7 +10,7 @@ With the help of Figma's agent and Codex, I built some software for an e-ink cal
 
 <figure class="calendar-figure calendar-figure--portrait">
   <a href="{static}/images/figma-calendar/calendar-on-wall.webp"><img src="{static}/images/figma-calendar/calendar-on-wall.webp" width="900" height="1200" alt="A framed portrait e-ink calendar hanging on a kitchen wall, with a large date above a monthly calendar." decoding="async"></a>
-  <figcaption>The calendar at home: today's plans up top, the month below, and no glowing screen. Calendar details have been anonymized.</figcaption>
+  <figcaption>The calendar at home: today's plans up top, the month below, and no glowing screen.</figcaption>
 </figure>
 
 ### Finding the panel

@@ -68,6 +68,8 @@ I have a Mac mini in a closet that runs a bunch of little sites for my house. Th
 
 ### Still plugged in
 
-I really love how this looks in the house. My only gripe right now is battery life. [Samsung's manual](https://store.visionbox.it/wp-content/uploads/2025/10/BN81-27642A-01_WUG_EM32DX_EU_ENG_250716.1.pdf#page=27) describes about 200 days on a charge, but that's with one screen refresh a day and without using Wi-Fi or the mobile app. It recommends the charger when using the mobile app or VXT Player app. That's a different setup from my running calendar.
+I really love how this looks in the house, and that it's a service I can easily update. If I see something that I don't like, I ask my dot to change it, and it kicks off a Codex thread to update everything, which then updates my designs in Figma. Truly personal software.
+
+My only gripe right now is battery life. [Samsung's manual](https://store.visionbox.it/wp-content/uploads/2025/10/BN81-27642A-01_WUG_EM32DX_EU_ENG_250716.1.pdf#page=27) describes about 200 days on a charge, but that's with one screen refresh a day and without using Wi-Fi or the mobile app. It recommends the charger when using the mobile app or VXT Player app. That's a different setup from my running calendar.
 
 If I could get closer to 30 days, I'd happily leave it unplugged. For now, that part is still a work in progress.

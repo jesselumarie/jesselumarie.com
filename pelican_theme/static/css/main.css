@@ -152,6 +152,13 @@ body {
   padding: 10px 0;
 }
 
+/* These bars have no container gutters to offset Bootstrap's row margins. */
+.mobile-topbar > .row,
+.mobile-bottombar > .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .mobile-bottombar p{
   text-align:center;
   font-size: 0.95em;

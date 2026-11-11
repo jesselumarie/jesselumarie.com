@@ -459,11 +459,13 @@ article img{
 }
 .calendar-gallery .calendar-figure {margin: 0;}
 .calendar-gallery--details {max-width: 680px;}
+.calendar-gallery--progression {grid-template-columns: repeat(3, minmax(0, 1fr));}
 @media (max-width: 600px) {
     .calendar-gallery {
         grid-template-columns: minmax(0, 1fr);
         max-width: 340px;
     }
+    .calendar-gallery--progression {max-width: 260px;}
 }
 /***** Layout *****/
 .body {

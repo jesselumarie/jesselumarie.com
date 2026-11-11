@@ -28,6 +28,21 @@ While the panel charged, I hooked up my computer so Codex could set up the displ
 
 I workshopped the initial look while I was out. Once I had an image of what I wanted, I used the Figma MCP server to lay out the months and see how the calendar would look throughout the year.
 
+<div class="calendar-gallery calendar-gallery--progression" role="group" aria-label="Calendar design progression from green to blue to orange">
+  <figure class="calendar-figure">
+    <a href="{static}/images/figma-calendar/progression-green.webp"><img src="{static}/images/figma-calendar/progression-green.webp" width="900" height="1600" alt="The first calendar design, with a muted green date panel and a simple monthly grid." loading="lazy" decoding="async"></a>
+    <figcaption>1. Green: the first pass, with a restrained palette and a big date beside the day's plans.</figcaption>
+  </figure>
+  <figure class="calendar-figure">
+    <a href="{static}/images/figma-calendar/progression-blue.webp"><img src="{static}/images/figma-calendar/progression-blue.webp" width="900" height="1600" alt="The next calendar design, with blue borders, paper texture, handwritten details, and an illustration of the Flatirons." loading="lazy" decoding="async"></a>
+    <figcaption>2. Blue: paper texture, handwritten details, and the Flatirons bring in more personality.</figcaption>
+  </figure>
+  <figure class="calendar-figure">
+    <a href="{static}/images/figma-calendar/progression-orange.webp"><img src="{static}/images/figma-calendar/progression-orange.webp" width="900" height="1600" alt="The later calendar design, with large orange numerals and an autumn leaf motif in the upper-right corner." loading="lazy" decoding="async"></a>
+    <figcaption>3. Orange: warmer colors and an autumn leaf motif move it toward the seasonal design.</figcaption>
+  </figure>
+</div>
+
 It's so much easier to understand the whole design when the pieces are spread out on a canvas. I could compare the colors across months, adjust the layout, and make the seasonal artwork feel like it belonged to the same calendar.
 
 <div class="calendar-gallery">
